@@ -46,10 +46,13 @@ require_once 'core/sys_table.class.php';
 # gerencia uploads
 require_once 'core/sys_upload.class.php';
 
+# gerenciador de emails PHPMailer
+require_once 'libraries/phpmailer/PHPMailerAutoload.php';
+
 final class Vita
 {
 	// Vita::version;
-	const version = '20160831-0017';
+	const version = '20170330-1655';
 
 	/**
 	* Responsavel por gravar informacoes em
@@ -125,6 +128,13 @@ final class Vita
 	 */
 	private $twig = null;
 
+	/**
+	 * Objeto Mail. Representa a instancia do PHPMailer
+	 * 
+	 * @var object - PHPMailer
+	 **/
+	private $mail = null;
+	
     private function __construct(){}
 	private function __clone(){}
 	private function __wakeup(){}
@@ -184,6 +194,9 @@ final class Vita
         	$this->sqlite = DBFactory::create( 'SQLite', $_conexao_dados_sqlite_ );
         endif;
 
+		# carregando objeto de envio de e-mail
+		$this->mail = new PHPMailer;
+		
         # verificando por tabelas do banco de dados a serem agregadas ao sistema
         if(isset($_config['SYS_Table']) && is_array($_config['SYS_Table']) )
         	foreach ($_config['SYS_Table'] as $tablename => $_attrs )
