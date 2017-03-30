@@ -11,6 +11,11 @@ Por ser feita de um forma muito simples, sua base é de fácil compreenção mes
 
 Conta com muitos comentários entre os códigos que facilitam a identificação dos recursos e fluxo de funcionamento.
 
+# Saiba mais
+
+Ao extrair o Vita em seu servidor, use o navegador web para entrar na pasta vita/Manual. Existem inúmeros exemplos das classes e sobre a forma como usar o Vita.
+
+Para saber mais sobre os trabalhos do autor acesse o site http://sooho.com.br
 
 Autor: Wanderlei Santana <sans.pds@gmail.com>
 Data: 2017.03.30 01:15h
