@@ -1,0 +1,79 @@
+
+
+Tudo abaixo dentro das tags "manual" refere-se a uma documentacao que pode
+ser visutalizada acessando o arquivo manual.class.php dentro da pasta manual.
+
+<manual>
+	title       : Class Vita
+	Filename    : vita.php
+	Category    : Sistema
+	Category    : Vita
+
+
+	Description : Está classe funciona como um container ou uma interface para todo o sistema. Ao ser inicializa, ela instancia varios objetos
+	úteis para o funcionamento do sistema, sendo estes objetos para Logs, Database(MySQL e SQlite), Sessão, Configurações, Validação de Dados, Manipulação de Templates, entre outros.
+	Esta classe é Instanciada no arquivo vita.php e pode ser acessada através da função <b>vita()</b>.
+
+	Ao ser instanciada, alguns objetos básicos são acessiveis:
+	  <b>vita()->log </b> - Objeto responsável pelo gerenciamento de Logs
+	  <b>vita()->config</b> - Objeto responsável pelo gerenciamento de Configurações
+	  <b>vita()->session</b> - Objeto responsável pelo gerenciamento de Sessões
+	  <b>vita()->validate</b> - Objeto responsável pelo gerenciamento de Validação de dados 
+	  <b>vita()->upload</b> - Objeto responsável pelo gerenciamento de Upload de Arquivos 
+	  <b>vita()->db </b> - Objeto responsável pelo gerenciamento de Banco de Dados
+	  <b>vita()->database</b> - Objeto responsável pelo gerenciamento de Banco de Dados
+	  <b>vita()->utils</b> - Objeto responsável pelo gerenciamento de Funções úteis
+	  <b>vita()->post</b> - Objeto responsável pelo gerenciamento de Posts em Formulários
+
+	Um exemplo, usando o gerenciador session, seria setar uma variável na sessão do usuário atual:
+	<b> vita()->session->nome_site = "Nome do Meu Site";</b>
+
+	Que mais tarde poderia ser acessada através do comando:
+	<b> echo vita()->session->nome_site; </b>
+
+	usage:
+		...
+		// acessando os objetos contidos nessa classe...
+		// acessando Banco de dados ...
+		vita()->db->metodo_requerido( [parametros] );
+
+		// acessando Log
+		vita()->log->metodo_requerido( [parametros] );
+
+		// acessando configurações ...
+		vita()->config->valor;
+
+		// acessando Objeto gerenciador de Sessao
+		vita()->session->metodo_requerido( [parametros] );
+
+		// acessando Objeto para validação de dados
+		vita()->validate->metodo_requerido( [parametros] );
+
+		// setando uma variavel temporária globalmente
+		vita()->variavel = "valor";
+
+		#setando uma variavel na sessao
+		vita()->session->variavel = "valor";
+
+		// registrando um log no arquivo de logs do sistema
+		vita()->log->write( "mensagem a ser gravada" );
+
+		// acessando a instancia $vita dentro de outras funcoes,
+		// classes e metodos use a funcao vita()
+		echo vita()->session->variavel;
+
+		// Obter a informação postada por um Visitante no campo "cpf" de um formulário
+		// (nota) a informação já vêm previamente sanitarizada.
+		$__cpf =  vita()->post->cpf;
+
+		// filtrando/validando o campo cpf para manter apenas numeros 
+		$__cpf = vita()->validate->number( $__cpf );
+
+		// verificando se o campo postado no formulario, é um CPF válido 
+		echo (vita()->validate->cpf( $__cpf )) ? "Válido" : "Inválido";
+
+		// incluindo uma mascara de cpf no campo acima
+		echo vita()->utils->mask( vita()->post->cpf, '###.###.###-##' );
+		...
+</manual>
+

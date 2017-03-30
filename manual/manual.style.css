@@ -1,0 +1,102 @@
+*{
+	font-family: "Open Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+}
+body{margin:0;padding:0;border-top: 10px solid #375376;}
+h1{
+	color:#375376;
+	font-size:28px;
+	margin:0;
+}
+h3{
+	color:#375376;
+	font-size:20px;
+	margin:0;
+	margin-top:20px;
+}
+
+hr{
+	color:#375376;
+	border-top: dotted 1px;
+}
+span.data_e_time{
+	font-size: 14px;
+}
+.categories{
+    float: left;
+    min-width: 15%;
+    height: 100%;
+}
+.categories ul{
+	list-style: none;
+	margin:0;
+	padding:0;
+}
+.categories h2{
+	color:#375376;
+	font-weight: 200;
+	font-size:28px;
+	line-height: 46px;
+	margin:0;
+	margin-top:5px;
+}
+.categories ul li:first-child{
+	border-top: 1px dotted #375376;
+}
+.categories ul li{
+	border-bottom: 1px dotted #375376;
+	display: block;
+}
+.categories ul li a:link,
+.categories ul li a:visited{
+	color:#333;
+	display: block;
+	text-decoration: none;
+	line-height: 30px;
+	padding-left: 10px;
+}
+.categories ul li a:hover{
+	background-color: #375376;
+	color:#fff;
+}
+.content{
+	float: left;
+	margin:20px 10px 20px 20px;
+	width: 70%;
+	padding-bottom: 20px;
+	background-color: #fff;
+}
+.wrap{
+	padding-bottom: 40px;
+	margin-bottom: 20px;
+
+}
+.usage, .usage2{
+	border:1px solid #CCCCCC;
+	border-left:5px solid #4CAF50;
+	padding-left:20px ;
+	font-family: Consolas,"courier new";
+    font-size: 16px;
+    line-height: 1.4;
+    width: auto;
+    background-color: #fff;
+    padding: 8px 12px;
+    word-wrap: break-word;
+}
+.usage2{
+	border-left:5px solid #4C95AF;
+}
+.clear{
+	clear: both;
+}
+.syntaxhighlighter { 
+ overflow-y: hidden !important; 
+ overflow-x: auto !important; 
+}
+.logotipo{
+	display: block;
+}
+.logotipo img{
+	width: 100px;
+    display: block;
+    padding: 15px 0px 0px 55px;
+}

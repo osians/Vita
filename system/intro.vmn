@@ -1,0 +1,53 @@
+<manual>
+    title       : Introdução ao Vita
+    Filename    : intro.php
+    Category    : Vita
+
+    Description : <b>Breve apresentação Framework Vita</b>
+	Vita é uma pequena, simples e leve Framework PHP criada com intuitos didáticos a partir de uma coleção de classes PHP que funcionam como interface para facilitar o processamento de comandos e funções corriqueiramente usados no dia a dia, assim sendo, esconde a complexidade de alguma operações como Upload de Arquivos, Acesso a Base de dados, Controle de Erros, Logs, Sessões, entre outros. O objetivo principal desta framework é tornar mais rapido e amigável o processo de programar em linguagem PHP.
+	Por ser feita de um forma muito simples, sua base é de fácil compreenção mesmo para pessoas com pouco conhecimento de PHP.
+
+	Para iniciar todo o sistema e suas funcionalidades, basta incluir em uma página <b>php</b> qualquer o comando: 
+    <b>require_once '/vita/vitaloader.php';</b> 
+	A partir dai se tornatará possível acessar as funcionalidades do sistema através da função <b>vita()-></b>, da váriável <b>$vita</b>( em casos de programação modular ou usando o comando global $vita; dentro de classes), ou então através de sua instância estatica no sistema <b>Vita::getInstance()</b>
+
+    usage:
+        ...
+    
+        // informando que nao queremos gerenciamento de TAGS Twig
+        // a principio.
+        define( 'VITAONLY', true );
+
+        // incluindo a Frameword a pagina 
+        require_once 'vita/vitaloader.php';
+
+		// Exemplos:
+		// Setando uma variavel globalmente no sistema para acesso em outros arquivos
+		vita()->diga_ola = "Olá mundo no vita!";
+
+		// acessando uma variavel setada no sistema
+		echo vita()->diga_ola;
+
+		// Note que os comandos abaixos produzem o mesmo resultado
+		echo vita()->diga_ola;
+		echo Vita::getInstance()->diga_ola;
+        echo vita()->get( 'diga_ola' );
+        vita()->set( 'diga_ola', 'Olá mundo no vita!' );
+
+        // realizando um select num banco de dados MySQL - Metodo 01
+		$r = vita()->db->select( "SELECT now() as agora;" );
+		echo $r[0]->agora;
+
+        // realizando um select num banco de dados MySQL - Metodo 02
+        // @var string - SQL a ser executada
+        // @var array - Variaveis para Bind com a SQL
+        // @var bool - retornar resultados como Objetos
+        // @var bool - retornar apenas primeiro resultado encontrado
+        $r = vita()->db->select( "SELECT now() as agora;", null, true, true );
+        echo $r->agora;
+        ...
+ </manual>
+
+
+
+
