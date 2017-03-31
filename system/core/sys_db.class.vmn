@@ -2,7 +2,7 @@
     title       : Class SYS_Db , DBFactory e MySQLProvider
     Category    : Database, MySQL, SQLite, Sys
 
-    Description : O arquivo sys_db comtém classes responsáveis por fazer a interface com o banco de dados,
+    Description : O arquivo sys_db contém classes responsáveis por fazer a interface com o banco de dados,
     no caso, o padrao é o uso com mysql, porém, podendo ser usado com SQlite.
     Além do mais, outras interfaces podem ser adicionadas de forma simples.
     Esta classe também é instanciada automaticamente e pode ser acessada através da função <b>vita()</b>, seus métodos podem ser acessados utilizando o caminho <b>vita()->db->metodo([params]);</b> ou <b>vita()->database->metodo([params]);</b>

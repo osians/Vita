@@ -133,7 +133,7 @@ final class Vita
 	 * 
 	 * @var object - PHPMailer
 	 **/
-	private $mail = null;
+	public $mail = null;
 	
     private function __construct(){}
 	private function __clone(){}
@@ -251,6 +251,7 @@ final class Vita
         	#$this->warning( $e->getMessage(), "Erro 404" );
             exit(0);
         }
+        exit(0);
 	}
 
 	public function loadTable( $tablename, $attrs = null ){

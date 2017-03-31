@@ -43,12 +43,15 @@ class SYS_Table
 	 * Salva informações na tabela. Sendo esta ação, um INSERT ou
 	 * um UPDATE dependentendo do segundo parametro recebido.
 	 *
-	 * @param  array - dados a serem gravados
+	 * @param  mixed - (array|object) dados a serem gravados
 	 * @param  int - caso um ID numerico seja passado, faz um UPDATE do contrario, realizar um INSERT
 	 * @return int - id do registro
 	 */
 	public function save( $_dados = array(), $__id = null )
 	{
+		if(is_object($_dados))
+			$_dados = get_object_vars($_dados);
+
 		if(!is_array($_dados)) return false ;
 
 		# obtendo as propriedades desta tabela direto do MySQL ...
