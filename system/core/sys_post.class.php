@@ -45,7 +45,11 @@ class SYS_Post implements Vitalib
         $this->set('received',true );
         $this->set('action', ''); //&$_GET['request']
         $this->set('method', $_SERVER['REQUEST_METHOD']);
-        $this->set('caller', $_SERVER['HTTP_REFERER']);
+
+        # HTTP_REFERE nao e' garantido ser enviado pelo cliente
+        if(isset($_SERVER['HTTP_REFERER'])){
+        	$this->set('caller', $_SERVER['HTTP_REFERER']);
+        }
     }
 
     protected function make_safe( $value )

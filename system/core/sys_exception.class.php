@@ -56,7 +56,7 @@ class Error_Output
     {
         global $_sx_cfg;
 
-        ob_end_clean();
+        if (ob_get_contents()) ob_end_clean();
         date_default_timezone_set( $_sx_cfg['default_time_zone'] );
         $data_formatada = date( $_sx_cfg['date_format'], $_SERVER['REQUEST_TIME'] );
         $trace = str_replace("#", "<br>#", $this->traceAsString);
@@ -216,7 +216,8 @@ HTML;
                         <h1>Erro {$code}</h1>
                     </div>
                     <div class="errwrapper">
-                        Arquivo: {$__arquivo__} <br> <b>{$this->message}</b> <br> Na linha: {$this->line}
+                        Arquivo: {$__arquivo__} <br> 
+                        Linha: {$this->line}
                     </div>
                 </body>
             </html>       
