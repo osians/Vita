@@ -1,5 +1,7 @@
 <?php
 
+namespace Framework\Vita\Core ;
+
 /**
  * Classe simples apenas para contar o tempo
  * de processamento da pagina. Pode ser usada para contar tempo entre

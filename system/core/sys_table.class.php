@@ -1,4 +1,8 @@
-<?php if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
+<?php 
+
+namespace Framework\Vita\Core ;
+
+if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
 
 /**
  *

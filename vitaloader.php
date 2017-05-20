@@ -125,11 +125,13 @@ require_once( $_config['helper_path'] . 'helper.php' );
 # de softwares.
 require_once 'system/vita.php';
 
+use \Framework\Vita\Vita ;
+
 # ------------------------------------------
 # dando vida ao sistema
 $vita = Vita::getInstance();
 $vita->init();
-	
+
 unset( $_config );
 
 # ------------------------------------------

@@ -1,5 +1,7 @@
 <?php 
 
+namespace Framework\Vita\Core ;
+
 /*
 Esta interface é usada para permitir que o Vita consiga 
 identificar as propriedades publicas do objeto, e fornece-las 

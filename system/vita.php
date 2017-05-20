@@ -1,5 +1,7 @@
 <?php
 
+namespace Framework\Vita;
+
 /* ---------------------------
  -- Vita brevis,
  -- ars longa,
@@ -13,46 +15,14 @@
 # sistemas que implementem o vita como base, possam implantar suas
 # proprias rotinas de autoload
 
-# cria padronizacao dos objetos que exibem informacao no template html
-require_once 'core/sys_vitalib.class.php';
+require_once 'bootstrap.php';
 
-# implementa objeto que armazena as variavies do sistema
-require_once 'core/sys_config.class.php';
-
-# gerencia posts dos formularios
-require_once 'core/sys_post.class.php';
-
-# metodos uteis do sistema
-require_once 'core/sys_utils.class.php';
-
-# filtros e regras de validacao
-require_once 'core/sys_validate.class.php';
-
-# gerencia sessoes
-require_once 'core/sys_session.class.php';
-
-# registra logs do sistema
-require_once 'core/sys_log.class.php';
-
-# permite controlar analisar o tempo de processos
-require_once 'core/sys_benchmark.class.php';
-
-# interface PDO para bancos de dados
-require_once 'core/sys_db.class.php';
-
-# facilita buscas manipulaçao de tabelas no banco de dados
-require_once 'core/sys_table.class.php';
-
-# gerencia uploads
-require_once 'core/sys_upload.class.php';
-
-# gerenciador de emails PHPMailer
-require_once 'libraries/phpmailer/PHPMailerAutoload.php';
+use \Framework\Vita\Core\DBFactory ;
 
 final class Vita
 {
 	// Vita::version;
-	const version = '20170330-1655';
+	const version = '20170519-142902';
 
 	/**
 	* Responsavel por gravar informacoes em
@@ -144,18 +114,18 @@ final class Vita
 		// obtendo array do arquivo config.php
         GLOBAL $_config;
 
-    	$this->config   = new SYS_Config( $_config );
-        $this->log      = new SYS_Log( $this->config->vita_path . $this->config->log_folder );
-        $this->session  = new SYS_Session( $this->config->session_expire_time );
-        $this->validate = new SYS_Validate();
-        $this->utils    = new SYS_Utils();
+    	$this->config   = new \Framework\Vita\Core\SYS_Config( $_config );
+        $this->log      = new \Framework\Vita\Core\SYS_Log( $this->config->vita_path . $this->config->log_folder );
+        $this->session  = new \Framework\Vita\Core\SYS_Session( $this->config->session_expire_time );
+        $this->validate = new \Framework\Vita\Core\SYS_Validate();
+        $this->utils    = new \Framework\Vita\Core\SYS_Utils();
 
         // tratamento de $_POST para formularios
-        $this->post     = new SYS_Post( false );
+        $this->post     = new \Framework\Vita\Core\SYS_Post( false );
         $this->post->init();
 
         // tratamento de upload de arquivos
-        $this->upload    = new SYS_Upload();
+        $this->upload    = new \Framework\Vita\Core\SYS_Upload();
         $_upload_config_ = array
         (
 		    'destination'    => $this->config->upload_folder,
@@ -195,7 +165,7 @@ final class Vita
         endif;
 
 		# carregando objeto de envio de e-mail
-		$this->mail = new PHPMailer;
+		$this->mail = new \PHPMailer;
 		
         # verificando por tabelas do banco de dados a serem agregadas ao sistema
         if(isset($_config['SYS_Table']) && is_array($_config['SYS_Table']) )
@@ -241,8 +211,7 @@ final class Vita
 					call_user_func(array($o, 'publicar'));
 
 			$_vars['vita'] = $this;
-# var_dump($_vars);
-# die();
+
 			print $this->twig->render( $__viewName, $_vars );
         }
         catch( Exception $e )
@@ -306,14 +275,14 @@ final class Vita
 			throw new SYS_Exception( "Tentativa de Iniciar o sistema gerenciador de templates em uma pasta Inexistente: '{$__path}'");
 
         require_once 'libraries/Twig/Autoloader.php';
-        Twig_Autoloader::register();
-        $loader = new Twig_Loader_Filesystem( $__path );
+        \Twig_Autoloader::register();
+        $loader = new \Twig_Loader_Filesystem( $__path );
 
         # verificando se o modo de cache esta liberado no arquivo de config
         $__cache_folder = ($this->config->twig_cache_enable === true) ? $this->config->system_path . 'cache' . DIRECTORY_SEPARATOR : false;
 
         # instanciando o ambiente twig
-        $this->twig = new Twig_Environment($loader, 
+        $this->twig = new \Twig_Environment($loader, 
             array(
                 'cache' => $__cache_folder, 
                 'debug' => $this->config->twig_debug_enable
@@ -322,10 +291,10 @@ final class Vita
 
         # adiciona extensao para realizar debug
         if($this->config->twig_debug_enable)
-            $this->twig->addExtension(new Twig_Extension_Debug());
+            $this->twig->addExtension(new \Twig_Extension_Debug());
 
         # adicionando nosso filtro proprio dde traducoes
-        $this->twig->addFilter('vtrans', new Twig_Filter_Function('vita_twig_translate_filter'));
+        $this->twig->addFilter('vtrans', new \Twig_Filter_Function('vita_twig_translate_filter'));
     }
 
 	public static function getInstance()
@@ -335,3 +304,5 @@ final class Vita
         return static::$instance;
     }
 }
+
+

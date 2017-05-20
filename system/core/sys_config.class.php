@@ -1,4 +1,9 @@
-<?php if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
+<?php 
+
+namespace Framework\Vita\Core ; 
+
+if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
+
 
 // Declaracao de alguns ENUMS Uteis para padronizacao
 class sys_vita_config_visibilidade_enum{
@@ -7,7 +12,8 @@ class sys_vita_config_visibilidade_enum{
     const PUBLICA   = 2;
 }
 
-class InvalidVarNameException extends LogicException{}
+class LogicaException extends \Exception{} 
+class InvalidVarNameException extends LogicaException{}
 
 class SYS_Config implements Vitalib
 {

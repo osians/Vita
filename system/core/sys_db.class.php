@@ -1,4 +1,8 @@
-<?php if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
+<?php 
+
+    namespace Framework\Vita\Core ;
+
+    if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
 
 /**
  *
@@ -100,13 +104,13 @@ class MySQLProvider implements DBProvider
         $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname . ';charset=' . $this->charset;
         // Set options
         $options = array(
-            PDO::ATTR_PERSISTENT  => true,
-            PDO::ATTR_ERRMODE     => PDO::ERRMODE_EXCEPTION,
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '{$this->charset}'"
+            \PDO::ATTR_PERSISTENT  => true,
+            \PDO::ATTR_ERRMODE     => \PDO::ERRMODE_EXCEPTION,
+            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '{$this->charset}'"
         );
 
         try{
-            return new PDO($dsn, $this->user, $this->pass, $options);
+            return new \PDO($dsn, $this->user, $this->pass, $options);
         }
         catch( PDOException $e )
         {
@@ -145,10 +149,10 @@ class SQLliteProvider implements DBProvider
         $__dsn__ = 'sqlite:'.$this->sqlite_db_folder.$this->sqlite_dbname;
 
         try{
-            $this->dbh = new PDO($__dsn__);
-            $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            //$memory_db = new PDO('sqlite::memory:');
-            //$memory_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->dbh = new \PDO($__dsn__);
+            $this->dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            //$memory_db = new \PDO('sqlite::memory:');
+            //$memory_db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             return $this->dbh;
         }
         catch( PDOException $e ){
@@ -195,16 +199,16 @@ class SYS_Db
         if (is_null($type)) {
             switch (true) {
                 case is_int($value):
-                    $type = PDO::PARAM_INT;
+                    $type = \PDO::PARAM_INT;
                     break;
                 case is_bool($value):
-                    $type = PDO::PARAM_BOOL;
+                    $type = \PDO::PARAM_BOOL;
                     break;
                 case is_null($value):
-                    $type = PDO::PARAM_NULL;
+                    $type = \PDO::PARAM_NULL;
                     break;
                 default:
-                    $type = PDO::PARAM_STR;
+                    $type = \PDO::PARAM_STR;
             }
         }
         $this->stmt->bindValue($param, $value, $type);
@@ -212,7 +216,7 @@ class SYS_Db
 
     private function parseAsObject( $__first_only__ = false )
     {
-        $objeto = new stdClass;
+        $objeto = new \stdClass;
         $retorno = array();
         $result = ($__first_only__) ? $this->single() : $this->resultset();
 
@@ -230,7 +234,7 @@ class SYS_Db
 
         foreach ($result as $row )
         {
-            $objeto = new stdClass;
+            $objeto = new \stdClass;
             foreach( $row as $key=>$value ):
                 $oKey = strtolower( $key );
                 $objeto->$oKey = $value;
@@ -333,12 +337,12 @@ class SYS_Db
 
     public function resultset(){
         $this->execute();
-        return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function single(){
         $this->execute();
-        return $this->stmt->fetch(PDO::FETCH_ASSOC);
+        return $this->stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function rowCount(){
@@ -416,7 +420,7 @@ class DBFactory
             break;
 
             default:
-                return new stdClass(); # objeto null
+                return new \stdClass(); # objeto null
             break;
         }
     }

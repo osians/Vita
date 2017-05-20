@@ -1,5 +1,9 @@
 <?php
 
+namespace Framework\Vita\Core ;
+
+use Framework\Vita\Vita ; 
+
 header('Content-Type: text/html; charset=utf-8');
 
 #
@@ -128,13 +132,28 @@ class Error_Output
                        color:#FF6A44;
                        font-weight:100;
                     }
-                    a{color:#C6E863;display:block;}
+                    a{
+                        background-color: #C6E863;
+                        color: #28282E;
+                        padding: 15px 20px;
+                        text-decoration: none;
+                        cursor: pointer;
+                        margin-bottom: 50px;
+                        border-radius: 4px;
+                    }
+                    a:hover{
+                        opacity: .8;
+                    }
                     div.errwrapper{
                         font-size:16px;
                         font-family:monospace;
                     }
                     div.errmais{
                         color:#9AA2A9;
+                        border-top: 1px dashed;
+                        border-bottom: 1px dashed;
+                        padding-top: 30px;
+                        margin-bottom: 30px;
                     }
                     span.trecho_code_err{
                         background-color: #28282E;
@@ -188,8 +207,8 @@ class Error_Output
                             SERVER_ADMIN: {$_SERVER['SERVER_ADMIN']}<br>
                             </span>
                         </div>
-                        <br>
                         <a href="mailto:{$_sx_cfg['sys_error_log_email']}">Informar o erro ao desenvolvedor</a>
+                        <br><br>
                     </div>
                 </div>
             </div>
@@ -234,7 +253,7 @@ HTML;
  * normalmente é chamada atraves do codigo
  * thown new SYS_Exception( "Mensagem a ser apresentada" );
  */
-class SYS_Exception extends Exception
+class SYS_Exception extends \Exception
 {
     function __construct($message = null, $code = 0, $arquivo = null, $linha = null )
     {
@@ -376,8 +395,8 @@ function check_for_fatal_error()
     endif;
 }
 
-register_shutdown_function( "check_for_fatal_error" );
-set_error_handler( array("Error_handling","handler") );
+register_shutdown_function( "\Framework\Vita\Core\check_for_fatal_error" );
+set_error_handler( array("\Framework\Vita\Core\Error_handling","handler") );
 // set_exception_handler( "log_exception" );
 ini_set( "display_errors", "off" );
 error_reporting( E_ALL );

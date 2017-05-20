@@ -1,5 +1,7 @@
 <?php
 
+use \Framework\Vita\Vita ;
+
 require_once 'vita_forms.php';
 
 # @function getInstance - obtem instancia do objeto principal do sistema

@@ -1,5 +1,8 @@
-<?php if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo não permitido.');
+<?php 
 
+namespace Framework\Vita\Core;
+
+if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo não permitido.');
 
 /**
  * TODO - colocar uma funcao para tornar o nome da imagem amigavel
