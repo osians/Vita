@@ -19,13 +19,13 @@ class Router
 
         $__app_path = vita()->config->app_folder;
         if(!isset($__app_path) || empty($__app_path))
-            throw new SYS_Exception( '
+            throw new \Framework\Vita\Core\SYS_Exception( '
                 Você não definiu a variável $_config[\'app_folder\'] 
                 com a localização da sua Aplicação. ', 22 );
 
         $__controller_folder = vita()->config->controller_folder ;
         if(!isset($__controller_folder) || empty($__controller_folder))
-            throw new SYS_Exception( '
+            throw new \Framework\Vita\Core\SYS_Exception( '
                 Você não definiu a variável $_config[\'controller_folder\'] 
                 com a localização da pasta de Controle da sua Aplicação. ', 30 );
 
@@ -51,6 +51,8 @@ class Router
         # setando a URL sem parametros
         # algum processo pode precisar.
         vita()->request_uri_ca = vita()->base_url . $this->getController() . '/' . $this->getAction() . '/' ;
+        vita()->request_controller = $this->getController();
+        vita()->request_action = $this->getAction();
     }
     
 
@@ -67,7 +69,7 @@ class Router
             if(is_readable($file2)){
                 include $file2;
             }else{
-                throw new SYS_Exception(
+                throw new \Framework\Vita\Core\SYS_Exception(
                     "Você ainda não criou os arquivos '$file' e '$file2'.  
                     Proceda com a criação dos mesmos para corrigir o problema.", 68
                 );
@@ -79,14 +81,14 @@ class Router
         if(class_exists($__class__))
             $controller = new $__class__();
         else
-            throw new SYS_Exception("A classe '$__class__' não existe dentro do arquivo '$file'", 77);
+            throw new \Framework\Vita\Core\SYS_Exception("A classe '$__class__' não existe dentro do arquivo '$file'", 77);
             
         
         if(is_callable(array($controller,$this->action))):
             $action = $this->action;
         else:
             // $action = 'index';
-            throw new SYS_Exception("O método '$this->action' não existe dentro da classe '$__class__' no arquivo '$file'", 84);
+            throw new \Framework\Vita\Core\SYS_Exception("O método '$this->action' não existe dentro da classe '$__class__' no arquivo '$file'", 84);
         endif;
 
         call_user_func_array( array($controller,$action), $this->params );

@@ -52,6 +52,14 @@ class SYS_Utils
         return $password;
     }
 
+    public function amigavel($str)
+    {
+        $__amigavel = vita()->validate->replace_accents($str);
+        $__amigavel = preg_replace('@\s+@', ' ', $__amigavel);
+        $__amigavel = str_replace(" ", "_", $__amigavel);
+        return $__amigavel;
+    }
+
     /**
      *
      * DUMP VARIAVEIS

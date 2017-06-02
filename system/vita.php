@@ -18,6 +18,8 @@ namespace Framework\Vita;
 require_once 'bootstrap.php';
 
 use \Framework\Vita\Core\DBFactory ;
+use \Framework\Vita\Core\SYS_Exception;
+use \Exception;
 
 final class Vita
 {
@@ -115,7 +117,7 @@ final class Vita
         GLOBAL $_config;
 
     	$this->config   = new \Framework\Vita\Core\SYS_Config( $_config );
-        $this->log      = new \Framework\Vita\Core\SYS_Log( $this->config->vita_path . $this->config->log_folder );
+        $this->log      = new \Framework\Vita\Core\SYS_Log( $this->config->log_folder );
         $this->session  = new \Framework\Vita\Core\SYS_Session( $this->config->session_expire_time );
         $this->validate = new \Framework\Vita\Core\SYS_Validate();
         $this->utils    = new \Framework\Vita\Core\SYS_Utils();
@@ -130,7 +132,7 @@ final class Vita
         (
 		    'destination'    => $this->config->upload_folder,
 		    'overrideFile'   => FALSE,
-		    'randomFileName' => TRUE,
+		    'randomFileName' => FALSE,
 		    'maxsize'        => $this->config->max_file_size,
 		    'max_imgWidth'   => $this->config->max_img_width,
 		    'max_imgHeight'  => $this->config->max_img_height,

@@ -40,6 +40,16 @@ class SYS_Post implements Vitalib
 			$this->set($k,$v);
 		endforeach;
 
+		if(isset($_FILES)):
+			foreach ($_FILES as $key => $value):
+				if(empty($value["name"])) continue;
+				if($this->mode == sys_vita_config_visibilidade_enum::PRIVADA)
+					$this->_post[$key] = $value;
+				else
+					$this->$key = $value;
+			endforeach;
+		endif;
+
 		# reseta post para forcar no sistema uso
 		# desta class para manipulacao dos dados no form
 		if($this->manter_post == false)

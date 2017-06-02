@@ -132,7 +132,7 @@ class SYS_Upload
     /**
      * realiza upload do arquivo
      * @param file|array $file - vindo normalmente do form
-     * @return boolean
+     * @return array[destination,filename,ext,fullpath] || false em caso de erro
      */
     public function do_upload($file)
     {
@@ -146,8 +146,12 @@ class SYS_Upload
             $ext = '.' . @end(explode('.',strtolower($file['name'])));
 
             // se setado para usar um nome randomico, entao ..
-            if($this->randomFileName)
+            if($this->randomFileName){
                 $this->filename = vita()->utils->randomKey(32);
+            }
+            else{
+                $this->filename = vita()->utils->amigavel( $this->filename );
+            }
 
             // verifica se arquivo ja existe
             if(file_exists($this->destination.$this->filename.$ext))
@@ -165,10 +169,16 @@ class SYS_Upload
             }
             // setando possiveis dados para retorno
             $this->set_data($file);
+
+            if(!file_exists($file['tmp_name'])){
+                throw new SYS_Exception( "Arquivo não existe" );
+            }
+
             // tentando mover arquivo para destino ...
             if(!move_uploaded_file($file['tmp_name'],$this->destination.$this->filename.$ext))
                 throw new SYS_Exception(
-                    'Problemas com as permissões para o diretório "'.$this->destination.'" foram encontrados. Impossivel gravar o arquivo "'.$file['tmp_name'].'"' );
+                    'Problemas com as permissões para o diretório "'.$this->destination . 
+                    '" foram encontrados. Impossivel gravar o arquivo "'.$file['tmp_name'].'"' );
         }
         else
         {
@@ -179,7 +189,7 @@ class SYS_Upload
             return false;
         }
         $this->display_errors();
-        return (count($this->errors) > 0) ? FALSE : TRUE;
+        return (count($this->errors) > 0) ? FALSE : array('destination' => $this->destination, 'filename' => $this->filename, 'ext' => $ext, 'fullpath' => $this->destination.$this->filename.$ext );
     }
 
     // --------------------------------------------------------------

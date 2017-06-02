@@ -279,7 +279,7 @@ class SYS_Exception extends \Exception
             "\nCodigo :          " . $this->code .
             "\nTrace(str) :      " . "\n" . $this->traceAsString . "\n";
 
-        $__tmp_file_destionation =  VTPATH . $_sx_cfg['log_folder'] . date('Ymd').'_'. $_sx_cfg['sys_errorfile_destination'] ;
+        $__tmp_file_destionation =  $_sx_cfg['log_folder'] . date('Ymd').'_'. $_sx_cfg['sys_errorfile_destination'] ;
         $__destination = $_sx_cfg['sys_error_log_type'] == 3 ? $_sx_cfg['sys_errorfile_destination'] : $_sx_cfg['sys_error_log_email'];
         
         # se vai gravar em arquivo, chega se o mesmo existe
