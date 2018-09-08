@@ -108,7 +108,7 @@ class SYS_Post implements Vitalib
 			{
 				vita()->$tablename = new SYS_Table( $tablename );
 				# checando se a tabela existe de verdade
-				if(!vita()->$tablename->exists()) throw new SYS_Exception("
+				if(!vita()->$tablename->exists()) throw new SysException("
 					Parece que a tabela '$tablename' na qual você esta tentando aplicar o autoProcessamento,
 					não existe na base de dados.");
 			}

@@ -3,18 +3,19 @@
 #-------------------------------------------
 # padronizando tudo em utf8
 # ------------------------------------------
-# adotando o tipo de codificacao UTF-8 para 
-# todos os processos do sistema, afim de 
+# adotando o tipo de codificacao UTF-8 para
+# todos os processos do sistema, afim de
 # evitar erros de caracteres.
 # ------------------------------------------
-if(function_exists('mb_internal_encoding')) 
-	mb_internal_encoding('UTF-8');
+if (function_exists('mb_internal_encoding')) {
+    mb_internal_encoding('UTF-8');
+}
 
-if(function_exists('mb_http_output')) 
-	mb_http_output('UTF-8');
+if (function_exists('mb_http_output')) {
+    mb_http_output('UTF-8');
+}
 
 header('Content-Type: text/html; charset=utf-8');
-
 
 # ------------------------------------------
 # Configurando o ambiente
@@ -28,94 +29,116 @@ ini_set('display_errors', 1);
 
 # ------------------------------------------
 # nome da pasta que guarda o sistema
-$__system_folder = 'system' ;
+$systemFolder = 'system';
 
 # verificando se a pasta do sistema
 # realmente existe, e se a encontramos
-if(($__tmp = realpath( $__system_folder )) !== false )
-	$__system_path = $__tmp . DIRECTORY_SEPARATOR ;
-else
-	$__system_path = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . $__system_folder . DIRECTORY_SEPARATOR ;
+if (($tmp = realpath($systemFolder)) !== false) {
+    $systemPath = $tmp . DIRECTORY_SEPARATOR;
+} else {
+    $systemPath = dirname(__FILE__)
+                   . DIRECTORY_SEPARATOR
+                   . $systemFolder
+                   . DIRECTORY_SEPARATOR;
+}
 
 # encontramos o caminho para o sistema?
-if( ! is_dir( $__system_path ) )
-	die( "Pasta do Sistema Vita não encontrada em: '".$__system_path."'" );
+if (!is_dir($systemPath)) {
+    die("Pasta do Sistema Vita não encontrada em: '".$systemPath."'");
+}
 
 # ------------------------------------------
 # Decidindo qual arquivo de configuracoes usar
 # ------------------------------------------
-# O Vita pode ser compartilhado por varios sites ou sistemas 
-# ao mesmo tempo. Portanto, diferentes sistemas podem usa-lo 
+# O Vita pode ser compartilhado por varios sites ou sistemas
+# ao mesmo tempo. Portanto, diferentes sistemas podem usa-lo
 # com diferentes configuracoes.
-# Nota: Caso uma variavel chamada $_config com configuracoes 
-# validas para o Vita seja setada antes de chamar este arquivo, 
+# Nota: Caso uma variavel chamada $config com configuracoes
+# validas para o Vita seja setada antes de chamar este arquivo,
 # ela tera prioridade e sera usada.
-if(isset($_config)){
-	$_client_config = $_config;
-	unset( $_config );
+if (isset($config)) {
+	$clientConfig = $config;
+	unset($config);
 }
 
 # ------------------------------------------
 # indentificando arquivo de configuracoes basicas do sistema
-$__config_file__ = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'vita_system_config.php' ;
+$configFile = dirname(__FILE__)
+            . DIRECTORY_SEPARATOR
+            . 'config' . DIRECTORY_SEPARATOR
+            . 'vita_system_config.php';
 
-if( !file_exists( $__config_file__ ) )
-	die( "Arquivo de configurações básicas do sistema Vita não encontrado em : '".$__config_file__."'" );
+if (!file_exists($configFile)) {
+    die(
+        "Arquivo de configurações básicas do
+		 sistema Vita não encontrado na pasta: '"
+        .$configFile."'"
+    );
+}
 
 # ------------------------------------------
 # incluindo arquivo que guarda array com configuracoes
-# basicas do sistema. As configuracoes serao inseridas 
-# temporariamente dentro da variavel $_config[...].
-# A variavel $_config sera usado apenas nesse arquivo e 
+# basicas do sistema. As configuracoes serao inseridas
+# temporariamente dentro da variavel $config[...].
+# A variavel $config sera usado apenas nesse arquivo e
 # resetado ao final. Para usar as informacoes de configuracoes
 # sera necessario usar a instancia principal do vita.
-require_once( $__config_file__ );
+require_once($configFile);
 
 # ------------------------------------------
 # inserindo configuracoes externas, caso existam,
 # e sobrescrevendo as padroes
-if(isset($_client_config) && is_array($_client_config))
-	foreach ($_client_config as $key => $value)
-		$_config[$key] = $value;
+if (isset($clientConfig) && is_array($clientConfig)) {
+    foreach ($clientConfig as $key => $value) {
+        $config[$key] = $value;
+    }
+}
 
-# reconfigurando report de erros
-# com base nos dados do arquivo de configuracao
-if(!$_config['vita_dev_mode']):
-	ini_set('display_errors', 0);
-	if (version_compare(PHP_VERSION, '5.3', '>='))
-		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
-	else
-		error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
-endif;
+#    reconfigurando report de erros
+#    com base nos dados do arquivo de configuracao
+if (!$config['vita_dev_mode']) {
+    ini_set('display_errors', 0);
+    if (version_compare(PHP_VERSION, '5.3', '>=')) {
+        error_reporting(
+            E_ALL
+            & ~E_NOTICE
+            & ~E_DEPRECATED
+            & ~E_STRICT
+            & ~E_USER_NOTICE
+            & ~E_USER_DEPRECATED
+        );
+    } else {
+        error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
+    }
+}
 
-# ------------------------------------------
-# Setando alguns caminhos importantes do sistema
-$_config['vita_path']     = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-$_config['system_path']   = $__system_path;
-$_config['config_path']   = $_config['vita_path'] .'config' . DIRECTORY_SEPARATOR;
-$_config['core_path']     = $__system_path . 'core'    . DIRECTORY_SEPARATOR;
-$_config['helper_path']   = $__system_path . 'helpers' . DIRECTORY_SEPARATOR;
+#    Setando alguns caminhos importantes do sistema
+$config['vita_path']     = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+$config['system_path']   = $systemPath;
+$config['config_path']   = $config['vita_path'] .'config' . DIRECTORY_SEPARATOR;
+$config['core_path']     = $systemPath . 'core'    . DIRECTORY_SEPARATOR;
+$config['helper_path']   = $systemPath . 'helpers' . DIRECTORY_SEPARATOR;
 $t = debug_backtrace();
-$_config['app_folder']    = isset($t[0])?dirname($t[0]['file']).DIRECTORY_SEPARATOR:$_config['vita_path'];
+$config['app_folder']    = isset($t[0])?dirname($t[0]['file']).DIRECTORY_SEPARATOR:$config['vita_path'];
 
 # ------------------------------------------
-# Uma vez que o array $_config deixara de existir,
+# Uma vez que o array $config deixara de existir,
 # quando o sistema vita iniciar,
 # setamos infos importantes imutaveis como constantes.
-define( 'VTPATH', $_config['vita_path'] );
-define( 'COPATH', $_config['core_path'] );
-define( 'SYPATH', $_config['system_path'] );
+define('VITA_PATH', $config['vita_path']);
+define('CORE_PATH', $config['core_path']);
+define('SYS_PATH', $config['system_path']);
 
 # ------------------------------------------
 # inicianlizando nosso sistema tratamento de erros
 # que ira tratar os problemas e apresentar de uma
 # maneira mais amigavel qualquer erro que acontecer no sistema!
-require_once( $_config['core_path'] . 'sys_exception.class.php' );
+require_once($config['core_path'] . 'sys_exception.class.php');
 
 # ------------------------------------------
 # iniciando funcoes Modulares basicas do sistema
 # Caso haja uma funcao util modular, colocar aqui
-require_once( $_config['helper_path'] . 'helper.php' );
+require_once($config['helper_path'] . 'helper.php');
 
 # ------------------------------------------
 # inicializa o sistema vita que
@@ -125,14 +148,14 @@ require_once( $_config['helper_path'] . 'helper.php' );
 # de softwares.
 require_once 'system/vita.php';
 
-use \Framework\Vita\Vita ;
+use \Framework\Vita\Vita;
 
 # ------------------------------------------
 # dando vida ao sistema
 $vita = Vita::getInstance();
 $vita->init();
 
-unset( $_config );
+unset($config);
 
 # ------------------------------------------
 # daqui em diante, o sistema todo e' gerido
@@ -154,14 +177,14 @@ if(VITAONLY == false && isset($t[0]))
 	vita()->view_folder = vita()->config->app_folder . vita()->config->view_folder . DIRECTORY_SEPARATOR;
 	vita()->base_url = vita()->config->url;
 	vita()->request_uri = uri();
-	
+
 	// inicialize o sistema de templates. Os templates se
 	// encontram nesta pasta.
 	vita()->init_tpl_system( vita()->view_folder );
 	vita()->config->template_url = vita()->config->url . vita()->config->view_folder . "/";
 
 	# roteando url
-	require_once vita()->config->system_path . 'router.php' ;
+	require_once vita()->config->system_path . 'router.php';
 	$r = new Router();
 	$r->router();
 }

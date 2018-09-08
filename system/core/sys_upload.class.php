@@ -171,12 +171,12 @@ class SYS_Upload
             $this->set_data($file);
 
             if(!file_exists($file['tmp_name'])){
-                throw new SYS_Exception( "Arquivo não existe" );
+                throw new SysException( "Arquivo não existe" );
             }
 
             // tentando mover arquivo para destino ...
             if(!move_uploaded_file($file['tmp_name'],$this->destination.$this->filename.$ext))
-                throw new SYS_Exception(
+                throw new SysException(
                     'Problemas com as permissões para o diretório "'.$this->destination . 
                     '" foram encontrados. Impossivel gravar o arquivo "'.$file['tmp_name'].'"' );
         }
@@ -185,7 +185,7 @@ class SYS_Upload
             foreach($this->errors as $error)
                 $__erros__ .= "Erro - " . $error . "\n";
 
-            throw new SYS_Exception($__erros__, 1);
+            throw new SysException($__erros__, 1);
             return false;
         }
         $this->display_errors();
@@ -196,7 +196,7 @@ class SYS_Upload
     public function delete($filename){
         if(file_exists($filename)){
             if(!unlink($filename))
-             throw new SYS_Exception('Problemas ao deletar arquivo.', 0);
+             throw new SysException('Problemas ao deletar arquivo.', 0);
         }
         else{
             $this->errors[] = 'Arquivo não encontrado. Impossivel deletar : ' . $filename;

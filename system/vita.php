@@ -18,7 +18,8 @@ namespace Framework\Vita;
 require_once 'bootstrap.php';
 
 use \Framework\Vita\Core\DBFactory ;
-use \Framework\Vita\Core\SYS_Exception;
+use \Framework\Vita\Core\SysException;
+use \Framework\Vita\Core\SYS_Table;
 use \Exception;
 
 final class Vita
@@ -213,12 +214,12 @@ final class Vita
 					call_user_func(array($o, 'publicar'));
 
 			$_vars['vita'] = $this;
-
+            
 			print $this->twig->render( $__viewName, $_vars );
         }
         catch( Exception $e )
         {
-        	throw new SYS_Exception( $e->getMessage() );
+        	throw new SysException( $e->getMessage() );
         	#$this->warning( $e->getMessage(), "Erro 404" );
             exit(0);
         }
@@ -274,7 +275,7 @@ final class Vita
     public function init_tpl_system( $__path ){
 		# gerencia tpl
 		if(!is_dir( $__path ))
-			throw new SYS_Exception( "Tentativa de Iniciar o sistema gerenciador de templates em uma pasta Inexistente: '{$__path}'");
+			throw new SysException( "Tentativa de Iniciar o sistema gerenciador de templates em uma pasta Inexistente: '{$__path}'");
 
         require_once 'libraries/Twig/Autoloader.php';
         \Twig_Autoloader::register();

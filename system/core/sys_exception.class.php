@@ -1,73 +1,97 @@
 <?php
 
-namespace Framework\Vita\Core ;
+namespace Framework\Vita\Core;
 
-use Framework\Vita\Vita ; 
+use Framework\Vita\Vita;
 
 header('Content-Type: text/html; charset=utf-8');
 
-#
-# tenta pegar informacoes de configuracoes externas a
-# este arquivp, mas...
-global $_config;
+#    tenta pegar informacoes de configuracoes externas a
+#    este arquivp, mas...
+global $config;
 
-#
-# Exception nao pode depender de um informacoes externas
-# logo, deve haver uma garantia de que essa classe
-# funcione de forma independente de qualquer outra.
-# Sendo assim, se chegaru ma chamada aqui, a mesma
-# deve garantir o processamento da mesma sem erros.
-$_sx_cfg = array();
 
-$_sx_cfg['default_time_zone']         = isset($_config['default_time_zone'])         ?  $_config['default_time_zone'] : 'Brazil/East';
-$_sx_cfg['date_format']               = isset($_config['date_format'])               ?  $_config['date_format'] : 'Y-m-d H:i:s';
-$_sx_cfg['sys_error_log_type']        = isset($_config['sys_error_log_type'])        ?  $_config['sys_error_log_type'] : 3 ;
-$_sx_cfg['sys_errorfile_destination'] = isset($_config['sys_errorfile_destination']) ?  $_config['sys_errorfile_destination'] : 'sys_erros.dat';
-$_sx_cfg['log_folder']                = isset($_config['log_folder'])                ?  $_config['log_folder'] : 'system/log/';
-$_sx_cfg['sys_error_log_email']       = isset($_config['sys_error_log_email'])       ?  $_config['sys_error_log_email'] : 'seu.email.dev@seudominio.com.br';
-$_sx_cfg['show_error_log']            = isset($_config['show_error_log'])            ?  $_config['show_error_log'] : TRUE;
-$_sx_cfg['show_extra_log']            = isset($_config['show_extra_log'])            ?  $_config['show_extra_log'] : TRUE;
+#    Exception nao pode depender de um informacoes externas
+#    logo, deve haver uma garantia grande que essa classe
+#    funcione de forma independente de qualquer outra.
+$eConfig = array();
 
-#
-# Extra Log
-# caso uma informacao seja setada 
-# neste array, sera exibido ao final do log
-$_sx_cfg['elog'] = array();
+$eConfig['default_time_zone'] = isset($config['default_time_zone'])
+                              ? $config['default_time_zone']
+                              : 'Brazil/East';
+
+$eConfig['date_format'] = isset($config['date_format'])
+                        ?  $config['date_format']
+                        : 'Y-m-d H:i:s';
+
+$eConfig['sys_error_log_type'] = isset($config['sys_error_log_type'])
+                               ? $config['sys_error_log_type']
+                               : 3;
+
+$eConfig['sys_errorfile_destination'] = isset($config['sys_errorfile_destination'])
+                                      ? $config['sys_errorfile_destination']
+                                      : 'sys_erros.dat';
+
+$eConfig['log_folder'] = isset($config['log_folder'])
+                       ?  $config['log_folder']
+                       : SYS_PATH . 'log' . DIRECTORY_SEPARATOR;
+
+$eConfig['sys_error_log_email'] = isset($config['sys_error_log_email'])
+                                ?  $config['sys_error_log_email']
+                                : 'seu.email.dev@seudominio.com.br';
+
+$eConfig['show_error_log'] = isset($config['show_error_log'])
+                           ? $config['show_error_log']
+                           : true;
+
+$eConfig['show_extra_log'] = isset($config['show_extra_log'])
+                           ?  $config['show_extra_log']
+                           : true;
+
+#    Extra Log
+#    caso uma informacao seja setada
+#    neste array, sera exibido ao final do log
+$eConfig['elog'] = array();
+
 
 /**
- * Funcao para uso Debug
- * Basicamente, insere informacoes 
- * a serem exibidas na tela de erro, 
- * alem das rotineiras.
+ *    Funcao para uso Debug
+ *    Basicamente, insere informacoes
+ *    a serem exibidas na tela de erro,
+ *    alem das rotineiras.
  */
-function sys_exception_debug( $__info = null ){
-    global $_sx_cfg;
-    $_sx_cfg['elog'][] = $__info;
+function sysExceptionDebug($info = null)
+{
+    global $eConfig;
+    $eConfig['elog'][] = $info;
 }
 
 /**
- * Classe responsavel por apresentar uma Pagina HTML Amigavel
- * contendo um dado erro encontrado
+ *    Classe responsavel por apresentar uma Pagina
+ *    HTML Amigavel contendo o erro encontrado.
  */
-class Error_Output
+class ErrorOutput
 {
-    public function __set($name,$value)
+    public function __set($name, $value)
     {
         $this->$name = htmlspecialchars($value);
     }
 
     public function __toString()
     {
-        global $_sx_cfg;
+        global $eConfig;
 
-        if (ob_get_contents()) ob_end_clean();
-        date_default_timezone_set( $_sx_cfg['default_time_zone'] );
-        $data_formatada = date( $_sx_cfg['date_format'], $_SERVER['REQUEST_TIME'] );
+        if (ob_get_contents()) {
+            ob_end_clean();
+        }
+
+        date_default_timezone_set($eConfig['default_time_zone']);
+        $data_formatada = date($eConfig['date_format'], $_SERVER['REQUEST_TIME']);
         $trace = str_replace("#", "<br>#", $this->traceAsString);
-        $__arquivo__ = basename( $this->file );
-        $__full_request_uri__ = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+        $arquivo = basename($this->file);
+        $fullRequestUri = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 
-        $this->trecho_com_erro = "";
+        $this->trechoComErro = "";
 
         $dbp = (isset(Vita::getInstance()->config->dbpass)) ? Vita::getInstance()->config->dbpass : false;
         $dbu = (isset(Vita::getInstance()->config->dbuser)) ? Vita::getInstance()->config->dbuser : false;
@@ -75,44 +99,46 @@ class Error_Output
             $this->message = str_replace( $dbp, '*************', $this->message );
             $this->message = str_replace( $dbu, '*************', $this->message );
         }
-        
+
         // obtendo codigo do arquivo que deu erro
         $handle = fopen($this->file, "r");
 
-        if ($handle):
-            $__linha_atual__ = 1;
-            $__inicio_trecho__= $this->line - 3;
-            $__final_trecho__ = $this->line + 2;
+        if ($handle) {
+            
+            $linhaAtual   = 1;
+            $inicioTrecho = $this->line - 3;
+            $finalTrecho  = $this->line + 2;
+
             while (($line = fgets($handle)) !== false){
                 // obtem apenas 3 linhas de código
-                if($__linha_atual__ >= $__inicio_trecho__){
-                    if($__linha_atual__ == $this->line) $this->trecho_com_erro .= "<b>";
-                    $this->trecho_com_erro .= "{$__linha_atual__}: {$line}";
-                    if($__linha_atual__ == $this->line)
-                        $this->trecho_com_erro .= "</b>";
-                    $this->trecho_com_erro .= "<br>";
+                if($linhaAtual >= $inicioTrecho){
+                    if($linhaAtual == $this->line) $this->trechoComErro .= "<b>";
+                    $this->trechoComErro .= "{$linhaAtual}: {$line}";
+                    if($linhaAtual == $this->line)
+                        $this->trechoComErro .= "</b>";
+                    $this->trechoComErro .= "<br>";
 
-                    if($__linha_atual__ == $__final_trecho__) break;
+                    if($linhaAtual == $finalTrecho) break;
                 }
-                $__linha_atual__++;
+                $linhaAtual++;
             }
             fclose($handle);
-        else:
+        } else {
             // error opening the file.
-        endif;
+        }
 
         // checa se a dump extra dentro de elog.
-        $__elog = (!empty($_sx_cfg['elog'])) ? implode( "<br>", $_sx_cfg['elog'] ) : null;
-        $__elog = (null == $__elog) ? "" : '<span class="elog"><b>Extra Log:</b> <br>'. $__elog . '</span><br><br>';
+        $elog = (!empty($eConfig['elog'])) ? implode( "<br>", $eConfig['elog'] ) : null;
+        $elog = (null == $elog) ? "" : '<span class="elog"><b>Extra Log:</b> <br>'. $elog . '</span><br><br>';
 
-        // verificando se devemos apresentar o extra log 
-        $__show_extra_log = ($_sx_cfg['show_extra_log'] == FALSE) ? "display:none;" : "";
+        // verificando se devemos apresentar o extra log
+        $show_extra_log = ($eConfig['show_extra_log'] == FALSE) ? "display:none;" : "";
 
-        // verificando se deve apresentar uma versao mais light de erros 
+        // verificando se deve apresentar uma versao mais light de erros
         if($this->show_error_log)
         {
 
-        $__html__ =<<<HTML
+        $html =<<<HTML
         <html>
             <head>
                 <title>Vita: Erro Capturado</title>
@@ -167,7 +193,7 @@ class Error_Output
                         color:#FFFF00;
                     }
                     span.show_extra_log{
-                        {$__show_extra_log}
+                        {$show_extra_log}
                     }
                     span.msg_errro{color:#DD982E;background-color:#202024;display:block;padding: 10px 25px;}
                 </style>
@@ -175,7 +201,7 @@ class Error_Output
             <body>
             <div class="container">
                 <br>
-                <h1>Erro em: {$__arquivo__}</h1>
+                <h1>Erro em: {$arquivo}</h1>
 
                 <div class="errwrapper">
                     <div style="">
@@ -183,11 +209,11 @@ class Error_Output
                             {$this->message}
                         </span>
                         <span class='trecho_code_err'>
-                            {$this->trecho_com_erro}
+                            {$this->trechoComErro}
                         </span>
                         <br>
 
-                        {$__elog}
+                        {$elog}
 
                         <div class="errmais">
 
@@ -196,10 +222,10 @@ class Error_Output
                             <b>Código</b>:     {$this->code} <br>
                             <b>Trace(str):</b> {$trace} <br>
                             <br><br>
-                            
+
                             <span class='show_extra_log'>
                             <b>Dados adicionais</b> <br>
-                            REQUEST_URI: {$__full_request_uri__}<br>
+                            REQUEST_URI: {$fullRequestUri}<br>
                             HTTP_ACCEPT:  {$_SERVER['HTTP_ACCEPT']} <br>
                             USER_AGENT :  {$_SERVER['HTTP_USER_AGENT']} <br>
                             REMOTE_ADDR:  {$_SERVER['REMOTE_ADDR']} <br>
@@ -207,7 +233,7 @@ class Error_Output
                             SERVER_ADMIN: {$_SERVER['SERVER_ADMIN']}<br>
                             </span>
                         </div>
-                        <a href="mailto:{$_sx_cfg['sys_error_log_email']}">Informar o erro ao desenvolvedor</a>
+                        <a href="mailto:{$eConfig['sys_error_log_email']}">Informar o erro ao desenvolvedor</a>
                         <br><br>
                     </div>
                 </div>
@@ -215,12 +241,12 @@ class Error_Output
             </body>
         </html>
 HTML;
-        
+
         }else{
             $_tmp = explode("-",$this->code);
             $code = isset($_tmp[0]) ? $_tmp[0] : "";
 
-            $__html__ =<<<HTML
+            $html =<<<HTML
             <html>
                 <head>
                     <title>Vita: Erro Capturado</title>
@@ -235,35 +261,38 @@ HTML;
                         <h1>Erro {$code}</h1>
                     </div>
                     <div class="errwrapper">
-                        Arquivo: {$__arquivo__} <br> 
+                        Arquivo: {$arquivo} <br>
                         Linha: {$this->line}
                     </div>
                 </body>
-            </html>       
+            </html>
 HTML;
         }
 
-        return $__html__;
+        return $html;
     }
 }
 
 
 /**
- * Classe responsavel por tratar Exceptions no sistema
- * normalmente é chamada atraves do codigo
- * thown new SYS_Exception( "Mensagem a ser apresentada" );
+ *    Classe responsavel por tratar Exceptions no sistema
+ *    normalmente é chamada atraves do codigo
+ *    thown new SysException( "Mensagem a ser apresentada" );
  */
-class SYS_Exception extends \Exception
+class SysException extends \Exception
 {
-    function __construct($message = null, $code = 0, $arquivo = null, $linha = null )
-    {
+    public function __construct(
+        $message = null,
+        $code = 0,
+        $arquivo = null,
+        $linha = null
+    ) {
+        global $eConfig;
 
-        global $_sx_cfg;
+        parent::__construct($message, $code);
 
-        parent::__construct( $message, $code );
-
-        date_default_timezone_set( $_sx_cfg['default_time_zone'] );
-        $hoje = date( $_sx_cfg['date_format'] );
+        date_default_timezone_set($eConfig['default_time_zone']);
+        $hoje = date($eConfig['date_format']);
 
         $this->file = $arquivo == null ? $this->getFile() : $arquivo;
         $this->line = $linha == null ? $this->getLine() : $linha;
@@ -271,44 +300,43 @@ class SYS_Exception extends \Exception
         $this->code = $this->getCode() . " - ".$this->getTypeError($code);
         $this->traceAsString = $this->getTraceAsString();
 
-        $msg_error =
-            "\n====== $hoje ======" .
-            "\nErro no arquivo : " . $this->file.
-            "\nLinha :           " . $this->line .
-            "\nMensagem :        " . $this->message .
-            "\nCodigo :          " . $this->code .
-            "\nTrace(str) :      " . "\n" . $this->traceAsString . "\n";
+        $msgError = "\n ====== $hoje ======"
+                  . "\n Erro no arquivo : " . $this->file
+                  . "\n Linha :           " . $this->line
+                  . "\n Mensagem :        " . $this->message
+                  . "\n Codigo :          " . $this->code
+                  . "\n Trace(str) :      " . "\n" . $this->traceAsString
+                  . "\n ";
 
-        $__tmp_file_destionation =  $_sx_cfg['log_folder'] . date('Ymd').'_'. $_sx_cfg['sys_errorfile_destination'] ;
-        $__destination = $_sx_cfg['sys_error_log_type'] == 3 ? $_sx_cfg['sys_errorfile_destination'] : $_sx_cfg['sys_error_log_email'];
-        
-        # se vai gravar em arquivo, chega se o mesmo existe
-        if($_sx_cfg['sys_error_log_type'] == 3)
-        {
-            // se o arquivo nao existe...
-            if( !file_exists( $__tmp_file_destionation ) )
-            {
-                // tenta criar o arquivo, 
-                if($fh = fopen($__tmp_file_destionation,'w')){
+        $tmpFileDestionation = $eConfig['log_folder']
+                             . date('Ymd').'_'
+                             . $eConfig['sys_errorfile_destination'];
+
+        $destination = $eConfig['sys_error_log_type'] == 3
+                     ? $eConfig['sys_errorfile_destination']
+                     : $eConfig['sys_error_log_email'];
+
+        //    se vai gravar em arquivo, chega se o mesmo existe
+        if ($eConfig['sys_error_log_type'] == 3) {
+            if (!file_exists($tmpFileDestionation)) {
+                if ($fh = fopen($tmpFileDestionation, 'w')) {
                     fclose($fh);
-                    $__destination = $__tmp_file_destionation;
-                }else{
-                    $_sx_cfg['sys_error_log_type'] = 0 ; # grava no log do sistema
+                    $destination = $tmpFileDestionation;
+                } else {
+                    $eConfig['sys_error_log_type'] = 0;
                 }
-            }
-            else /*se arquivo existe, entao grava nele*/
-            {
-                $__destination = $__tmp_file_destionation;
+            } else {
+                $destination = $tmpFileDestionation;
             }
         }
 
-        error_log( $msg_error, $_sx_cfg['sys_error_log_type'], $__destination );
+        error_log($msgError, $eConfig['sys_error_log_type'], $destination);
 
         # checa o que o desenvolvedor setou nas configuracoes para apresentar os erros na tela
 
         # apresentando pagina com saida HTML
-        $error = new Error_Output();
-        $error->show_error_log = $_sx_cfg['show_error_log'];
+        $error = new ErrorOutput();
+        $error->show_error_log = $eConfig['show_error_log'];
         $error->message = $this->message;
         $error->line = $this->line;
         $error->file = $this->file;
@@ -320,9 +348,9 @@ class SYS_Exception extends \Exception
         error_reporting(0);
     }
 
-    function getTypeError( $__code__ )
+    function getTypeError( $code__ )
     {
-        switch ( $__code__ ){
+        switch ( $code__ ){
             case E_ERROR: return "E_ERROR"; break; // code: 1
             case E_WARNING: return "E_WARNING"; break; // code: 2
             case E_PARSE: return "E_PARSE"; break; // code: 4
@@ -364,7 +392,7 @@ class Error_handling
             case E_NOTICE:
             case E_WARNING:
             case E_ERROR:
-                new SYS_Exception($errstr, $errno,$errfile,$errline);
+                new SysException($errstr, $errno,$errfile,$errline);
                 exit(1);
                 break;
 

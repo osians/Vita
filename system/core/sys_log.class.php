@@ -1,10 +1,12 @@
-<?php 
+<?php
 
 namespace Framework\Vita\Core;
 
-if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
+if (!defined('ALLOWED')) {
+    exit('Acesso direto ao arquivo nao permitido.');
+}
 
-class FileException extends SYS_Exception{}
+class FileException extends SysException {}
 
 /**
  * Classe responsavel por criar logs no formato texto para o sistema.

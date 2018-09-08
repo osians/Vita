@@ -47,7 +47,7 @@
  *
  */
 
-class DBException extends SYS_Exception{}
+class DBException extends SysException{}
 
 class QueryException extends DBException{}
 

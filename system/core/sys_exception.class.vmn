@@ -201,9 +201,9 @@ HTML;
 /**
  * Classe responsavel por tratar Exceptions no sistema
  * normalmente é chamada atraves do codigo
- * thown new SYS_Exception( "Mensagem a ser apresentada" );
+ * thown new SysException( "Mensagem a ser apresentada" );
  */
-class SYS_Exception extends Exception
+class SysException extends Exception
 {
     function __construct($message = null, $code = 0, $arquivo = null, $linha = null )
     {
@@ -316,7 +316,7 @@ class Error_handling
             case E_NOTICE:
             case E_WARNING:
             case E_ERROR:
-                new SYS_Exception($errstr, $errno,$errfile,$errline);
+                new SysException($errstr, $errno,$errfile,$errline);
                 exit(1);
                 break;
 
