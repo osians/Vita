@@ -21,7 +21,7 @@ class SYS_Post implements Vitalib
 	private $manter_post = false;
 
 	// indica se deve setar as propriedades deste objeto como Privada ou Publica
-	private $mode = sys_vita_config_visibilidade_enum::PRIVADA;
+	private $mode = sysVitaConfigVisibilidadeEnum::PRIVADA;
 
 	public function __construct( $__manter_post = false ){
 		$this->manter_post = $__manter_post;
@@ -43,7 +43,7 @@ class SYS_Post implements Vitalib
 		if(isset($_FILES)):
 			foreach ($_FILES as $key => $value):
 				if(empty($value["name"])) continue;
-				if($this->mode == sys_vita_config_visibilidade_enum::PRIVADA)
+				if($this->mode == sysVitaConfigVisibilidadeEnum::PRIVADA)
 					$this->_post[$key] = $value;
 				else
 					$this->$key = $value;
@@ -218,7 +218,7 @@ class SYS_Post implements Vitalib
      * @return array()
      */
 	public function publicar(){
-		$this->mode = sys_vita_config_visibilidade_enum::PUBLICA;
+		$this->mode = sysVitaConfigVisibilidadeEnum::PUBLICA;
 		if(count($this->_post) > 0)
 			foreach ($this->_post as $key => $value)
 				$this->set($key,$value);
@@ -232,7 +232,7 @@ class SYS_Post implements Vitalib
 		if(empty($__key)) return;
 		$k = $this->make_safe( $__key );
 		$v = $this->make_safe( $__value );
-		if($this->mode == sys_vita_config_visibilidade_enum::PRIVADA)
+		if($this->mode == sysVitaConfigVisibilidadeEnum::PRIVADA)
 			$this->_post[$k] = $v;
 		else
 			$this->$k = $v;

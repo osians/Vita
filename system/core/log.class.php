@@ -14,7 +14,7 @@ class FileException extends SysException {}
  *
  * @todo  necessita implementar sistema de Tratamento de Exception
  */
-class SYS_Log
+class SystemCoreLog
 {
     // @param String - /path/to/logs/folder/
     private $path = null;

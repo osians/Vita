@@ -10,7 +10,6 @@ header('Content-Type: text/html; charset=utf-8');
 #    este arquivp, mas...
 global $config;
 
-
 #    Exception nao pode depender de um informacoes externas
 #    logo, deve haver uma garantia grande que essa classe
 #    funcione de forma independente de qualquer outra.
@@ -33,8 +32,8 @@ $eConfig['sys_errorfile_destination'] = isset($config['sys_errorfile_destination
                                       : 'sys_erros.dat';
 
 $eConfig['log_folder'] = isset($config['log_folder'])
-                       ?  $config['log_folder']
-                       : SYS_PATH . 'log' . DIRECTORY_SEPARATOR;
+                       ? VITA_PATH . $config['log_folder']
+                       : SYS_PATH  . 'log' . DIRECTORY_SEPARATOR;
 
 $eConfig['sys_error_log_email'] = isset($config['sys_error_log_email'])
                                 ?  $config['sys_error_log_email']

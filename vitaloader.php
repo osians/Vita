@@ -17,6 +17,8 @@ if (function_exists('mb_http_output')) {
 
 header('Content-Type: text/html; charset=utf-8');
 
+define('DS', DIRECTORY_SEPARATOR);
+
 # ------------------------------------------
 # Configurando o ambiente
 # reconhecendo o ambiente em que o sistema se encontra e tentando
@@ -34,12 +36,12 @@ $systemFolder = 'system';
 # verificando se a pasta do sistema
 # realmente existe, e se a encontramos
 if (($tmp = realpath($systemFolder)) !== false) {
-    $systemPath = $tmp . DIRECTORY_SEPARATOR;
+    $systemPath = $tmp . DS;
 } else {
     $systemPath = dirname(__FILE__)
-                   . DIRECTORY_SEPARATOR
+                   . DS
                    . $systemFolder
-                   . DIRECTORY_SEPARATOR;
+                   . DS;
 }
 
 # encontramos o caminho para o sistema?
@@ -57,16 +59,16 @@ if (!is_dir($systemPath)) {
 # validas para o Vita seja setada antes de chamar este arquivo,
 # ela tera prioridade e sera usada.
 if (isset($config)) {
-	$clientConfig = $config;
-	unset($config);
+    $clientConfig = $config;
+    unset($config);
 }
 
 # ------------------------------------------
 # indentificando arquivo de configuracoes basicas do sistema
 $configFile = dirname(__FILE__)
-            . DIRECTORY_SEPARATOR
-            . 'config' . DIRECTORY_SEPARATOR
-            . 'vita_system_config.php';
+            . DS
+            . 'config' . DS
+            . 'config.php';
 
 if (!file_exists($configFile)) {
     die(
@@ -108,18 +110,29 @@ if (!$config['vita_dev_mode']) {
             & ~E_USER_DEPRECATED
         );
     } else {
-        error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
+        error_reporting(
+            E_ALL
+            & ~E_NOTICE
+            & ~E_STRICT
+            & ~E_USER_NOTICE
+        );
     }
 }
 
+
 #    Setando alguns caminhos importantes do sistema
-$config['vita_path']     = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-$config['system_path']   = $systemPath;
-$config['config_path']   = $config['vita_path'] .'config' . DIRECTORY_SEPARATOR;
-$config['core_path']     = $systemPath . 'core'    . DIRECTORY_SEPARATOR;
-$config['helper_path']   = $systemPath . 'helpers' . DIRECTORY_SEPARATOR;
+$config['vita_path'] = dirname(__FILE__) . DS;
+
+$config['system_path'] = $systemPath;
+$config['config_path'] = $config['vita_path'] .'config' . DS;
+$config['core_path']   = $systemPath . 'core'    . DS;
+$config['helper_path'] = $systemPath . 'helpers' . DS;
+
 $t = debug_backtrace();
-$config['app_folder']    = isset($t[0])?dirname($t[0]['file']).DIRECTORY_SEPARATOR:$config['vita_path'];
+
+$config['app_folder'] = isset($t[0])
+                      ? dirname($t[0]['file']).DS
+                      : $config['vita_path'];
 
 # ------------------------------------------
 # Uma vez que o array $config deixara de existir,
@@ -129,16 +142,19 @@ define('VITA_PATH', $config['vita_path']);
 define('CORE_PATH', $config['core_path']);
 define('SYS_PATH', $config['system_path']);
 
+
 # ------------------------------------------
 # inicianlizando nosso sistema tratamento de erros
 # que ira tratar os problemas e apresentar de uma
 # maneira mais amigavel qualquer erro que acontecer no sistema!
 require_once($config['core_path'] . 'sys_exception.class.php');
 
+
 # ------------------------------------------
 # iniciando funcoes Modulares basicas do sistema
-# Caso haja uma funcao util modular, colocar aqui
+# Caso haja uma funcao util modular, colocar nesse arquivo.
 require_once($config['helper_path'] . 'helper.php');
+
 
 # ------------------------------------------
 # inicializa o sistema vita que
@@ -148,12 +164,13 @@ require_once($config['helper_path'] . 'helper.php');
 # de softwares.
 require_once 'system/vita.php';
 
+
 use \Framework\Vita\Vita;
 
 # ------------------------------------------
 # dando vida ao sistema
 $vita = Vita::getInstance();
-$vita->init();
+$vita->init($config);
 
 unset($config);
 
@@ -171,24 +188,33 @@ unset($config);
 
 # verifica se esta definido para parar aqui e retornar
 # para um sistema externo. define( 'VITACON', TRUE );
-if(VITAONLY == false && isset($t[0]))
-{
-	# tentando resumir informacoes uteis em aliases
-	vita()->view_folder = vita()->config->app_folder . vita()->config->view_folder . DIRECTORY_SEPARATOR;
-	vita()->base_url = vita()->config->url;
-	vita()->request_uri = uri();
+if (VITAONLY == false && isset($t[0])) {
+    # tentando resumir informacoes uteis em aliases
+    vita()->view_folder = vita()->config->app_folder
+                        . vita()->config->view_folder
+                        . DS;
+    vita()->base_url = vita()->config->url;
+    vita()->request_uri = uri();
 
-	// inicialize o sistema de templates. Os templates se
-	// encontram nesta pasta.
-	vita()->init_tpl_system( vita()->view_folder );
-	vita()->config->template_url = vita()->config->url . vita()->config->view_folder . "/";
+    // inicialize o sistema de templates. Os templates se
+    // encontram nesta pasta.
+    vita()->init_tpl_system(vita()->view_folder);
+    vita()->config->template_url = vita()->config->url
+                                 . vita()->config->view_folder
+                                 . "/";
 
-	# roteando url
-	require_once vita()->config->system_path . 'router.php';
-	$r = new Router();
-	$r->router();
+    # roteando url
+    require_once vita()->config->system_path . 'router.php';
+    $r = new Router();
+    $r->router();
 }
 
-if(!isset($t[0])):
-	print "vita_version: " . Vita::version . "<br>";
-endif;
+if (!isset($t[0])) {
+    print "vita_version: " . Vita::VERSION . "<br>";
+}
+
+$rs = vita()
+    ->database
+    ->select('SELECT * FROM categorias', null, true, false);
+
+var_dump($rs);

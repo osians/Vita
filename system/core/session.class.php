@@ -2,13 +2,15 @@
 
 namespace Framework\Vita\Core;
 
-if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
+if (!defined('ALLOWED')) {
+    exit('Acesso direto ao arquivo nao permitido.');
+}
 
-class SYS_Session implements Vitalib
+class SystemCoreSession implements Vitalib
 {
     private static $instance;
     private $session_expire_time = null ;
-    private $mode = sys_vita_config_visibilidade_enum::PRIVADA;
+    private $mode = SysVitaConfigVisibilidadeEnum::PRIVADA;
 
     public function __construct( $expire_time = null )
     {
@@ -64,7 +66,7 @@ class SYS_Session implements Vitalib
     }
 
     public function set($__name, $__value){
-        if($this->mode == sys_vita_config_visibilidade_enum::PRIVADA)
+        if($this->mode == SysVitaConfigVisibilidadeEnum::PRIVADA)
             $_SESSION[trim($__name)] = $__value;
         else
             $this->$__name = $__value;
@@ -79,7 +81,7 @@ class SYS_Session implements Vitalib
     }
 
     public function publicar(){
-        $this->mode = sys_vita_config_visibilidade_enum::PUBLICA;
+        $this->mode = SysVitaConfigVisibilidadeEnum::PUBLICA;
         foreach ($_SESSION as $key => $value)
             $this->$key = $value;
     }

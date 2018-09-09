@@ -1,8 +1,10 @@
 <?php 
 
-namespace Framework\Vita\Core ; 
+namespace Framework\Vita\Core;
 
-if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
+if (!defined('ALLOWED')) {
+    exit('Acesso direto ao arquivo nao permitido.');
+}
 
 /**
 * Validacao
@@ -32,9 +34,8 @@ if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
 * (+) cnpj
 */
 
-class SYS_Validate
+class SystemCoreValidate
 {
-
     public function __construct(){}
 
     // MySQL Real Scape String (Generico!)

@@ -12,7 +12,7 @@ if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo não permitido.');
  * Classe responsavel pelo upload de arquivos para
  * o sistema
  **/
-class SYS_Upload
+class SystemCoreUpload
 {
     var $destination    = '';
     var $filename       = '';

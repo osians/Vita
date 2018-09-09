@@ -17,15 +17,15 @@ namespace Framework\Vita;
 
 require_once 'bootstrap.php';
 
-use \Framework\Vita\Core\DBFactory ;
+use \Framework\Vita\Core\SystemCoreDatabaseFactory;
 use \Framework\Vita\Core\SysException;
 use \Framework\Vita\Core\SYS_Table;
 use \Exception;
 
 final class Vita
 {
-	// Vita::version;
-	const version = '20170519-142902';
+    // Vita::version;
+    const VERSION = '20180908-142902';
 
 	/**
 	* Responsavel por gravar informacoes em
@@ -40,7 +40,7 @@ final class Vita
 	* sejam elas em arquivos ou Banco de dados
 	* ficam acessiveis, atraves deste objeto
 	*
-	* @var object SYS_Config
+	* @var object Config
 	*/
     public $config = null;
 
@@ -78,175 +78,189 @@ final class Vita
      */
     public $post = null;
 
-	/**
-	 * Armazena variaveis temporarias que ficaram
-	 * disponiveis para todo o sistema, enquanto o
-	 * mesmo estiver em execução.
-	 * Valores são acessados atraves dos metodos magicos
-	 * __set e __get
-     * 
-	 * @var array
-	 **/
-	private $vars = array();
+
+    /**
+     * Armazena variaveis temporarias que ficaram
+     * disponiveis para todo o sistema, enquanto o
+     * mesmo estiver em execução.
+     * Valores são acessados atraves dos metodos magicos
+     * __set e __get
+     *
+     * @var array
+     **/
+    private $vars = array();
+
 
     // @var object self
-	private static $instance;
+    private static $instance;
 
-	/**
-	 * Objeto Twig. Usado para gerenciamento do sistema
-	 * de Tags. Permite maior flexibilidade ao trabalhar 
-     * no frontend.
-     *
-     * @var object
-	 */
-	private $twig = null;
+    /**
+    * Objeto Twig. Usado para gerenciamento do sistema
+    * de Tags. Permite maior flexibilidade ao trabalhar
+    * no frontend.
+    *
+    * @var object
+    */
+    private $twig = null;
 
-	/**
-	 * Objeto Mail. Representa a instancia do PHPMailer
-	 * 
-	 * @var object - PHPMailer
-	 **/
-	public $mail = null;
-	
+
+    /**
+    * Objeto Mail. Representa a instancia do PHPMailer
+    *
+    * @var object - PHPMailer
+    **/
+    public $mail = null;
+
     private function __construct(){}
 	private function __clone(){}
 	private function __wakeup(){}
 
-	public function init()
-	{			
-		// obtendo array do arquivo config.php
-        GLOBAL $_config;
-
-    	$this->config   = new \Framework\Vita\Core\SYS_Config( $_config );
-        $this->log      = new \Framework\Vita\Core\SYS_Log( $this->config->log_folder );
-        $this->session  = new \Framework\Vita\Core\SYS_Session( $this->config->session_expire_time );
-        $this->validate = new \Framework\Vita\Core\SYS_Validate();
+    public function init($config)
+    {
+        $this->config   = new \Framework\Vita\Core\SystemCoreConfig($config);
+        $this->log      = new \Framework\Vita\Core\SystemCoreLog($this->config->log_folder);
+        $this->session  = new \Framework\Vita\Core\SystemCoreSession($this->config->session_expire_time);
+        $this->validate = new \Framework\Vita\Core\SystemCoreValidate();
         $this->utils    = new \Framework\Vita\Core\SYS_Utils();
 
         // tratamento de $_POST para formularios
-        $this->post     = new \Framework\Vita\Core\SYS_Post( false );
+        $this->post     = new \Framework\Vita\Core\SYS_Post(false);
         $this->post->init();
 
         // tratamento de upload de arquivos
-        $this->upload    = new \Framework\Vita\Core\SYS_Upload();
-        $_upload_config_ = array
-        (
-		    'destination'    => $this->config->upload_folder,
-		    'overrideFile'   => FALSE,
-		    'randomFileName' => FALSE,
-		    'maxsize'        => $this->config->max_file_size,
-		    'max_imgWidth'   => $this->config->max_img_width,
-		    'max_imgHeight'  => $this->config->max_img_height,
-		    'printErrors'    => FALSE,
-        );
-        $this->upload->init( $_upload_config_ );
+        $this->upload = new \Framework\Vita\Core\SystemCoreUpload();
+        $uploadConfig = [
+            'destination'    => $this->config->upload_folder,
+            'overrideFile'   => false,
+            'randomFileName' => false,
+            'maxsize'        => $this->config->max_file_size,
+            'max_imgWidth'   => $this->config->max_img_width,
+            'max_imgHeight'  => $this->config->max_img_height,
+            'printErrors'    => false,
+        ];
+        $this->upload->init($uploadConfig);
 
-		date_default_timezone_set( $this->config->default_time_zone );
+        date_default_timezone_set($this->config->default_time_zone);
 
-		# verificando se deve instanciar mysql ...
-		if($this->config->load_mysql):
-	        // setando conexao com mysql
-	        $_conexao_dados_ = array(
-	            'host'  => $this->config->dbhost,
-	            'port'  => $this->config->dbport,
-	            'user'  => $this->config->dbuser,
-	            'pass'  => $this->config->dbpass,
-	            'dbname'=> $this->config->dbname
-	        );
-	        $this->db = DBFactory::create( 'MySQL', $_conexao_dados_ );
-	        $this->database = &$this->db;
-        endif;
+        # verificando se deve instanciar mysql ...
+        if ($this->config->load_mysql) {
+            // setando conexao com mysql
+            $conexaoDados = array(
+                'host'  => $this->config->dbhost,
+                'port'  => $this->config->dbport,
+                'user'  => $this->config->dbuser,
+                'pass'  => $this->config->dbpass,
+                'dbname'=> $this->config->dbname
+            );
+            $this->db = SystemCoreDatabaseFactory::create('MySQL', $conexaoDados);
+            $this->database = &$this->db;
+        }
 
-		# caso queira criar um database SQLite, descomentara a funcao abaixo
-		if($this->config->load_sqlite):
+        # caso queira criar um database SQLite, descomentara a funcao abaixo
+        if ($this->config->load_sqlite) {
 	        # setando conexao com sqlite
-	        $_conexao_dados_sqlite_ = array(
+	        $conexaoDadossqlite_ = array(
 	            'dbpath' => $this->config->sqlite_folder,
 	            'dbname' => $this->config->sqlite_dbname
 	        );
-        	$this->sqlite = DBFactory::create( 'SQLite', $_conexao_dados_sqlite_ );
-        endif;
+        	$this->sqlite = SystemCoreDatabaseFactory::create( 'SQLite', $conexaoDadossqlite_ );
+        }
 
 		# carregando objeto de envio de e-mail
 		$this->mail = new \PHPMailer;
-		
+
         # verificando por tabelas do banco de dados a serem agregadas ao sistema
-        if(isset($_config['SYS_Table']) && is_array($_config['SYS_Table']) )
-        	foreach ($_config['SYS_Table'] as $tablename => $_attrs )
+        if(isset($config['SYS_Table']) && is_array($config['SYS_Table']) )
+        	foreach ($config['SYS_Table'] as $tablename => $_attrs )
         		$this->loadTable( $tablename, $_attrs );
 
         # verificando se ha formularios para autoprocessamento
         $this->post->autoprocess();
 
         # @todo - carrega librarias externas definidas pelo usuario
-	}
+    }
 
-	/**
-	* Essa funcao, recebe como parametro o nome de um arquivo 
+
+    /**
+    * Essa funcao, recebe como parametro o nome de um arquivo
     * do Frontend para exibicao.
-    * Quando o arquivo for chamado, as variaveis processadas no 
-    * sistema serao todas passadas a essa view. Dessa forma 
+    * Quando o arquivo for chamado, as variaveis processadas no
+    * sistema serao todas passadas a essa view. Dessa forma
     * a view podera usar as variaveis atraves do sistema de Tags TWIG.
-    * 
-	* @return [type] [description]
-	*/
-	public function compile( $__viewName = null ){
-        try
-        {
-            if(!strpos($__viewName, '.twig')) $__viewName .= '.twig';
+    *
+    * @return [type] [description]
+    */
+    public function compile($viewName = null)
+    {
+        try {
+            if (!strpos($viewName, '.twig')) {
+                $viewName .= '.twig';
+            }
 
-            $__view_folder = $this->config->app_folder . $this->config->view_folder . DIRECTORY_SEPARATOR;
-            $view = $__view_folder . $__viewName;
+            $viewFolder = $this->config->app_folder
+                        . $this->config->view_folder
+                        . DIRECTORY_SEPARATOR;
+            $view = $viewFolder . $viewName;
 
-            if(!file_exists($view)):
-                throw new Exception( 'O arquivo "'.$__viewName.'" não foi encontrado em "'.$__view_folder.'". Proceda com a criação do mesmo para corrigir o problema.' );
-            endif;
+            if (!file_exists($view)) {
+                throw new Exception(
+                    'O arquivo "'.$viewName.'" não foi encontrado em "'
+                    .$viewFolder.'". Proceda com a criação do mesmo
+                     para corrigir o problema.'
+                );
+            }
 
-			# obtem todas os parametros de configuracoes
-			$_tmp = get_object_vars($this->config);
-			$_vars = array();
-			$_vars = $this->getVars();
+            # obtem todas os parametros de configuracoes
+            $_tmp = get_object_vars($this->config);
+            $vars = array();
+            $vars = $this->getVars();
 
-			# verificando e chamando metodo que torna
-			# publicas as propriedades dos objetos
-			foreach(get_object_vars(Vita::getInstance()) as $o)
-				if( method_exists($o,'publicar'))
-					call_user_func(array($o, 'publicar'));
+            # verificando e chamando metodo que torna
+            # publicas as propriedades dos objetos
+            foreach (get_object_vars(Vita::getInstance()) as $o) {
+                if (method_exists($o, 'publicar')) {
+                    call_user_func(array($o, 'publicar'));
+                }
+            }
 
-			$_vars['vita'] = $this;
-            
-			print $this->twig->render( $__viewName, $_vars );
-        }
-        catch( Exception $e )
-        {
-        	throw new SysException( $e->getMessage() );
-        	#$this->warning( $e->getMessage(), "Erro 404" );
+            $vars['vita'] = $this;
+
+            print $this->twig->render($viewName, $vars);
+        } catch (Exception $e) {
+            throw new SysException($e->getMessage());
+            #$this->warning($e->getMessage(), "Erro 404");
             exit(0);
         }
         exit(0);
-	}
-
-	public function loadTable( $tablename, $attrs = null ){
-   		$this->$tablename = new SYS_Table( $tablename, $attrs );
-	}
-
-	/**
-	 * Se uma variavel foi definida nesta classe, trata-a de forma global
-	 * retorna qualquer variavel setada na classe.
-	 *
-	 * @param  string $name - nome identificador da variavel
-	 * @return Mixed
-	 */
-    public function __get($name){
-		return $this->get($name);
     }
 
-    public function get($name){
-    	return isset($this->vars[trim($name)])?$this->vars[trim($name)]:null;
+    public function loadTable($tablename, $attrs = null)
+    {
+        $this->$tablename = new SYS_Table($tablename, $attrs);
     }
 
-    public function getVars(){
-    	return $this->vars;
+    /**
+    * Se uma variavel foi definida nesta classe, trata-a de forma global
+    * retorna qualquer variavel setada na classe.
+    *
+    * @param  string $name - nome identificador da variavel
+    * @return Mixed
+    */
+    public function __get($name)
+    {
+        return $this->get($name);
+    }
+
+    public function get($name)
+    {
+        return isset($this->vars[trim($name)])
+               ? $this->vars[trim($name)]
+               : null;
+    }
+
+    public function getVars()
+    {
+        return $this->vars;
     }
 
     /**
@@ -269,7 +283,7 @@ final class Vita
 
     /**
     * Inicializa o sistema Twig para gerenciamento de Template
-    * 
+    *
     * @param  string $__path - caminho onde as Views (*.twig) se encontram
     */
     public function init_tpl_system( $__path ){
@@ -285,9 +299,9 @@ final class Vita
         $__cache_folder = ($this->config->twig_cache_enable === true) ? $this->config->system_path . 'cache' . DIRECTORY_SEPARATOR : false;
 
         # instanciando o ambiente twig
-        $this->twig = new \Twig_Environment($loader, 
+        $this->twig = new \Twig_Environment($loader,
             array(
-                'cache' => $__cache_folder, 
+                'cache' => $__cache_folder,
                 'debug' => $this->config->twig_debug_enable
             )
         );
@@ -300,10 +314,11 @@ final class Vita
         $this->twig->addFilter('vtrans', new \Twig_Filter_Function('vita_twig_translate_filter'));
     }
 
-	public static function getInstance()
+    public static function getInstance()
     {
-        if( null === static::$instance )
+        if (null === static::$instance) {
             static::$instance = new static();
+        }
         return static::$instance;
     }
 }
