@@ -36,7 +36,7 @@ $config['url']       = 'http://vita.example.com/' ;
 # caso nao queria iniciar o database MySQL por padrao
 # sete o item abaixo para false.
 #
-$config['load_mysql'] = true;
+$config['load_mysql'] = false;
 
 # Porta ede coenxao ao SGBD, por padrao o MySQL trabalha na porta 3306
 $config['dbport'] = '3306';
@@ -45,13 +45,13 @@ $config['dbport'] = '3306';
 $config['dbhost'] = 'localhost';
 
 # Nome do banco de dados que sera utilizado
-$config['dbname'] = 'vita_controle';
+$config['dbname'] = 'vita';
 
 # Nome de username com acesso ao banco de dados
-$config['dbuser'] = 'root';
+$config['dbuser'] = 'database_user';
 
 # password de acesso
-$config['dbpass'] = '31wsn32wsn';
+$config['dbpass'] = '';
 
 #
 # DATETIME
