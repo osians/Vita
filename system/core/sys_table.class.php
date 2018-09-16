@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace Framework\Vita\Core ;
+namespace Framework\Vita\Core;
 
 if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
 
@@ -19,44 +19,64 @@ if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
  */
 class SYS_Table
 {
-	/**@var string - nome da tabela */
+	/**
+	 *    Nome da tabela
+	 *    @var string
+	 */
 	private $tablename = "";
 
-	/**@var array - guarda atributos desta tabela e regras de validacao de dados */
+	/**
+	 *    Guarda atributos desta tabela e regras de validacao de dados
+	 *    @var array
+	 */
 	private $roles = array();
 
-	/**@var string - indica o nome do campo que atua como chave primaria na tabela */
-	private $primary_key = "";
+	/**
+	 *    Indica o nome do campo que atua como chave primaria na tabela
+	 *    @var string
+	 */
+	private $primaryKey = "";
 
-	public function __construct( $__tablename = null, $_attr = array() )
+	public function __construct($tablename = null, $attr = array())
 	{
-		$this->tablename   = $__tablename;
-		$this->roles       = isset($_attr['roles']) ? $_attr['roles'] : array();
-		$this->primary_key = isset($_attr['primary_key']) ? $_attr['primary_key'] : null;
+		$this->tablename = $tablename;
+
+		$this->roles = isset($attr['roles'])
+		     ? $attr['roles'] : array();
+
+		$this->primaryKey = isset($attr['primary_key'])
+		     ? $attr['primary_key'] : null;
 	}
 
-	public function setPrimaryKey($column_name){
-		$this->primary_key = $column_name;
+	public function setPrimaryKey($column_name) {
+		$this->primaryKey = $column_name;
 	}
 
 	public function getPrimaryKey(){
-		return $this->primary_key;
+		return $this->primaryKey;
 	}
 
-	/**
-	 * Salva informações na tabela. Sendo esta ação, um INSERT ou
-	 * um UPDATE dependentendo do segundo parametro recebido.
-	 *
-	 * @param  mixed - (array|object) dados a serem gravados
-	 * @param  int - caso um ID numerico seja passado, faz um UPDATE do contrario, realizar um INSERT
-	 * @return int - id do registro
-	 */
-	public function save( $_dados = array(), $__id = null )
-	{
-		if(is_object($_dados))
-			$_dados = get_object_vars($_dados);
 
-		if(!is_array($_dados)) return false ;
+	/**
+	 *    Salva informações na tabela. Sendo esta ação, um INSERT ou
+	 *    um UPDATE dependentendo do segundo parametro recebido.
+	 *
+	 *    @param  mixed - (array|object) dados a serem gravados
+	 *    @param  int   - caso um ID numerico seja passado, 
+	 *                    faz um UPDATE do contrario, realizar 
+	 *                    um INSERT
+	 *
+	 *    @return int   - id do registro
+	 */
+	public function save($dados = array(), $id = null)
+	{
+		if(is_object($dados)) {
+			$dados = get_object_vars($dados);
+		}
+
+		if (!is_array($dados)) {
+			return false;
+		}
 
 		# obtendo as propriedades desta tabela direto do MySQL ...
 		$campos = $this->getFields();
@@ -68,13 +88,15 @@ class SYS_Table
         # campos['campo']->default ; // 1
         # campos['campo']->extra ;   // auto_increment
 
-		$__sql = "";
-		$_keys = array_keys($_dados);
-		$_vals = array_values($_dados);
+		$sql = "";
+		$_keys = array_keys($dados);
+		$_vals = array_values($dados);
 
 		# verificando indices/nomes dos campos
 		# garantindn que temos apenas texto sem espaco
-		for($i=0;$i<count($_keys);$i++)$_keys[$i] = vita()->validate->textns($_keys[$i]);
+		for ($i=0; $i < count($_keys); $i++) {
+			$_keys[$i] = vita()->validate->textns($_keys[$i]);
+		}
 
 		# prevalidacao de campos
 		for($i = 0; $i < count($_vals); $i++):
@@ -120,29 +142,29 @@ class SYS_Table
 		# esses dados devem ser registrados. por exemplo, um campo do tipo TEXT
 		# pode ser definido pelo Programador para entrar apenas letras de A a F
 		# e sem espaços.
-		if(!is_null($__id)){ // update
-			$__sql = "UPDATE `".vita()->config->dbname."`.`".$this->tablename."` SET ";
+		if(!is_null($id)){ // update
+			$sql = "UPDATE `".vita()->config->dbname."`.`".$this->tablename."` SET ";
 
 			# percorrendo os dados e realizando filtros
-			$__lastitem = count( $_dados ) - 1;
-			for($i = 0; $i < count( $_dados ); $i++):
+			$__lastitem = count( $dados ) - 1;
+			for($i = 0; $i < count( $dados ); $i++):
 				if(isset($this->roles[$_keys[$i]])):
 					$role = $this->roles[$_keys[$i]];
 					$_vals[$i] = vita()->validate->$role( $_vals[$i] );
 				else:
 					$_vals[$i] = vita()->validate->make_safe( $_vals[$i] );
 				endif;
-				$__sql .= " `".$_keys[$i]."` = '". $_vals[$i] ."'" ;
-				$__sql .= $__lastitem == $i ? " " : ", ";
+				$sql .= " `".$_keys[$i]."` = '". $_vals[$i] ."'" ;
+				$sql .= $__lastitem == $i ? " " : ", ";
 			endfor;
 
 			# gerando a query final
-			$__sql .= "WHERE `".$this->primary_key."` = $__id ;";
+			$sql .= "WHERE `".$this->primaryKey."` = $id ;";
 
 			# executando query
-        	vita()->db->query( $__sql );
+        	vita()->db->query( $sql );
         	vita()->db->execute();
-        	return $__id;
+        	return $id;
 		}
 		else{ // insert
 
@@ -161,52 +183,69 @@ class SYS_Table
 			endfor;
 
 			# gerando a query final
-			$__sql = "INSERT INTO `".vita()->config->dbname."`.`".$this->tablename."`";
-			$__sql .= "(`".implode("`, `",$_keys)."`) VALUES ";
-			$__sql .= "('".implode("', '",$_vals)."');";
+			$sql = "INSERT INTO `".vita()->config->dbname."`.`".$this->tablename."`";
+			$sql .= "(`".implode("`, `",$_keys)."`) VALUES ";
+			$sql .= "('".implode("', '",$_vals)."');";
 
 			# executando query
-        	vita()->db->query( $__sql );
+        	vita()->db->query( $sql );
         	vita()->db->execute();
         	return vita()->db->lastInsertId();
 		}
 	}
 
+
 	/**
-	 * Verifica se a tabela alvo desta classe
-	 * existe no banco de dados.
+	 *    Verifica se a tabela alvo desta classe
+	 *    existe no banco de dados.
 	 *
-	 * @return bool - true em caso de sucesso, falso do contrario.
+	 *    @return bool - true caso exista
 	 */
-	public function exists(){
-		$__sql = "SHOW TABLES LIKE '$this->tablename';" ;
-       	vita()->db->query( $__sql );
-       	return ( vita()->db->rowCount() > 0 ) ;
+	public function exists()
+	{
+		$sql = "SHOW TABLES LIKE '$this->tablename';" ;
+       	vita()->db->query($sql);
+       	return (vita()->db->rowCount() > 0);
 	}
 
-    public function select( $__campos__ = '*' ){
-        $__sql__ = "SELECT $__campos__ FROM `".vita()->config->dbname."`.`$this->tablename` ";
-        return new QSet( $__sql__ ) ;
+    public function select($colunas = '*')
+    {
+        $sql = "SELECT $colunas FROM `"
+             . vita()->config->dbname
+             . "`.`$this->tablename` ";
+
+        return new QSet($sql);
     }
 
-    public function getFields(){
-    	$attrs = vita()->db->select( "DESC `".vita()->config->dbname."`.`$this->tablename`;" );
+    public function getFields()
+    {
+    	$attrs = vita()->db->select(
+    		"DESC `".vita()->config->dbname."`.`{$this->tablename}`;"
+    	);
+
     	$properties = null;
-    	foreach ($attrs as $key => $value):
-    		$properties[$value->field]=$value;
-    		if($value->key == 'PRI')
+    	foreach ($attrs as $key => $value) {
+    		$properties[$value->field] = $value;
+    		if($value->key == 'PRI') {
     			$this->setPrimaryKey($value->field);
-    	endforeach;
+    		}
+    	}
     	return $properties;
     }
 
-    public function del( $id = 0){
-    	if(!isset($this->primary_key)){
+    public function del($id = 0) {
+
+    	if (!isset($this->primaryKey)) {
     		$campos = $this->getFields();
     	}
-    	$__sql = "DELETE FROM `".vita()->config->dbname."`.`$this->tablename` WHERE `$this->tablename`.`$this->primary_key` = :fid ;";
-    	vita()->db->query( $__sql );
-    	vita()->db->bind( ':fid', $id );
+
+    	$database = vita()->config->dbname;
+    	$sql = "DELETE 
+    	        FROM `{$database}`.`{$this->tablename}` 
+    		    WHERE `{$this->tablename}`.`{$this->primaryKey}` = :fid;";
+
+    	vita()->db->query($sql);
+    	vita()->db->bind(':fid', $id);
     	return vita()->db->execute();
     }
 
@@ -215,37 +254,43 @@ class SYS_Table
 
 class QSet
 {
+	/**
+	 *    Query a ser executada na base
+	 *    @var String
+	 */
     private $sql;
+
     private $count;
 
-    public function __construct( $__sql__ = '' ){
-        $this->sql = $__sql__ ;
+    public function __construct($sql = '') {
+        $this->sql = $sql ;
     }
 
     /**
-     * Retorna apenas o primeiro resultado
-     * @return  Object
+     *    Retorna apenas o primeiro resultado
+     *    @return  Object
      */
     public function single(){
-    	return $this->result( true );
+    	return $this->result(true);
     }
 
     /**
-     * Retorna todos os resultados encontrados
-     * @param  boolean - se True, apresenta apenas o primeiro registro
-     * @return array of Objects
+     *    Retorna todos os resultados encontrados
+     *    @param boolean - se True, apresenta apenas o primeiro registro
+     *    @return array of Objects
      */
-    public function result( $first_only = false ){
-		return ($first_only) ?
-			vita()->db->select_first( $this->sql .";" ) :
-			vita()->db->select( $this->sql .";" );
+    public function result($firstOnly = false) {
+		return ($firstOnly)
+			? vita()->db->selectFirst("{$this->sql};")
+			: vita()->db->select("{$this->sql};");
     }
 
 
-    public function where( $condicoes = '' )
+    public function where($condicoes = '')
 	{
-		if(empty($condicoes))
-			$condicoes = '1' ;
+		if (empty($condicoes)) {
+			$condicoes = '1';
+		}
 
 		if( is_string($condicoes) )
             $this->sql .= "WHERE $condicoes";
@@ -260,51 +305,59 @@ class QSet
         return new self($this->sql);
     }
 
-    // @param tablename, @param join type, @param ON
-    // $__tname ex: categorias
-    // $__jtype ex: INNER
-    // $on      ex: categorias.id = parent.idcategoria
-	private function join( $__tname = null, $__jtype = null, $on = null )
+
+    /**
+     *    JOIN
+     *    @param  String $tname - Nome da Tabela
+     *    @param  String $jtype - Tipo de join (INNER|LEFT|etc)
+     *    @param  String $on - condicao do Join 
+     *            (ex: categorias.id = parent.idcategoria)
+     *    @return Object - QSet
+     */
+	private function join($tname = null, $jtype = null, $on = null)
 	{
 		# caso vazio apenas retorna uma nova instancia deste objeto
-		if(is_null($__tname)||empty(trim($__tname)))
+		if (is_null($tname) || empty(trim($tname))) {
 			return new self($this->sql);
-
-		$__on = null == $on ? "" : " ON ".trim($on);
-
-		$this->sql .= " {$__jtype} JOIN {$__tname} {$__on} " ;
+		}
+		$on = (null == $on) ? "" : " ON ".trim($on);
+		$this->sql .= " {$jtype} JOIN {$tname} {$on} ";
         return new self($this->sql);
 	}
+
 
 	/**
 	* Realiza um Inner Join adicionando uma outra tabela
 	*
-	* @param  string $__tablename - nome da tabela a adicionar
+	* @param  string $tablename - nome da tabela a adicionar
 	* @param  string|Array $on - condicao que a tabela deve obedecer para adicao
 	* @return Qset
 	*/
-	public function inner_join( $__tablename, $on = null){
-		return $this->join( $__tablename, 'INNER', $on );}
+	public function innerJoin($tablename, $on = null) {
+		return $this->join($tablename, 'INNER', $on);
+	}
 
 	/**
 	* Realiza um Left Join adicionando uma outra tabela
 	*
-	* @param  string $__tablename - nome da tabela a adicionar
+	* @param  string $tablename - nome da tabela a adicionar
 	* @param  string|Array $on - condicao que a tabela deve obedecer para adicao
 	* @return Qset
 	*/
-	public function left_join( $__tablename, $on = null){
-		return $this->join( $__tablename, 'LEFT', $on );}
+	public function leftJoin($tablename, $on = null) {
+		return $this->join($tablename, 'LEFT', $on);
+	}
 
 	/**
 	* Realiza um Right Join adicionando uma outra tabela
 	*
-	* @param  string $__tablename - nome da tabela a adicionar
+	* @param  string $tablename - nome da tabela a adicionar
 	* @param  string|Array $on - condicao que a tabela deve obedecer para adicao
 	* @return Qset
 	*/
-	public function right_join( $__tablename, $on = null){
-		return $this->join( $__tablename, 'RIGHT', $on );}
+	public function rightJoin($tablename, $on = null) {
+		return $this->join($tablename, 'RIGHT', $on);
+	}
 
 	/**
 	 * Ha casos em que o ON precisa vir apos um novo INNER, ex:
@@ -312,11 +365,11 @@ class QSet
 	 *     INNER JOIN categorias cat ON cat.idparent = categorias.idcategoria
 	 * ON categorias.idcategoria = tabela.idcategoria...
 	 *
-	 * @param  [type] $__on [description]
-	 * @return [type]       [description]
+	 * @param  [type] $on [description]
+	 * @return [type]     [description]
 	 */
-	public function on( $__on = null ){
-		$this->sql .= " ON $__on " ;
+	public function on($on = null){
+		$this->sql .= " ON $on ";
         return new self($this->sql);
 	}
 
@@ -331,28 +384,30 @@ class QSet
 
     # ---------- acima revisado e ok -------------
 
-    public function exec( $first_only = false )
+    public function exec($firstOnly = false)
 	{
 		# checa se banco de dados foi instanciado...
 		# @todo - implementar verificacao e busca no SQLite tambem!
-		if(!isset(vita()->db))
-			show_error( 'Banco de dados MySQL não foi instanciado no sistema.
-				Corrija o erro, verificando se no arquivo config.php o
-				indice $config[load_mysql] está setado como TRUE.' );
+		if (!isset(vita()->db)) {
+			show_error( 
+				'Banco de dados MySQL não foi instanciado no sistema.
+				 Corrija o erro, verificando se no arquivo config.php o
+				 indice $config[load_mysql] está setado como TRUE.' );
+		}
 
-		$qt = strtolower(substr( $this->sql, 0,  strpos($this->sql, ' ') ));
+		$qt = strtolower(substr($this->sql, 0, strpos($this->sql, ' ')));
 		switch($qt)
 		{
 			case 'select':
-				return ($first_only) ?
-					vita()->db->select_first( $this->sql .";" ) :
-					vita()->db->select( $this->sql .";" );
+				return ($firstOnly) 
+				     ? vita()->db->select_first($this->sql .";") 
+				     : vita()->db->select( $this->sql .";" );
 				break;
 			case 'update':
 				return vita()->db->update($this->sql);
 				break;
 			default:
-				show_error( "Consulta não identificada ". $this->sql );
+				show_error("Consulta não identificada ". $this->sql);
 				break;
 		}
     }
@@ -413,11 +468,12 @@ class QSet
 	}
 
 	/**
-	 * Metodo usado unicamente em uma consulta SELECT para realizar paginacao no sistema
-	 * @return int - total de registros na consulta atual
+	 *    Metodo usado unicamente em uma consulta 
+	 *    SELECT para realizar paginacao no sistema
+	 *    @return int - total de registros na consulta atual
 	 */
-	public function count(){
-		vita()->db->select( $this->sql .";" );
+	public function count() {
+		vita()->db->select($this->sql .";");
 		return vita()->db->rowCount();
 	}
 

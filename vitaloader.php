@@ -21,8 +21,9 @@ define('DS', DIRECTORY_SEPARATOR);
 
 # ------------------------------------------
 # Configurando o ambiente
-# reconhecendo o ambiente em que o sistema se encontra e tentando
-# iniciar as funcoes basicas e necessarias para o funcionamento.
+# reconhecendo o ambiente em que o sistema se encontra 
+# e tentando iniciar as funcoes basicas e necessarias
+# para o funcionamento.
 # ------------------------------------------
 
 # reportando erros inicial
@@ -39,9 +40,9 @@ if (($tmp = realpath($systemFolder)) !== false) {
     $systemPath = $tmp . DS;
 } else {
     $systemPath = dirname(__FILE__)
-                   . DS
-                   . $systemFolder
-                   . DS;
+                . DS
+                . $systemFolder
+                . DS;
 }
 
 # encontramos o caminho para o sistema?
@@ -213,8 +214,3 @@ if (!isset($t[0])) {
     print "vita_version: " . Vita::VERSION . "<br>";
 }
 
-$rs = vita()
-    ->database
-    ->select('SELECT * FROM categorias', null, true, false);
-
-var_dump($rs);

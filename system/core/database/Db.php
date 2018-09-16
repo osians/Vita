@@ -146,35 +146,35 @@ class SystemCoreDatabaseDb
         return $retorno;
     }
 
-    public function select_first( $__sql__, $_bind_ = array() )
-    {
-        return $this->select($__sql__,$_bind_,true,true);
+    public function selectFirst($sql, $bind = array()) {
+        return $this->select($sql, $bind, true, true);
     }
 
     public function select(
-        $__sql__,
-        $_bind_ = array(),
-        $__as_object__ = true,
+        $sql,
+        $bind = array(),
+        $asObject = true,
         $firstOnly = false
     ){
-        $this->query($__sql__);
-        if(count($_bind_)>0):
-            foreach ($_bind_ as $key => $value) {
+        $this->query($sql);
+        if(count($bind)>0):
+            foreach ($bind as $key => $value) {
                 $this->bind( $key, $value );
             }
         endif;
 
         $this->execute();
 
-        if( $__as_object__ ):
-            return $this->parseAsObject( $firstOnly );
-        else:
+        if ($asObject) {
+            return $this->parseAsObject($firstOnly);
+        }
+        else {
             if($firstOnly){
                 return $this->single();
             }else{
                 return $this->resultset();
             }
-        endif;
+        }
     }
 
     /**
@@ -184,20 +184,20 @@ class SystemCoreDatabaseDb
      *   array(':fname' => 'John',':lname'=>'Smith',':age','24',':gender'=>'male'),
      *   true
      * );
-     * @param  [type]  $__sql__                     [description]
-     * @param  array   $_bind_                      [description]
+     * @param  [type]  $sql                     [description]
+     * @param  array   $bind                      [description]
      * @param  boolean $__return_last_inserted_id__ [description]
      * @return [type]                               [description]
      */
     public function insert(
-        $__sql__,
-        $_bind_ = array(),
+        $sql,
+        $bind = array(),
         $__return_last_inserted_id__ = true )
     {
-        $this->query( $__sql__ );
+        $this->query( $sql );
 
-        if(count($_bind_)>0):
-            foreach ($$_bind_ as $key => $value) {
+        if(count($bind)>0):
+            foreach ($$bind as $key => $value) {
                 $this->bind( $key, $value );
             }
         endif;
@@ -212,8 +212,8 @@ class SystemCoreDatabaseDb
      * @param string - SQL a ser executada
      * @return int
      **/
-    public function update( $__sql__ ){
-        return $this->executar($__sql__);
+    public function update( $sql ){
+        return $this->executar($sql);
     }
 
     public function execute(){

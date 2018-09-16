@@ -10,6 +10,7 @@ header('Content-Type: text/html; charset=utf-8');
 #    este arquivp, mas...
 global $config;
 
+
 #    Exception nao pode depender de um informacoes externas
 #    logo, deve haver uma garantia grande que essa classe
 #    funcione de forma independente de qualquer outra.
@@ -422,9 +423,12 @@ function check_for_fatal_error()
     endif;
 }
 
-register_shutdown_function( "\Framework\Vita\Core\check_for_fatal_error" );
-set_error_handler( array("\Framework\Vita\Core\Error_handling","handler") );
-// set_exception_handler( "log_exception" );
-ini_set( "display_errors", "off" );
-error_reporting( E_ALL );
+
+if ($config['vita_error_style'] == true) {
+    register_shutdown_function("\Framework\Vita\Core\check_for_fatal_error");
+    set_error_handler( array("\Framework\Vita\Core\Error_handling", "handler"));
+    // set_exception_handler( "log_exception" );
+    ini_set("display_errors", "off");
+    error_reporting(E_ALL);
+}
 

@@ -234,32 +234,44 @@ final class Vita
         exit(0);
     }
 
+
+    /**
+     *    Dado o nome de uma tabela no banco de dados
+     *    Essa classe cria uma instancia da mesma em uma
+     *    propriedade da classe Vita de mesmo nome.
+     *
+     *    @param  String $tablename
+     *    @param  Array $attrs
+     *    @return void
+     */
     public function loadTable($tablename, $attrs = null)
     {
-        $this->$tablename = new SYS_Table($tablename, $attrs);
+        $this->$tablename = new
+            \Framework\Vita\Core\SYS_Table(
+                $tablename,
+                $attrs
+            );
     }
 
     /**
-    * Se uma variavel foi definida nesta classe, trata-a de forma global
-    * retorna qualquer variavel setada na classe.
+    *    Se uma variavel foi definida nesta classe,
+    *    trata-a de forma global retorna qualquer
+    *    variavel setada na classe.
     *
-    * @param  string $name - nome identificador da variavel
-    * @return Mixed
+    *    @param  string $name - nome identificador da variavel
+    *    @return Mixed
     */
-    public function __get($name)
-    {
+    public function __get($name) {
         return $this->get($name);
     }
 
-    public function get($name)
-    {
+    public function get($name) {
         return isset($this->vars[trim($name)])
                ? $this->vars[trim($name)]
                : null;
     }
 
-    public function getVars()
-    {
+    public function getVars() {
         return $this->vars;
     }
 
@@ -284,24 +296,30 @@ final class Vita
     /**
     * Inicializa o sistema Twig para gerenciamento de Template
     *
-    * @param  string $__path - caminho onde as Views (*.twig) se encontram
+    * @param  string $path - caminho onde as Views (*.twig) se encontram
     */
-    public function init_tpl_system( $__path ){
+    public function init_tpl_system($path)
+    {
 		# gerencia tpl
-		if(!is_dir( $__path ))
-			throw new SysException( "Tentativa de Iniciar o sistema gerenciador de templates em uma pasta Inexistente: '{$__path}'");
+		if (!is_dir($path)) {
+			throw new SysException(
+                "Tentativa de Iniciar o sistema gerenciador
+                de templates em uma pasta Inexistente: '{$path}'");
+        }
 
         require_once 'libraries/Twig/Autoloader.php';
         \Twig_Autoloader::register();
-        $loader = new \Twig_Loader_Filesystem( $__path );
+        $loader = new \Twig_Loader_Filesystem( $path );
 
         # verificando se o modo de cache esta liberado no arquivo de config
-        $__cache_folder = ($this->config->twig_cache_enable === true) ? $this->config->system_path . 'cache' . DIRECTORY_SEPARATOR : false;
+        $cacheFolder = ($this->config->twig_cache_enable === true)
+                     ? $this->config->system_path . 'cache' . DIRECTORY_SEPARATOR
+                     : false;
 
         # instanciando o ambiente twig
         $this->twig = new \Twig_Environment($loader,
             array(
-                'cache' => $__cache_folder,
+                'cache' => $cacheFolder,
                 'debug' => $this->config->twig_debug_enable
             )
         );
