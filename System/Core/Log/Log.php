@@ -53,10 +53,10 @@ class Log
         }
     }
 
-    public function setTimezone($filename = null)
+    public function setTimezone($timezone = null)
     {
-        if ($filename != null) {
-             $this->defaultTimezone = $filename ;
+        if ($timezone != null) {
+             $this->defaultTimezone = $timezone ;
         }
     }
 
@@ -89,15 +89,6 @@ class Log
         return ($fp!=null && is_resource($fp))
             ? fclose($fp)
             : (($this->fp!=null && is_resource($this->fp)) ? fclose($this->fp) : true);
-    }
-
-    /**
-     * Seta o caminhoe nome do arquivo de log
-     * @param string $logFolder - /caminho/para/o/arquivo/e/log
-     */
-    public function lfile($logFolder)
-    {
-        $this->logFolder = $logFolder;
     }
 
     /**

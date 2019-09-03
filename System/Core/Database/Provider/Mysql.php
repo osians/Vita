@@ -1,6 +1,8 @@
 <?php
 
-namespace Vita\System\Core\Database;
+namespace Vita\System\Core\Database\Provider;
+
+use \Vita\System\Core\Database\ProviderInterface;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'ProviderInterface.php';
 

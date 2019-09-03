@@ -15,7 +15,7 @@ define('ALLOWED', true);
 # Funções básicas fornecidas pelo sistema, ou desejam criar
 # um modelo proprio, diferente do MVC que
 # é implementado por este sistema.
-defined('VITAONLY') or define('VITAONLY', false);
+defined('VITAONLY') or define('VITAONLY', true);
 
 
 # WEBSITE
@@ -30,7 +30,7 @@ $config['url']       = 'http://vita.example.com/';
 # credenciais de acesso ao banco de dados MySQL
 # caso nao queria iniciar o database MySQL por padrao
 # sete o item abaixo para false.
-$config['load_mysql'] = true;
+$config['load_mysql'] = false;
 
 # Porta ede coenxao ao SGBD, por padrao o MySQL trabalha na porta 3306
 $config['dbport'] = '3306';
@@ -61,6 +61,10 @@ $config['date_format'] = 'Y-m-d H:i:s';
 # --------------------------------------------------------
 # Se true as chamadas a classe log devem ser executadas
 $config['enable_log'] = false;
+
+# pasta para registro de logs, a partir da raiz
+# /vita/system/log/
+$config['log_folder'] = 'System/Log/';
 
 
 # SESSION
@@ -109,10 +113,6 @@ $config['show_extra_log'] = false;
 # Tipo de log que deve ser realizado, em arquivo ou envio por email
 # @var int - se 3 gravar em arquivo, caso 1 enviar por email ao administrador
 $config['sys_error_log_type'] = 3;
-
-# pasta para registro de logs, a partir da raiz
-# /vita/system/log/
-$config['log_folder'] = 'System/Log/';
 
 # em caso de erro, e ERROR_LOG_TYPE = 1 enviar mensagem para ....
 $config['sys_error_log_email'] = 'sans.pds@gmail.com';

@@ -149,7 +149,7 @@ require_once($config['core_path'] . 'Exception' . DS . 'VitaException.php');
 # ------------------------------------------
 # iniciando funcoes Modulares basicas do sistema
 # Caso haja uma funcao util modular, colocar nesse arquivo.
-require_once($config['helper_path'] . 'helper.php');
+require_once($config['helper_path'] . 'Helper.php');
 
 
 # ------------------------------------------

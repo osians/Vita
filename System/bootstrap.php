@@ -15,10 +15,10 @@ require_once 'Core/Config/Config.php';
 require_once 'Core/Post.php';
 
 # metodos uteis do sistema
-require_once 'Core/sys_utils.class.php';
+require_once 'Core/Utils.php';
 
 # filtros e regras de validacao
-require_once 'Core/validate.class.php';
+require_once 'Core/Validate/Validate.php';
 
 # gerencia sessoes
 require_once 'Core/Session.php';
@@ -39,7 +39,7 @@ require_once 'Core/Database/Provider/Mysql.php';
 require_once 'Core/sys_table.class.php';
 
 # gerencia uploads
-require_once 'Core/upload.class.php';
+require_once 'Core/Upload.php';
 
 # gerenciador de emails PHPMailer
 require_once 'Libraries/phpmailer/PHPMailerAutoload.php';

@@ -2,6 +2,8 @@
 
 namespace Vita\System\Core;
 
+use \Vita\System\Core\Config\SysVitaConfigVisibilidadeEnum;
+
 class Session
 {
     private static $instance;

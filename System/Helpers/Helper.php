@@ -1,8 +1,8 @@
 <?php
 
-use \Framework\Vita\Vita ;
+use \Vita\System\Vita ;
 
-require_once 'vita_forms.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'vita_forms.php';
 
 # @function getInstance - obtem instancia do objeto principal do sistema
 function vita(){return Vita::getInstance();}

@@ -20,7 +20,7 @@ class Factory
         switch ($db) {
             case 'mysql':
 
-                $db = new SystemCoreDatabaseProviderMysql();
+                $db = new \Vita\System\Core\Database\Provider\Mysql();
 
                 if( isset($_extra_args['host'])&&
                     isset($_extra_args['port'])&&

@@ -2,6 +2,8 @@
 
 namespace Vita\System\Core;
 
+use \Vita\System\Core\Config\SysVitaConfigVisibilidadeEnum;
+
 /**
  *
  * Classe simples, responsavel por tratar dados advindos de formularios

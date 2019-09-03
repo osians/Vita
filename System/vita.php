@@ -118,17 +118,19 @@ final class Vita
     public function init($config)
     {
         $this->config   = new \Vita\System\Core\Config\Config($config);
-        $this->log      = new \Vita\System\Core\Log\Log($this->config->log_folder);
+        $this->log      = new \Vita\System\Core\Log\Log(
+            $config['vita_path'] . $this->config->log_folder
+        );
         $this->session  = new \Vita\System\Core\Session($this->config->session_expire_time);
-        $this->validate = new \Vita\System\Core\Validate();
-        $this->utils    = new \Vita\System\Core\SYS_Utils();
+        $this->validate = new \Vita\System\Core\Validate\Validate();
+        $this->utils    = new \Vita\System\Core\Utils();
 
         // tratamento de $_POST para formularios
-        $this->post     = new \Vita\System\Core\SYS_Post(false);
+        $this->post     = new \Vita\System\Core\Post(false);
         $this->post->init();
 
         // tratamento de upload de arquivos
-        $this->upload = new \Vita\System\Core\SystemCoreUpload();
+        $this->upload = new \Vita\System\Core\Upload();
         $uploadConfig = [
             'destination'    => $this->config->upload_folder,
             'overrideFile'   => false,
@@ -152,7 +154,7 @@ final class Vita
                 'pass'  => $this->config->dbpass,
                 'dbname'=> $this->config->dbname
             );
-            $this->db = SystemCoreDatabaseFactory::create('MySQL', $conexaoDados);
+            $this->db = Factory::create('MySQL', $conexaoDados);
             $this->database = &$this->db;
         }
 

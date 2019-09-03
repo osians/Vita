@@ -1,10 +1,8 @@
-<?php 
+<?php
 
-namespace Framework\Vita\Core ; 
+namespace Vita\System\Core;
 
-if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
-
-class SYS_Utils
+class Utils
 {
     public function __construct(){}
 

@@ -1,8 +1,6 @@
-<?php 
+<?php
 
-namespace Framework\Vita\Core;
-
-if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo não permitido.');
+namespace Vita\System\Core;
 
 /**
  * TODO - colocar uma funcao para tornar o nome da imagem amigavel
@@ -12,7 +10,7 @@ if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo não permitido.');
  * Classe responsavel pelo upload de arquivos para
  * o sistema
  **/
-class SystemCoreUpload
+class Upload
 {
     var $destination    = '';
     var $filename       = '';

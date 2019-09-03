@@ -1,10 +1,6 @@
-<?php 
+<?php
 
-namespace Framework\Vita\Core;
-
-if (!defined('ALLOWED')) {
-    exit('Acesso direto ao arquivo nao permitido.');
-}
+namespace Vita\System\Core\Validate;
 
 /**
 * Validacao
@@ -34,7 +30,7 @@ if (!defined('ALLOWED')) {
 * (+) cnpj
 */
 
-class SystemCoreValidate
+class Validate
 {
     public function __construct(){}
 
