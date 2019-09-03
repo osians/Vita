@@ -2,10 +2,6 @@
 
 namespace Framework\Vita\Core;
 
-if (!defined('ALLOWED')) {
-    exit('Acesso direto ao arquivo nao permitido.');
-}
-
 class FileException extends SysException {}
 
 /**

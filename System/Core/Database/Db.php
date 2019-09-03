@@ -1,10 +1,6 @@
 <?php
 
-namespace Framework\Vita\Core;
-
-if (!defined('ALLOWED')) {
-    exit('Acesso direto ao arquivo nao permitido.');
-}
+namespace Vita\Core\Database;
 
 /**
  *

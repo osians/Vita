@@ -32,7 +32,7 @@ ini_set('display_errors', 1);
 
 # ------------------------------------------
 # nome da pasta que guarda o sistema
-$systemFolder = 'system';
+$systemFolder = 'System';
 
 # verificando se a pasta do sistema
 # realmente existe, e se a encontramos
@@ -66,16 +66,11 @@ if (isset($config)) {
 
 # ------------------------------------------
 # indentificando arquivo de configuracoes basicas do sistema
-$configFile = dirname(__FILE__)
-            . DS
-            . 'config' . DS
-            . 'config.php';
+$configFile = dirname(__FILE__) . DS . 'Config' . DS . 'config.php';
 
 if (!file_exists($configFile)) {
     die(
-        "Arquivo de configurações básicas do
-		 sistema Vita não encontrado na pasta: '"
-        .$configFile."'"
+        "Arquivo de configurações básicas do sistema não encontrado na pasta: '{$configFile}'"
     );
 }
 
@@ -125,9 +120,9 @@ if (!$config['vita_dev_mode']) {
 $config['vita_path'] = dirname(__FILE__) . DS;
 
 $config['system_path'] = $systemPath;
-$config['config_path'] = $config['vita_path'] .'config' . DS;
-$config['core_path']   = $systemPath . 'core'    . DS;
-$config['helper_path'] = $systemPath . 'helpers' . DS;
+$config['config_path'] = $config['vita_path'] .'Config' . DS;
+$config['core_path']   = $systemPath . 'Core'    . DS;
+$config['helper_path'] = $systemPath . 'Helpers' . DS;
 
 $t = debug_backtrace();
 
@@ -148,7 +143,7 @@ define('SYS_PATH', $config['system_path']);
 # inicianlizando nosso sistema tratamento de erros
 # que ira tratar os problemas e apresentar de uma
 # maneira mais amigavel qualquer erro que acontecer no sistema!
-require_once($config['core_path'] . 'sys_exception.class.php');
+require_once($config['core_path'] . 'Exception' . DS . 'VitaException.php');
 
 
 # ------------------------------------------
@@ -163,7 +158,7 @@ require_once($config['helper_path'] . 'helper.php');
 # todos os recursos do sistema, alem de
 # oferecer facilidades para a implementacao
 # de softwares.
-require_once 'system/vita.php';
+require_once $systemPath . 'vita.php';
 
 
 use \Framework\Vita\Vita;

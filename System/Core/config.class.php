@@ -2,10 +2,6 @@
 
 namespace Framework\Vita\Core;
 
-if (!defined('ALLOWED')) {
-    exit('Acesso direto ao arquivo nao permitido.');
-}
-
 
 // Declaracao de alguns ENUMS Uteis para padronizacao
 class SysVitaConfigVisibilidadeEnum
