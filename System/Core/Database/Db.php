@@ -2,6 +2,9 @@
 
 namespace Vita\Core\Database;
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'DbException.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'QueryException.php';
+
 /**
  *
  * CLASSE SYS_DB RESPONSAVEL POR FAZER A INTERFACE COM O BANCO DE DADOS,
@@ -45,16 +48,7 @@ namespace Vita\Core\Database;
  *
  */
 
-class DBException extends SysException{}
-
-class QueryException extends DBException{}
-
-interface DBProvider
-{
-    public function conectar();
-}
-
-class SystemCoreDatabaseDb
+class Db
 {
     private $dbh;
     protected $error;

@@ -161,7 +161,7 @@ require_once($config['helper_path'] . 'helper.php');
 require_once $systemPath . 'vita.php';
 
 
-use \Framework\Vita\Vita;
+use Vita\System\Vita;
 
 # ------------------------------------------
 # dando vida ao sistema

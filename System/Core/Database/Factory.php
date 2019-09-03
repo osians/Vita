@@ -1,12 +1,10 @@
 <?php
 
-namespace Vita\Core\Database;
+namespace Vita\System\Core\Database;
 
-if (!defined('ALLOWED')) {
-    exit('Acesso direto ao arquivo nao permitido.');
-}
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'Db.php';
 
-class SystemCoreDatabaseFactory
+class Factory
 {
     /**
     * @param string  - Tipo de banco de dados a ser criado conexao

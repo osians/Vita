@@ -73,7 +73,7 @@ $config['session_expire_time'] = 3600; // 1 horas
 # UPLOAD
 # --------------------------------------------------------
 # caminho ondem devem ser salvos os uploadas
-$config['upload_folder'] = 'files/upload/';
+$config['upload_folder'] = 'Files/Upload/';
 $config['max_img_width'] = 1900;
 $config['max_img_height'] = 900;
 $config['max_file_size'] = 2097152; // 2mb
@@ -88,7 +88,7 @@ $config['load_sqlite'] = false;
 $config['sqlite_dbname'] = 'system.sqlite3';
 
 # localizacao do banco de dados sqllite e suas tabelas...
-$config['sqlite_folder'] = "databases";
+$config['sqlite_folder'] = "Databases";
 
 
 # DEBUG 
@@ -112,7 +112,7 @@ $config['sys_error_log_type'] = 3;
 
 # pasta para registro de logs, a partir da raiz
 # /vita/system/log/
-$config['log_folder'] = 'system/log/';
+$config['log_folder'] = 'System/Log/';
 
 # em caso de erro, e ERROR_LOG_TYPE = 1 enviar mensagem para ....
 $config['sys_error_log_email'] = 'sans.pds@gmail.com';
@@ -130,7 +130,7 @@ $config['twig_localization_enabled'] = false;
 $config['twig_localization_locale'] = 'pt_BR';
 
 # localizacao do arquivo com as traducoes
-$config['twig_localization_locale_path'] = 'config/locale/';
+$config['twig_localization_locale_path'] = 'Config/Locale/';
 
 # @var bool - se true, twig ira criar cache das paginas processadas.
 $config['twig_cache_enable'] = false;

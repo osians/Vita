@@ -1,8 +1,6 @@
-<?php 
+<?php
 
-namespace Framework\Vita\Core;
-
-if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
+namespace Vita\System\Core;
 
 /**
  *
@@ -12,10 +10,10 @@ if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
  *
  * @dependencias - SYS, SYS_Table, SYS_Validate
  **/
-class SYS_Post implements Vitalib
+class Post
 {
 	// @var array - guarda dados de post
-	private $_post ;
+	private $_post;
 
 	// @var bool - se true, nao elimita post original $_POST
 	private $manter_post = false;

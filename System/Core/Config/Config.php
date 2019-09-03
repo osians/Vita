@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\Vita\Core;
+namespace Vita\System\Core\Config;
 
 
 // Declaracao de alguns ENUMS Uteis para padronizacao
@@ -14,7 +14,7 @@ class SysVitaConfigVisibilidadeEnum
 class LogicaException extends \Exception{}
 class InvalidVarNameException extends LogicaException{}
 
-class SystemCoreConfig implements Vitalib
+class Config
 {
     private $mode = SysVitaConfigVisibilidadeEnum::PRIVADA;
     private $configs = array();

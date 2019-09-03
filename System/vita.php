@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\Vita;
+namespace Vita\System;
 
 /* ---------------------------
  -- Vita brevis,
@@ -17,31 +17,31 @@ namespace Framework\Vita;
 
 require_once 'bootstrap.php';
 
-use \Framework\Vita\Core\SystemCoreDatabaseFactory;
-use \Framework\Vita\Core\SysException;
-use \Framework\Vita\Core\SYS_Table;
+use \Vita\System\Core\Database\Factory;
+use \Vita\System\Core\SysException;
+use \Vita\System\Core\SYS_Table;
 use \Exception;
 
 final class Vita
 {
     // Vita::version;
-    const VERSION = '20180908-142902';
+    const VERSION = '20190903-132525';
 
-	/**
-	* Responsavel por gravar informacoes em
-	* arquivo de log
-	*
-	* @var object SYS_Log
-	*/
+    /**
+    * Responsavel por gravar informacoes em
+    * arquivo de log
+    *
+    * @var object SYS_Log
+    */
     public $log = null;
 
-	/**
-	* Todas as configuracoes do sistema,
-	* sejam elas em arquivos ou Banco de dados
-	* ficam acessiveis, atraves deste objeto
-	*
-	* @var object Config
-	*/
+    /**
+    * Todas as configuracoes do sistema,
+    * sejam elas em arquivos ou Banco de dados
+    * ficam acessiveis, atraves deste objeto
+    *
+    * @var object Config
+    */
     public $config = null;
 
     // @var object SYS_Session
@@ -117,18 +117,18 @@ final class Vita
 
     public function init($config)
     {
-        $this->config   = new \Framework\Vita\Core\SystemCoreConfig($config);
-        $this->log      = new \Framework\Vita\Core\SystemCoreLog($this->config->log_folder);
-        $this->session  = new \Framework\Vita\Core\SystemCoreSession($this->config->session_expire_time);
-        $this->validate = new \Framework\Vita\Core\SystemCoreValidate();
-        $this->utils    = new \Framework\Vita\Core\SYS_Utils();
+        $this->config   = new \Vita\System\Core\Config\Config($config);
+        $this->log      = new \Vita\System\Core\Log\Log($this->config->log_folder);
+        $this->session  = new \Vita\System\Core\Session($this->config->session_expire_time);
+        $this->validate = new \Vita\System\Core\Validate();
+        $this->utils    = new \Vita\System\Core\SYS_Utils();
 
         // tratamento de $_POST para formularios
-        $this->post     = new \Framework\Vita\Core\SYS_Post(false);
+        $this->post     = new \Vita\System\Core\SYS_Post(false);
         $this->post->init();
 
         // tratamento de upload de arquivos
-        $this->upload = new \Framework\Vita\Core\SystemCoreUpload();
+        $this->upload = new \Vita\System\Core\SystemCoreUpload();
         $uploadConfig = [
             'destination'    => $this->config->upload_folder,
             'overrideFile'   => false,
@@ -247,7 +247,7 @@ final class Vita
     public function loadTable($tablename, $attrs = null)
     {
         $this->$tablename = new
-            \Framework\Vita\Core\SYS_Table(
+            \Vita\System\Core\SYS_Table(
                 $tablename,
                 $attrs
             );

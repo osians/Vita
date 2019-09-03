@@ -1,23 +1,19 @@
-<?php 
+<?php
 
-namespace Framework\Vita\Core;
+namespace Vita\System\Core;
 
-if (!defined('ALLOWED')) {
-    exit('Acesso direto ao arquivo nao permitido.');
-}
-
-class SystemCoreSession implements Vitalib
+class Session
 {
     private static $instance;
     private $session_expire_time = null ;
     private $mode = SysVitaConfigVisibilidadeEnum::PRIVADA;
 
-    public function __construct( $expire_time = null )
+    public function __construct($expireTime = null)
     {
         // evita ser instanciado duas vezes
         self::$instance =& $this;
 
-        $this->setExpiretime( $expire_time );
+        $this->setExpiretime($expireTime);
 
         session_start();
         header("Cache-control: private");
@@ -25,15 +21,15 @@ class SystemCoreSession implements Vitalib
         // quando fecha browser destroi sessao
         // impede roubo de sessao
         session_regenerate_id();
-        // setando arquivo ini( evita JS acessar sessao )
+        // setando arquivo ini( evita JS acessar sessao)
         ini_set('session.cookie_httponly', true);
         ini_set('session.use_only_cookies', true);
         // verificando se sessao esta configurada para expirar apos inatividade
-        if(defined('SESSION_EXPIRE_TIME') && SESSION_EXPIRE_TIME > 0 ):
+        if(defined('SESSION_EXPIRE_TIME') && SESSION_EXPIRE_TIME > 0):
             // verificando se sessao nao expirou por tempo
             if( isset($_SESSION['SS_LAST_ACTIVITY']) &&
                 (time() - $_SESSION['SS_LAST_ACTIVITY'] >
-                SESSION_EXPIRE_TIME ) ):
+                SESSION_EXPIRE_TIME)):
                 // destroy sessao
                 $this->destroy();
             endif;
@@ -42,7 +38,7 @@ class SystemCoreSession implements Vitalib
         $_SESSION['SS_LAST_ACTIVITY'] = time();
     }
 
-    public function setExpiretime($__value__ = null ){
+    public function setExpiretime($__value__ = null){
         if($__value__ != null) $this->session_expire_time = $__value__;
     }
 
@@ -50,14 +46,14 @@ class SystemCoreSession implements Vitalib
         return $this->session_expire_time ;
     }
 
-    public static function getInstance( $expire_time = null )
+    public static function getInstance($expireTime = null)
     {
         if(!isset(self::$instance))
-            self::$instance = new self( $expire_time );
+            self::$instance = new self($expireTime);
         return self::$instance;
     }
 
-    public function __set( $name, $value ){
+    public function __set($name, $value){
         $this->set($name,$value);
     }
 
