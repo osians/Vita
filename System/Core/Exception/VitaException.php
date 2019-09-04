@@ -2,8 +2,6 @@
 
 namespace Vita\System\Core\Exception;
 
-use \Vita\Vita;
-
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'Config.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'ErrorOutput.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'ErrorHandler.php';
@@ -102,27 +100,26 @@ class VitaException extends \Exception
 }
 
 /**
-* Analisa e lida com erros fatais
+*    Lida com erros Fatais
 */
-function check_for_fatal_error()
+function checkForFatalError()
 {
     $error = error_get_last();
-    if ( $error["type"] == E_ERROR ):
-        Error_handling::handler(
+    if ($error["type"] == E_ERROR) {
+        ErrorHandler::handler(
             $error["type"],
             $error["message"],
             $error["file"],
             $error["line"]
         );
-    endif;
+    }
 }
 
 if ($config['vita_error_style'] == true)
 {
-    register_shutdown_function("\Framework\Vita\Core\check_for_fatal_error");
-    set_error_handler( array("\Framework\Vita\Core\Error_handling", "handler"));
+    register_shutdown_function('\Vita\System\Core\Exception\checkForFatalError');
+    set_error_handler(array('\Vita\System\Core\Exception\ErrorHandler', 'handler'));
     // set_exception_handler( "log_exception" );
-    ini_set("display_errors", "off");
+    // ini_set("display_errors", "off");
     error_reporting(E_ALL);
 }
-

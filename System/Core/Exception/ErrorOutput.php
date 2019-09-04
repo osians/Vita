@@ -1,9 +1,9 @@
 <?php
 
 namespace Vita\System\Core\Exception;
+use \Vita\System\Vita;
 
 header('Content-Type: text/html; charset=utf-8');
-
 
 /**
  *    Classe responsavel por apresentar uma Pagina
@@ -43,7 +43,7 @@ class ErrorOutput
         $handle = fopen($this->file, "r");
 
         if ($handle) {
-            
+
             $linhaAtual   = 1;
             $inicioTrecho = $this->line - 3;
             $finalTrecho  = $this->line + 2;

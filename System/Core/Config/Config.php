@@ -48,9 +48,9 @@ class Config
 
         if (!isset($this->configs[$name])) {
             throw new InvalidVarNameException(
-                "A configuração '{$name}' que você está 
-                 tentando obter não existe. Ela não foi 
-                 definida no arquivo 'config.php' nem 
+                "A configuração '{$name}' que você está
+                 tentando obter não existe. Ela não foi
+                 definida no arquivo 'config.php' nem
                  adicionada de forma dinamica no sistema."
             );
         }

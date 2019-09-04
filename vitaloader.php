@@ -21,7 +21,7 @@ define('DS', DIRECTORY_SEPARATOR);
 
 # ------------------------------------------
 # Configurando o ambiente
-# reconhecendo o ambiente em que o sistema se encontra 
+# reconhecendo o ambiente em que o sistema se encontra
 # e tentando iniciar as funcoes basicas e necessarias
 # para o funcionamento.
 # ------------------------------------------
@@ -126,6 +126,7 @@ $config['helper_path'] = $systemPath . 'Helpers' . DS;
 
 $t = debug_backtrace();
 
+#    arquivo que chamos o vita
 $config['app_folder'] = isset($t[0])
                       ? dirname($t[0]['file']).DS
                       : $config['vita_path'];
@@ -136,7 +137,7 @@ $config['app_folder'] = isset($t[0])
 # setamos infos importantes imutaveis como constantes.
 define('VITA_PATH', $config['vita_path']);
 define('CORE_PATH', $config['core_path']);
-define('SYS_PATH', $config['system_path']);
+define('SYS_PATH',  $config['system_path']);
 
 
 # ------------------------------------------
@@ -208,4 +209,3 @@ if (VITAONLY == false && isset($t[0])) {
 if (!isset($t[0])) {
     print "vita_version: " . Vita::VERSION . "<br>";
 }
-

@@ -1,12 +1,8 @@
 <?php
 
-namespace Framework\Vita\Core;
+namespace Vita\System\Core;
 
-if (!defined('ALLOWED')) {
-    exit('Acesso direto ao arquivo nao permitido.');
-}
-
-class SystemCoreDatabaseProviderSqlite implements DBProvider
+class Sqlite implements DBProvider
 {
     private $sqliteDbFolder = SYS_SQLITE_DB_folder;
     private $sqliteDbname = SYS_SQLITE_DBNAME;

@@ -2,8 +2,6 @@
 
 namespace Framework\Vita\Core;
 
-if ( ! defined('ALLOWED')) exit('Acesso direto ao arquivo nao permitido.');
-
 /**
  *
  * Classe usada com intuito de

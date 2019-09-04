@@ -1,13 +1,5 @@
 <?php
 
-# GERAL
-# --------------------------------------------------------
-# essa definicao impede que arquivos do
-# sistema sejam acessados direto.
-# sem uma previa inicializacao.
-define('ALLOWED', true);
-
-
 # Se a informação abaixo for definida como true
 # O Sistema carregara apenas até o ponto em
 # que o objeto $vita se torna disponível.
@@ -15,7 +7,7 @@ define('ALLOWED', true);
 # Funções básicas fornecidas pelo sistema, ou desejam criar
 # um modelo proprio, diferente do MVC que
 # é implementado por este sistema.
-defined('VITAONLY') or define('VITAONLY', true);
+defined('VITAONLY') or define('VITAONLY', false);
 
 
 # WEBSITE
@@ -95,7 +87,7 @@ $config['sqlite_dbname'] = 'system.sqlite3';
 $config['sqlite_folder'] = "Databases";
 
 
-# DEBUG 
+# DEBUG
 # --------------------------------------------------------
 # @var bool - informa se deve ou nao apresentar erros
 # ocorridos na tela para o usuario
@@ -104,7 +96,7 @@ $config['vita_dev_mode']  = true;
 
 #    Indica se o erro apresentado ser no estilo Vita ou PHP Nativo
 #    true - Vita, false - PHP Nativo
-$config['vita_error_style']  = false;
+$config['vita_error_style']  = true;
 
 # Apresenta mais detalhes sobre um erro ocorrido no sistema
 $config['show_error_log'] = true;
