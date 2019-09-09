@@ -8,7 +8,7 @@ namespace Vita\System;
  -- occasio praeceps,
  -- experimentum periculosum,
  -- iudicium difficile.
-                 (Hipócrates)
+                 (HipÃ³crates)
  --------------------------- */
 
 # (nota) a opcao de __autoload() foi removida, para permitir que
@@ -69,9 +69,9 @@ final class Vita
     public $utils = null;
 
     /**
-     * Quando um Formulário emite um POST, este
+     * Quando um FormulÃ¡rio emite um POST, este
      * Objeto trata o Post, limpa os dados de
-     * caracteres indesejados e torna as informações
+     * caracteres indesejados e torna as informaÃ§Ãµes
      * acessiveis para o sistema.
      *
      * @var object SYS_Post
@@ -82,8 +82,8 @@ final class Vita
     /**
      * Armazena variaveis temporarias que ficaram
      * disponiveis para todo o sistema, enquanto o
-     * mesmo estiver em execução.
-     * Valores são acessados atraves dos metodos magicos
+     * mesmo estiver em execuÃ§Ã£o.
+     * Valores sÃ£o acessados atraves dos metodos magicos
      * __set e __get
      *
      * @var array
@@ -206,8 +206,8 @@ final class Vita
 
             if (!file_exists($view)) {
                 throw new Exception(
-                    'O arquivo "'.$viewName.'" não foi encontrado em "'
-                    .$viewFolder.'". Proceda com a criação do mesmo
+                    'O arquivo "'.$viewName.'" nÃ£o foi encontrado em "'
+                    .$viewFolder.'". Proceda com a criaÃ§Ã£o do mesmo
                      para corrigir o problema.'
                 );
             }

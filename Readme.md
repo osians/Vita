@@ -1,5 +1,7 @@
 # Vita - PHP Framework
 
+# [!]Importante - Vita está em Processo de Reestruturação, sistema estreamente instável e não usual
+
 Vita é uma Framework PHP simples para fins didaticos e para criação de pequenos projetos. Utiliza TWIG como gerenciador de templates.
 
 # Breve apresentação da Framework Vita

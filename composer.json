@@ -1,0 +1,24 @@
+{
+    "name" : "osians/vita",
+    "description": "Framework Vita",
+    "keywords": ["Vita", "Framework", "PHP"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wanderlei Santana do Nascimento",
+            "email": "sans.pds@gmail.com",
+            "role": "Creator / Main Developer",
+            "homepage": "http://sooho.com.br"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "twig/twig": "^2.11",
+        "osians/logit": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vita\\": "src/"
+        }
+    }
+}
