@@ -19,11 +19,17 @@ require_once __DIR__ . "{$ds}..{$ds}vendor{$ds}autoload.php";
 error_reporting(E_ALL);
 
 $environment = 'development';
+$whoops = new \Whoops\Run;
 
 if ($environment !== 'production') {
-    //    registra erros para o desenvolvedor na tela
+    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 }
 else {
-    //    Apresenta erros para Cliente mas envia detalhes para Desenvolvedor por email
+    $whoops->pushHandler(function($e){
+        echo 'Todo: Friendly error page and send an email to the developer';
+    });
 }
 
+$whoops->register();
+
+echo 10 / 0;
