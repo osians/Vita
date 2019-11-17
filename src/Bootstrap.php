@@ -32,4 +32,3 @@ else {
 
 $whoops->register();
 
-echo 10 / 0;

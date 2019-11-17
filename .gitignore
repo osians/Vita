@@ -1,3 +1,6 @@
+.gitignore
 *.log
 *.dat
 vendor/
+notas
+composer.lock
