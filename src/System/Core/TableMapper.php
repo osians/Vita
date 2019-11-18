@@ -15,7 +15,7 @@ namespace Framework\Vita\Core;
  * metodologia, e' a possibilidade de incluir
  * filtros ou Regras de Insercao para cada campo.
  */
-class SYS_Table
+class TableMapper
 {
 	/**
 	 *    Nome da tabela
