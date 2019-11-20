@@ -54,24 +54,61 @@ else {
 $whoops->register();
 
 //    ------------------------------------------
+//    Injetor de Dependencias
+//    ------------------------------------------
+$injector = include('Dependencies.php');
+
+//    ------------------------------------------
 //    HTTP Handler
 //    ------------------------------------------
-$request  = new \Http\HttpRequest($_GET, $_POST, $_COOKIE, $_FILES, $_SERVER);
-$response = new \Http\HttpResponse();
+$request = $injector->make('Http\HttpRequest');
+$response = $injector->make('Http\HttpResponse');
 
-$content = '<h1>Hallo Welt</h1>';
-$response->setContent($content);
+//    ------------------------------------------
+//    Router
+//    ------------------------------------------
+$routeDefinitionCallback = function (\FastRoute\RouteCollector $r) {
+    $routes = include('Routes.php');
+    foreach ($routes as $route) {
+        $r->addRoute($route[0], $route[1], $route[2]);
+    }
+};
 
-// para emitir um erro 404
-// $response->setContent('404 - Page not found');
-// $response->setStatusCode(404);
+$dispatcher = \FastRoute\simpleDispatcher($routeDefinitionCallback);
+$routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getPath());
+//var_dump($routeInfo);die();
+switch ($routeInfo[0]) {
+    case \FastRoute\Dispatcher::NOT_FOUND:
+        $response->setContent('404 - Page not found');
+        $response->setStatusCode(404);
+        break;
+    
+    case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+        $response->setContent('405 - Method not allowed');
+        $response->setStatusCode(405);
+        break;
 
+    case \FastRoute\Dispatcher::FOUND:
+        $className = $routeInfo[1][0];
+        $method = $routeInfo[1][1];
+        $vars = $routeInfo[2];
+    
+        $class = $injector->make($className);
+        $class->$method($vars);
+        break;
+}
+
+
+
+
+//    ------------------------------------------
+//    HTTP Output
+//    ------------------------------------------
 foreach ($response->getHeaders() as $header) {
     header($header, false);
 }
 
 echo $response->getContent();
-
 
 die();
 
