@@ -4,21 +4,31 @@ namespace Vita\Controllers;
 
 use Http\Request;
 use Http\Response;
+use Vita\Template\FrontendRenderer;
 
 class Homepage
 {
-    private $_request;
-    private $_response;
-    
-    public function __construct(Request $request, Response $response) {
-        $this->_request = $request;
-        $this->_response = $response;
+    private $request;
+    private $response;
+    private $frontendRenderer;
+
+    public function __construct(
+        Request $request,
+        Response $response,
+        FrontendRenderer $frontendRenderer
+    ) {
+        $this->request  = $request;
+        $this->response = $response;
+        $this->frontendRenderer = $frontendRenderer;
     }
-    
+
     public function show()
     {
-        $content = '<h1>Hello World</h1>';
-        $content .= 'Hello ' . $this->_request->getParameter('name', 'stranger');
-        $this->_response->setContent($content);
+        $data = [
+            'name' => $this->request->getParameter('name', 'stranger')
+        ];
+
+        $html = $this->frontendRenderer->render('Homepage', $data);
+        $this->response->setContent($html);
     }
 }
