@@ -92,7 +92,7 @@ switch ($routeInfo[0]) {
         $className = $routeInfo[1][0];
         $method = $routeInfo[1][1];
         $vars = $routeInfo[2];
-    
+
         $class = $injector->make($className);
         $class->$method($vars);
         break;
