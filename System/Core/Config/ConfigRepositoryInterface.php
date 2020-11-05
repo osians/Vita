@@ -5,7 +5,7 @@ namespace Vita\Core\Config;
 interface ConfigRepositoryInterface
 {
     /**
-     * Obtem todas as configuracoes
+     * Obtêm todas as configurações
      *
      * @return array
      */
@@ -14,7 +14,7 @@ interface ConfigRepositoryInterface
     /**
      * Salva dados de configuração alterados
      * 
-     * @param Array $config
+     * @param array $config
      *
      * @return ConfigRepositoryInterface
      */

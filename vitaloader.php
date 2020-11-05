@@ -4,7 +4,7 @@
  *---------------------------------------------------------------
  * PADRONIZANDO TUDO EM UTF8
  *---------------------------------------------------------------
- * adotando o tipo de codificacao UTF-8 para 
+ * adotando o tipo de codificação UTF-8 para
  * todos os processos do sistema, afim de 
  * evitar erros de caracteres.
  */
@@ -76,10 +76,12 @@ switch (ENVIRONMENT)
  */
 $systemFolder = 'System';
 
-
-$systemPath = (($tmp = realpath($systemFolder)) !== false)
-    ? $tmp . DIRECTORY_SEPARATOR
-    : dirname(__FILE__) . DIRECTORY_SEPARATOR . $systemFolder . DIRECTORY_SEPARATOR;
+$tmp = realpath($systemFolder);
+if ($tmp === false) {
+    $systemPath = $tmp . DIRECTORY_SEPARATOR;
+} else {
+    $systemPath = dirname(__FILE__) . DIRECTORY_SEPARATOR . $systemFolder . DIRECTORY_SEPARATOR;
+}
 
 # encontramos o caminho para o sistema?
 if (!is_dir($systemPath)) {
@@ -94,10 +96,10 @@ if (!is_dir($systemPath)) {
  * CONFIG
  *---------------------------------------------------------------
  * 
- * O Vita pode ser compartilhado por varios sites ou sistemas 
+ * O Vita pode ser compartilhado por vários sites ou sistemas
  * ao mesmo tempo. Portanto, diferentes sistemas podem usa-lo 
- * com diferentes configuracoes.
- * Nota: Caso uma variavel chamada $config com configuracoes 
+ * com diferentes configurações.
+ * Nota: Caso uma variável chamada $config com configurações
  * validas para o Vita seja setada antes de chamar este arquivo, 
  * ela tera prioridade e sera usada.
  */
@@ -111,95 +113,109 @@ require_once $configDirectory  . 'ConfigRepositoryInterface.php';
 require_once $configDirectory  . 'ConfigRepository.php';
 require_once $configDirectory  . 'Config.php';
 
-$repository = new Vita\Core\Config\ConfigRepository();
-$config = new Vita\Core\Config\Config($repository);
+use Vita\Core\Config\Config;
+use Vita\Core\Config\ConfigRepository;
+
+$repository = new ConfigRepository();
+$config = new Config($repository);
 
 # ------------------------------------------
-# inserindo configuracoes externas, caso existam,
-# e sobrescrevendo as padroes
+# inserindo configurações externas, caso existam,
+# e sobrescrevendo as padrões
 if (isset($clientConfig) && is_array($clientConfig)) {
 	foreach ($clientConfig as $key => $value) {
 		$config->set($key, $value);
 	}
 }
 
-# reconfigurando report de erros
-# com base nos dados do arquivo de configuracao
-if ($config->get('vita_dev_mode') == false) {
-	ini_set('display_errors', 0);
-	if (version_compare(PHP_VERSION, '5.3', '>=')) {
-		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
-	}
-	else {
-		error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
-	}
-}
-
-# ------------------------------------------
-# Setando alguns caminhos importantes do sistema
-$config->vita_path     = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-$config->system_path   = $systemPath;
-$config->config_path   = $configDirectory;
-$config->core_path     = $systemPath . 'Core'    . DIRECTORY_SEPARATOR;
-$config->helper_path   = $systemPath . 'Helpers' . DIRECTORY_SEPARATOR;
+/**
+ * ---------------------------------------------------------------
+ * Setando alguns caminhos importantes do sistema
+ * ---------------------------------------------------------------
+ */
+$config->set('vita_path', dirname(__FILE__) . DIRECTORY_SEPARATOR);
+$config->set('system_path', $systemPath);
+$config->set('config_path', $configDirectory);
+$config->set('core_path', $systemPath . 'Core'    . DIRECTORY_SEPARATOR);
+$config->set('helper_path', $systemPath . 'Helpers' . DIRECTORY_SEPARATOR);
 $t = debug_backtrace();
-$config->app_folder    = isset($t[0])?dirname($t[0]['file']).DIRECTORY_SEPARATOR : $config->vita_path;
+$appFolder = isset($t[0]) ? dirname($t[0]['file']) . DIRECTORY_SEPARATOR : $config->get('vita_path');
+$config->set('app_folder', $appFolder);
 
-# ------------------------------------------
-# inicianlizando nosso sistema tratamento de erros
-# que ira tratar os problemas e apresentar de uma
-# maneira mais amigavel qualquer erro que acontecer no sistema!
-// require_once($config->core_path . 'sys_exception.class.php' );
+/**
+ * ---------------------------------------------------------------
+ * HELPERS
+ * ---------------------------------------------------------------
+ * iniciando funções Modulares básicas do sistema
+ * Caso haja uma função util modular, colocar no arquivo Helper
+ *
+ */
+require_once ($systemPath . 'Helpers' . DIRECTORY_SEPARATOR . 'Helper.php');
 
-# ------------------------------------------
-# iniciando funcoes Modulares basicas do sistema
-# Caso haja uma funcao util modular, colocar aqui
-require_once($config->helper_path . 'helper.php');
+/**
+ * ---------------------------------------------------------------
+ * AUTOLOADER
+ * ---------------------------------------------------------------
+ */
+require_once $systemPath . 'Autoloader.php';
 
 # ------------------------------------------
 # inicializa o sistema vita que
 # ira gerenciar o acesso e uso de
-# todos os recursos do sistema, alem de
-# oferecer facilidades para a implementacao
+# todos os recursos do sistema, além de
+# oferecer facilidades para a implementação
 # de softwares.
+require_once $systemPath . 'VitaService.php';
 require_once $systemPath . 'Vita.php';
 
+use Vita\Core\Router\RouterClassException;
 use \Vita\Vita;
 
-# ------------------------------------------
-# dando vida ao sistema
+/**
+ * ---------------------------------------------------------------
+ *  INICIANDO O VITA
+ * ---------------------------------------------------------------
+ */
 $vita = Vita::getInstance();
-$vita->init($config);
+
+try {
+    $vita->init($config);
+} catch (Exception $e) {
+    die($e->getMessage());
+}
+
 unset($config);
 
-# ------------------------------------------
-# daqui em diante, o sistema todo e' gerido
-# atraves de objetos, e pode ser acessado por:
-# $vita ou Vita::getInstance().
-#
-# logo, para obter uma configuração setada no
-# arquivo config.php por exemplo, pode-se usar:
-# $vita->config->dbname;
-# $vita->config->dbname; (ou $vita->config->get( 'dbname' );)
-# $vita->config->dbname;
-# System::getInstance()->config->dbname;
+$vita->getConfig()->set(
+    'template_url',
+    $vita->getConfig()->get('url') . $vita->getConfig()->get('view_folder') . "/"
+);
 
+/**
+ * ---------------------------------------------------------------
+ *  INICIANDO O ROTEAMENTO
+ * ---------------------------------------------------------------
+ */
+require_once $systemPath . 'Core/Router/Router.php' ;
+require_once $systemPath . 'Core/Router/RouterStatus.php';
 
-# tentando resumir informacoes uteis em aliases
-$vita->base_url = $vita->config->url;
-$vita->request_uri = uri();
-
-$vita->config->template_url = $vita->config->url . $vita->config->view_folder . "/";
-
-# roteando url
-require_once $vita->config->system_path . 'Core/Router/Router.php' ;
-require_once $vita->config->system_path . 'Core/Router/RouterStatus.php';
 use \Vita\Core\Router\Router;
-$controlFolder = $vita->config->app_folder . $vita->config->controller_folder . DIRECTORY_SEPARATOR;
+
+$controlFolder = $vita->getConfig()->get('app_folder') . $vita->getConfig()->get('controller_folder') . DIRECTORY_SEPARATOR;
 $request = isset($_GET['request']) ? $_GET['request'] : null;
-$r = new Router($controlFolder, $request);
-$r->setInput($vita->getRequest())
-  ->setResponse($vita->getResponse())
-  ->setRenderer($vita->getRenderer());
-$r->rotear();
-die();
+
+try {
+    $r = new Router($controlFolder, $request);
+    $r->setInput($vita->getRequest())
+        ->setResponse($vita->getResponse())
+        ->setRenderer($vita->getRenderer());
+    $r->rotear();
+} catch (RouterClassException $e) {
+    echo $e->getMessage();
+    exit(1);
+} catch (Exception $e) {
+    echo $e->getMessage();
+    exit(1);
+}
+
+exit(0);

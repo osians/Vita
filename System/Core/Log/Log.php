@@ -2,54 +2,58 @@
 
 namespace Vita\Core\Log;
 
+use Exception;
+
+class LogOpenFileException extends Exception{}
+
 /**
- * Classe responsavel por criar logs no formato texto para o sistema.
- * por padrao a pasta onde os logs sao gravados se localiza em: sys/log/
+ * Classe responsável por criar logs no formato texto para o sistema.
+ * por padrão a pasta onde os logs sao gravados se localiza em: sys/log/
  *
  * @todo  necessita implementar sistema de Tratamento de Exception
  */
 class Log
 {
     /**
-     *    Caminho/Pasta em que serao gravados os Logs
-     *    @var string - /path/to/logs/folder/
+     * Caminho/Pasta em que serão gravados os Logs
+     * @var string - /path/to/logs/folder/
      */
     private $_logFolder = null;
 
     /**
-     *    Nome do arquivo a guardar os Logs
-     *    @var string
+     * Nome do arquivo a guardar os Logs
+     * @var string
      */
     private $_filename = 'logfile.log';
 
     /**
-     *    Ponteiro para o Arquivo
-     *    @var Resource - File Pointer
+     * Ponteiro para o Arquivo
+     * @var Resource - File Pointer
      */
     private $_fp = null;
 
     /**
-     *    Timestamp default a ser usado para Data
-     *    @var string
+     * Timestamp default a ser usado para Data
+     * @var string
      */
     private $_defaultTimezone = 'Brazil/East';
     
     /**
-     *    Formato de Data usado para registrar o Log dentro do arquivo
-     *    @var string
+     * Formato de Data usado para registrar o Log dentro do arquivo
+     * @var string
      */
     private $_dateFormat = 'Y-m-d H:i:s';
 
     /**
-     *    Guarda o resultado da ultima escrita,
-     *    numero de bytes escritos ou false em caso de erro
-     *    @var mixed - int|false
+     * Guarda o resultado da ultima escrita,
+     * numero de bytes escritos ou false em caso de erro
+     * @var mixed - int|false
      */
     private $_lastResult = null;
 
     /**
-     *    Constructor
-     *    @param string $logFolder - caminho para pasta de logs
+     * Constructor
+     * @param string $logFolder - caminho para pasta de logs
      */
     public function __construct($logFolder = null)
     {
@@ -57,9 +61,9 @@ class Log
     }
 
     /**
-     *    Seta a Pasta que ira guardar os arquivos de log
-     *    @param string $logFolder
-     *    @return Log
+     * Seta a Pasta que ira guardar os arquivos de log
+     * @param string $logFolder
+     * @return Log
      */
     public function setFolder($logFolder = null)
     {
@@ -99,8 +103,9 @@ class Log
     }
 
     /**
-     *    Seta o Timestamp
-     *    @param String $timezone - Ex. Brazil/East
+     * Seta o Timestamp
+     * @param String $timezone - Ex. Brazil/East
+     * @return Log
      */
     public function setTimezone($timezone = null)
     {
@@ -111,8 +116,8 @@ class Log
     }
 
     /**
-     *    Abre o arquivo para escrita
-     *    @return Resource - FilePointer
+     * Abre o arquivo para escrita
+     * @return Resource - FilePointer
      */
     private function _open()
     {
@@ -127,10 +132,10 @@ class Log
              **/
             $this->_fp = fopen($arquivo, 'a');
             if (!$this->_fp) {
-                throw new FileException('Erro ao abrir o arquivo de log : ' . $arquivo);
+                throw new LogOpenFileException('Erro ao abrir o arquivo de log : ' . $arquivo);
             }
 
-        } catch (FileException $e) {
+        } catch (Exception $e) {
             echo $e->getMessage();
         }
         return $this->_fp;
@@ -147,7 +152,7 @@ class Log
     }
 
     /**
-     *    Fecha o arquivo e Destroi o ponteiro para ele
+     *    Fecha o arquivo e destrói o ponteiro para ele
      *    @param  resource $fp
      *    @return bool
      */
@@ -167,8 +172,8 @@ class Log
     /**
      *    Escreve uma mensagem no arquivo de log do sistema
      *    @param string $message
-     *    @param string $file - (optional) nome do arquivo de onde vem a solicitacao
-     *    @return boolean
+     *    @param string $file - (optional) nome do arquivo de onde vem a solicitação
+     *    @return Log
      */
     public function write($message, $file = null)
     {
@@ -181,14 +186,14 @@ class Log
         if (!is_null($file)) {
             $script_name = trim($file);
         } else {
-            // verificando nome do arquivo que esta solicitando gravacao
+            // verificando nome do arquivo que esta solicitando gravação
             $script_name = pathinfo($_SERVER['PHP_SELF'], PATHINFO_FILENAME);
         }
 
         date_default_timezone_set($this->_defaultTimezone);
         $time = date($this->_dateFormat);
         $message = str_replace(array("\r", "\n","\t"), " ", $message);
-        // retirando mais de um espaco
+        // retirando mais de um espaço
         $message = preg_replace('!\s+!', ' ', $message);
 
         $this->_lastResult = fwrite($fp, "$time ($script_name) $message \n");

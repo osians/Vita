@@ -1,0 +1,24 @@
+{
+    "name" : "osians/ve-manager",
+    "version": "1.0.1",
+    "description": "Virtual Entity Data Manager",
+    "keywords": ["MySQL", "SQLite", "Database", "PDO", "php"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wanderlei Santana do Nascimento",
+            "email": "sans.pds@gmail.com",
+            "role": "Creator / Main Developer",
+            "homepage": "http://sooho.com.br"
+        }
+    ],
+    "require": {
+        "php": ">=5.6"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "Osians\\VeManager\\": "src/"
+        }
+    }
+}

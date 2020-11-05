@@ -2,44 +2,70 @@
 
 namespace Vita\Core\Router;
 
-use \Vita\Core\Router\RouterStatus;
+use Exception;
+use Vita\Core\Renderer;
+use Vita\Core\Request;
+use Vita\Core\Response;
+
+class RouterClassException extends Exception {}
+class RouterClassMethodDoesNotExistsException extends Exception {}
+class FileNotFoundException extends Exception {}
 
 class Router
 {
     /**
-     *    Nome do Arquivo Controller encontrado pelo Objeto Router
-     *    @var String
+     * Nome do Arquivo Controller encontrado pelo Objeto Router
+     * @var String
      */
     protected $_controller = null;
 
     /**
-     *    Metodo que sera chamado pelo Objeto Router
-     *    @var String
+     * Método que sera chamado pelo Objeto Router
+     * @var String
      */
     protected $_action = null;
-    protected $_folders = "";
     protected $_controllerFolder = null;
     protected $_params = array();
     protected $_baseUrl = null;
 
     /**
-     *    Diretorio Identificado como contendo o Controller
-     *    requisitado.
-     *    @var String
+     * Diretórios Identificado como contendo o Controller
+     * requisitado.
+     * @var String
      */
     protected $_directory = null;
 
     /**
-     *    Guarda o status da requisicao
-     *    @var integer - RouterStatus
+     * Guarda o status da requisição
+     * @var integer - RouterStatus
      */
-    protected $_dispacher = 0;
+    protected $_dispatcher = 0;
 
     /**
-     *    Construct
+     * @var Request
+     */
+    private $_input;
+
+    /**
+     * @var Response
+     */
+    private $_response;
+
+    /**
+     * @var Renderer
+     */
+    private $_renderer;
+
+    /**
+     * @var String
+     */
+    private $_request;
+
+    /**
+     * Construct
      *
-     *    @param String $controllerFolder - Pasta onde se encontram os Controllers
-     *    @param String $request - Algo como $_GET['request']
+     * @param String $controllerFolder - Pasta onde se encontram os Controllers
+     * @param String $request - Algo como $_GET['request']
      */
     public function __construct($controllerFolder, $request)
     {
@@ -50,9 +76,9 @@ class Router
     }
 
     /**
-     *    Seta qual o caminho para a pasta com os Controllers
-     *    @param string $folder
-     *    @return Router
+     * Seta qual o caminho para a pasta com os Controllers
+     * @param string $folder
+     * @return Router
      */
     public function setControllerFolder($folder)
     {
@@ -61,16 +87,20 @@ class Router
     }
 
     /**
-     *    Retorna Pasta indicada pelo Usuario para guardar os
-     *    Controllers.
-     *    @return String
+     * Retorna Pasta indicada pelo usuário para guardar os
+     * Controllers.
+     * @return String
      */
     public function getControllerFolder()
     {
         return $this->_controllerFolder;
     }
 
-    public function setInput(\Vita\Core\Request $input)
+    /**
+     * @param Request $input
+     * @return $this
+     */
+    public function setInput(Request $input)
     {
         $this->_input = $input;
         return $this;
@@ -81,7 +111,7 @@ class Router
         return $this->_input;
     }
 
-    public function setResponse(\Vita\Core\Response $response)
+    public function setResponse(Response $response)
     {
         $this->_response = $response;
         return $this;
@@ -92,7 +122,7 @@ class Router
         return $this->_response;
     }
 
-    public function setRenderer(\Vita\Core\Renderer $renderer)
+    public function setRenderer(Renderer $renderer)
     {
         $this->_renderer = $renderer;
         return $this;
@@ -120,8 +150,8 @@ class Router
     }
 
     /**
-     *    Retorna a URL Base em que o sistema foi chamado
-     *    @return String
+     * Retorna a URL Base em que o sistema foi chamado
+     * @return String
      */
     public function getBaseUrl()
     {
@@ -150,9 +180,9 @@ class Router
     }
 
     /**
-     *    Metodo responsavel por fazer o Parse da URL
-     *    recebida por este objeto.
-     *    @return Route
+     * Método responsável por fazer o Parse da URL
+     * recebida por este objeto.
+     * @return $this
      */
     protected function _parseRequest()
     {
@@ -168,11 +198,14 @@ class Router
         $this->setAction($request['action']);
         $this->setParams($request['params']);
 
-        //$this->_requestUri = $this->getBaseUrl() . $this->getRequest() . "/";
-        $this->_setDispacher();
+        $this->_setDispatcher();
         return $this;
     }
 
+    /**
+     * @param array $request
+     * @return array
+     */
     protected function _parseRequestToArray($request)
     {
         $retorno = array();
@@ -181,20 +214,22 @@ class Router
         array_shift($request);
         $retorno['action'] = isset($request[0]) ? $request[0] : 'index';
         array_shift($request);
-        $retorno['params'] = count($request) > 0 ? $request : null;
+        $retorno['params'] = empty($request) ? null : $request;
 
         return $retorno;
     }
 
     /**
-     *    Detecta o Diretorio em que o Controller solicitado via URL
-     *    se encontra. Retorna caminho completo do Diretorio.
-     *    @return String
+     * Detecta o Diretório em que o Controller solicitado via URL
+     * se encontra. Retorna caminho completo do Diretório.
+     * @param $arrRequest
+     * @return String
      */
     public function getDirectoryFromRequestUrl(&$arrRequest)
     {
         $directory = $this->getControllerFolder();
 
+        $key = null;
         foreach ($arrRequest as $key => $folder) {
             $tmp = $directory . ucfirst($folder) . DIRECTORY_SEPARATOR;
             if (is_dir($tmp)) {
@@ -249,33 +284,35 @@ class Router
      *    Seta o Status final do Nosso Roteamento
      *    @return void
      */
-    protected function _setDispacher()
+    protected function _setDispatcher()
     {
         $filename = $this->getFilePath();
         
         if (!file_exists($filename)) {
-            $this->_dispacher = RouterStatus::CONTROLLER_NOT_FOUND;
+            $this->_dispatcher = RouterStatus::CONTROLLER_NOT_FOUND;
             return;
         }
 
         require_once $filename;
         if (!class_exists($this->getController())) {
-            $this->_dispacher = RouterStatus::CLASS_NOT_FOUNT;
+            $this->_dispatcher = RouterStatus::CLASS_NOT_FOUNT;
             return;
         }
 
         if (!is_callable(array($this->getController(), $this->getAction()))) {
-            $this->_dispacher = RouterStatus::METHOD_NOT_FOUND;
+            $this->_dispatcher = RouterStatus::METHOD_NOT_FOUND;
             return;
         }
 
-        $this->_dispacher = RouterStatus::FOUND;
+        $this->_dispatcher = RouterStatus::FOUND;
     }
 
     /**
-     *    Uma vez chamado, esse metodo realiza o roteamento
-     *    e chama o Controller e o action requerido.
-     *    @return void
+     * Uma vez chamado, esse método realiza o roteamento
+     * e chama o Controller e o action requerido.
+     * @return void
+     * @throws RouterClassException
+     * @throws Exception
      */
     public function rotear()
     {
@@ -290,7 +327,8 @@ class Router
         $class = $this->getController();
 
         if (!class_exists($class)) {
-            throw new \Exception("A classe '{$class}' não existe dentro do arquivo '{$file}'");
+            throw new RouterClassException(
+                "A classe '{$class}' não existe dentro do arquivo '{$file}'");
         }
 
         $controller = new $class();
@@ -299,15 +337,16 @@ class Router
         $controller->setRenderer($this->getRenderer());
 
         if (!is_callable(array($controller, $this->getAction()))) {
-            throw new \Exception("O método '{$this->getAction()}' não existe dentro da classe '{$class}' no arquivo '{$file}'");
+            throw new RouterClassMethodDoesNotExistsException(
+                "O método '{$this->getAction()}' não existe dentro da classe '{$class}' no arquivo '{$file}'");
         }
         
         call_user_func_array(array($controller, $this->getAction()), $this->getParams());
     }
 
     /**
-     *   Retorna o caminho completo para o arquivo Controller
-     *   @return string
+     * Retorna o caminho completo para o arquivo Controller
+     * @return string
      */
     public function getFilePath()
     {
@@ -321,19 +360,21 @@ class Router
     }
 
     /**
-     *    Uma vez chamado esse metodo executa um controlador
-     *    responsavel por apresentar um erro
-     *    @return void
+     * Uma vez chamado esse método executa um controlador
+     * responsável por apresentar um erro
+     * @return void
+     * @throws FileNotFoundException
      */
     protected function _showErrorFileNotReadable()
     {
         $errorController = $this->_controllerFolder . 'Error404.php';
 
         if (!is_readable($errorController)) {
-            throw new \Exception("Default error file not found '$errorController'");
+            throw new FileNotFoundException("Default error file not found '$errorController'");
         }
 
         require_once $errorController;
+
         $class = 'Error404';
         $method = 'index';
         $classInstance = new $class();

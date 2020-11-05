@@ -5,20 +5,20 @@ namespace Vita\Core\Config;
 class Config
 {
     /**
-     *    Guarda todas as Configuracoes da Aplicacao
-     *    @var array
+     * Guarda todas as configurações da Aplicação
+     * @var array
      */
     protected $_configs = array();
 
     /**
-     *    Repositorio com as configuracoes do sistema
-     *    @var ConfigRepositoryInterface
+     * Repositório com as configurações do sistema
+     * @var ConfigRepositoryInterface
      */
     protected $_configRepository;
 
     /**
-     *    Constructor
-     *    @param ConfigRepositoryInterface $repository
+     *  Constructor
+     *  @param ConfigRepositoryInterface $repository
      */
     public function __construct(ConfigRepositoryInterface $repository)
     {
@@ -27,9 +27,9 @@ class Config
     }
 
     /**
-     *    Converte os dados de um array contido no repositorio,
-     *    para configuracoes acessiveis dentro dessa classe.
-     *    @return void
+     * Converte os dados de um array contido no repositório,
+     * para configurações acessíveis dentro dessa classe.
+     * @return void
      */
     public function init()
     {
@@ -39,9 +39,10 @@ class Config
     }
 
     /**
-     *    Seta uma Configuracao na classe
-     *    @param string $name
-     *    @param mixed $value
+     * Seta uma Configuração na classe
+     * @param string $name
+     * @param mixed $value
+     * @return Config
      */
     public function set($name, $value)
     {
@@ -51,9 +52,11 @@ class Config
     }
 
     /**
-     *    Retorna o valor de uma Configuração dado seu nome/key
-     *    @param  string $name
-     *    @return mixed
+     * Retorna o valor de uma Configuração dado seu nome/key
+     *
+     * @param string $name
+     * @param null $default
+     * @return mixed
      */
     public function get($name, $default = null)
     {
@@ -67,10 +70,11 @@ class Config
     }
 
     /**
-     *    Recebe uma String e cria uma chave para Arrays
-     *    a partir dela mantendo apenas letras, hifen e underline
-     *    @param  string $string
-     *    @return string
+     * Recebe uma String e cria uma chave para Arrays
+     * a partir dela mantendo apenas letras, hífen e underline
+     *
+     * @param  string $string
+     * @return string
      */
     private function _stringToKey($string)
     {
@@ -80,10 +84,10 @@ class Config
     }
 
     /**
-     *    Metodo Magico get. Ira direcionar para o metodo
-     *    get existente na classe.
-     *    @param  string $name
-     *    @return mixed
+     * Método Magico get. Ira direcionar para o método
+     * get existente na classe.
+     * @param  string $name
+     * @return mixed
      */
     public function __get($name)
     {
@@ -91,11 +95,11 @@ class Config
     }
 
     /**
-     *    Metodo Magico set. Ira direcionar oara o metodo Set
-     *    existente na classe.
-     *    @param string $name
-     *    @param mixed $value
-     *    @return Config
+     * Método Magico set. Ira direcionar para o método Set
+     * existente na classe.
+     * @param string $name
+     * @param mixed $value
+     * @return Config
      */
     public function __set($name, $value)
     {

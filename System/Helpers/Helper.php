@@ -69,29 +69,27 @@ if ( ! function_exists('redirect'))
 }
 
 
-if(! function_exists( 'uri' ))
+if (!function_exists('uri'))
 {
     /**
-     * Obtem um segmento da URL ou toda ela
+     * Obtém um segmento da URL ou toda ela
      *
      * @param  int|null - se null retorna toda URL se numero retorna segmento
      * @return string
      */
-    function uri( $__segment__ = null )
+    function uri($segment = null)
     {
         # obtendo algo como : http://nomedosite.com/arquivo_solicitado
-        $__uri__ = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+        $uri = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 
         # se foi solicitado um segmento da URI...
-        if(isset($__segment__)&&is_numeric($__segment__))
-        {
-            $_uri_ = explode( "/", "$__uri__" );
-            return isset($_uri_[$__segment__+1]) ? $_uri_[$__segment__+1] : '';
+        if (isset($segment) && is_numeric($segment)) {
+            $newUri = explode( "/", "$uri" );
+            return isset($newUri[$segment+1]) ? $newUri[$segment+1] : '';
         }
-        else
-        { # retorna URI completa
-            return trim( $__uri__ );
-        }
+
+        # retorna URI completa
+        return trim($uri);
     }
 }
 

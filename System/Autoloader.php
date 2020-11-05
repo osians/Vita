@@ -3,18 +3,18 @@
 class Autoloader
 {
     /**
-     *    Directoy to look for php files
+     * Directory to look for php files
      *
-     *    @var array
+     * @var array
      */
     protected $_folders = array();
 
     /**
-     *    Retorna uma instância única de uma classe.
+     * Retorna uma instância única de uma classe.
      *
-     *    @static Singleton $instance - instância única dessa classe.
+     * @static Singleton $instance - instância única dessa classe.
      *
-     *    @return Singleton - Instância única.
+     * @return Autoloader - Instância única.
      */
     public static function getInstance()
     {
@@ -27,8 +27,8 @@ class Autoloader
     }
 
     /**
-     *    Construtor do tipo protegido previne que uma nova instância da
-     *    Classe seja criada através do operador `new` de fora dessa classe.
+     * Construtor do tipo protegido previne que uma nova instância da
+     * Classe seja criada através do operador `new` de fora dessa classe.
      */
     protected function __construct()
     {
@@ -36,30 +36,31 @@ class Autoloader
     }
 
     /**
-     *    Método clone do tipo privado previne a clonagem dessa instância
-     *    da classe
+     * Método clone do tipo privado previne a clonagem dessa instância
+     * da classe
      *
-     *    @return void
+     * @return void
      */
     private function __clone()
     {
     }
 
     /**
-     *    Método unserialize do tipo privado para prevenir a desserialização
-     *    da instância dessa classe.
+     * Método unserialize do tipo privado para prevenir a desserialização
+     * da instância dessa classe.
      *
-     *    @return void
+     * @return void
      */
     private function __wakeup()
     {
     }
 
     /**
-     *    Metodo que carrega os arquivos php
+     * Método que carrega os arquivos php
      *
-     *    @return void
-     **/
+     * @param $classname
+     * @return void
+     */
     public function loader($classname)
     {
         if (strpos($classname, 'Vita') === 0) {
@@ -91,7 +92,7 @@ class Autoloader
     /**
      * Get Folders
      *
-     * @return Array
+     * @return array
      */
     public function getFolders()
     {

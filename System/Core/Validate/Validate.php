@@ -6,7 +6,7 @@ namespace Vita\Core\Validate;
 * Validação de Dados
 * ------------------
 *
-* Classe responsavel por validação de dados.
+* Classe responsável por validação de dados.
 * 
 * CHECAR - retorna sempre TRUE ou FALSE indicando se uma informação
 * é valida. A checagem é permitida a CPF, E-MAIL, DATAS.
@@ -24,8 +24,12 @@ namespace Vita\Core\Validate;
 */
 class Validate
 {
-
-    public function __construct(){}
+    /**
+     * Validate constructor.
+     */
+    public function __construct()
+    {
+    }
 
     /**
      * VERIFICA SE EMAIL VALIDO
@@ -99,7 +103,7 @@ class Validate
      * Verifica se um Número de CNPJ é valido
      *
      * @access public
-     * @param string - numero do CNPJ com ou sem pontos e hifen
+     * @param string $cnpj - numero do CNPJ com ou sem pontos e hífen
      * @return bool - true caso valido
      **/
     public function isCnpj($cnpj)
@@ -111,21 +115,21 @@ class Validate
         
         # Valida primeiro dígito verificador
         for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++){
-            $soma += $cnpj{$i} * $j;
+            $soma += $cnpj[$i] * $j;
             $j = ($j == 2) ? 9 : $j - 1;
         }
 
         $resto = $soma % 11;
-        if ($cnpj{12} != ($resto < 2 ? 0 : 11 - $resto)) return false;
+        if ($cnpj[12] != ($resto < 2 ? 0 : 11 - $resto)) return false;
         
         # Valida segundo dígito verificador
         for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++){
-            $soma += $cnpj{$i} * $j;
+            $soma += $cnpj[$i] * $j;
             $j = ($j == 2) ? 9 : $j - 1;
         }
 
         $resto = $soma % 11;
-        return $cnpj{13} == ($resto < 2 ? 0 : 11 - $resto);
+        return $cnpj[13] == ($resto < 2 ? 0 : 11 - $resto);
     }
     
     /** 
