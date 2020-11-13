@@ -186,11 +186,13 @@ class Router
      */
     protected function _parseRequest()
     {
-        if (null == $this->getRequest()) {
-            return $this;
+        $requestUri = $this->getRequest();
+        if (null == $requestUri) {
+            // set Defaults values
+            $requestUri = 'index/index';
         }
 
-        $arrRequest = explode('/', trim($this->getRequest(), '/'));
+        $arrRequest = explode('/', trim($requestUri, '/'));
         $this->setDirectory($this->getDirectoryFromRequestUrl($arrRequest));
         $request = $this->_parseRequestToArray($arrRequest);
 
@@ -314,12 +316,12 @@ class Router
      * @throws RouterClassException
      * @throws Exception
      */
-    public function rotear()
+    public function init()
     {
         $file = $this->getFilePath();
 
         if (!is_readable($file)) {
-            $this->_showErrorFileNotReadable();
+            throw new Exception("File '{$file}' not Readable");
             return;
         }
 
@@ -367,15 +369,15 @@ class Router
      */
     protected function _showErrorFileNotReadable()
     {
-        $errorController = $this->_controllerFolder . 'Error404.php';
+        $errorController = $this->_controllerFolder . 'ErrorHandler.php';
 
         if (!is_readable($errorController)) {
-            throw new FileNotFoundException("Default error file not found '$errorController'");
+            throw new FileNotFoundException("Router Error: file not found '$errorController'");
         }
 
         require_once $errorController;
 
-        $class = 'Error404';
+        $class = 'ErrorHandler';
         $method = 'index';
         $classInstance = new $class();
         $classInstance->{$method}($this->getParams());

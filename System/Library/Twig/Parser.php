@@ -368,7 +368,7 @@ class Twig_Parser implements Twig_ParserInterface
     {
         // check that the body does not contain non-empty output nodes
         if (
-            ($node instanceof Twig_Node_Text && !ctype_space($node->getAttribute('data')))
+            ($node instanceof Twig_Node_Text && !ctype_space($node->getAttribute('model')))
             ||
             (!$node instanceof Twig_Node_Text && !$node instanceof Twig_Node_BlockReference && $node instanceof Twig_NodeOutputInterface)
         ) {

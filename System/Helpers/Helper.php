@@ -1,12 +1,5 @@
 <?php
 
-use \Vita\Vita;
-
-function vita()
-{
-    return vita::getInstance();
-}
-
 # converter um array para um objeto
 # @param array
 function oo($array)
@@ -48,23 +41,28 @@ endif;
 if ( ! function_exists('redirect'))
 {
     /**
-    * Redireciona para uma nova URL
-    *
-    * @param  string $__url__ - URL destino
-    * @return void
-    */
-    function redirect($uri = '', $method = 'location', $http_response_code = 302)
+     * Redireciona para uma nova URL, em suma
+     * chama um novo Controller e um Metodo
+     *
+     * @param  string $destination - ControllerClass/Method
+     * @return void
+     */
+    function redirect($destination = '', $method = 'location', $http_response_code = 302)
     {
-        switch($method)
-        {
+        if (strpos($destination, "http") === false) {
+            $destination = \Vita\Vita::getInstance()->getConfig()->get('url') . $destination;
+        }
+
+        switch($method) {
             case 'refresh':
-                header("Refresh:0;url=".$uri);
+                header("Refresh:0;url=" . $destination);
             break;
+
             default :
-                header("Location: ".$uri, TRUE, $http_response_code);
+                header("Location: " . $destination, TRUE, $http_response_code);
             break;
         }
-        exit;
+        exit(0);
     }
 }
 

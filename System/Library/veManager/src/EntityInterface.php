@@ -23,7 +23,7 @@ interface EntityInterface
     public function getId();
     
     /**
-     * Initializes the current Entity with data from a StdClass Object.
+     * Initializes the current Entity with model from a StdClass Object.
      * Usually sent by EntityManager
      *
      * @param Stdclass $object

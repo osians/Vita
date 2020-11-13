@@ -4,11 +4,21 @@ namespace Vita\Core;
 
 class Renderer implements RendererInterface
 {
-	public function __construct(\Twig_Environment $renderer)
+    /**
+     * @var \Twig_Environment
+     */
+    private $_renderer;
+
+    public function __construct(\Twig_Environment $renderer)
 	{
 		$this->_renderer = $renderer;
 	}
 
+    /**
+     * @param $template
+     * @param array $data
+     * @throws \Exception
+     */
 	public function render($template, $data = [])
 	{
         try {
@@ -27,10 +37,12 @@ class Renderer implements RendererInterface
 
             $data = array_merge($data, \Vita\Vita::getInstance()->getGlobalVars());
             print $this->_renderer->render($template, $data);
-
         } 
         catch (Exception $e) {
             throw new \Exception($e->getMessage());
+        } catch (\Twig_Error_Loader $e) {
+        } catch (\Twig_Error_Runtime $e) {
+        } catch (\Twig_Error_Syntax $e) {
         }
         exit(0);
 	}

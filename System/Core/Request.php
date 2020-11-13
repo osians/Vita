@@ -14,16 +14,16 @@ namespace Vita\Core;
 class Request implements RequestInterface
 {
 	/**
-	 *    Guarda dados de post
-	 *    @var array
+	 * Guarda dados de post
+	 * @var array
 	 */
 	private $_post;
 
 	/**
-	 *    Is Post Submitted
-	 *    @var boolean
+	 * Is Post Submitted
+	 * @var boolean
 	 */
-	protected $_submitted = false;
+	protected $_posted = false;
 
 	/**
 	 *    Construct
@@ -85,13 +85,14 @@ class Request implements RequestInterface
 		return $this;
 	}
 
-	/**
-	 * Obtem um valor postado num formulario, dado o seu Name|Key
-	 * uso : Post::get( 'cnpj' );
-	 *
-	 * @param string - Name
-	 * @return mixed | null(caso nao encontrado)
-	 **/
+    /**
+     * Obtem um valor postado num formulario, dado o seu Name|Key
+     * uso : Post::get( 'cnpj' );
+     *
+     * @param $key
+     * @param null $default
+     * @return mixed | null(caso nao encontrado)
+     */
 	public function get($key, $default = null)
 	{
 		return (isset($this->_post[$key])) ? $this->_post[$key] : $default;
@@ -114,7 +115,7 @@ class Request implements RequestInterface
     protected function _setAditionalData()
     {
         # setando outras infos importantes ao form
-        $this->setSubmitted(true);
+        $this->setPosted(true);
         $this->set('action', ''); //&$_GET['request']
         $this->set('method', isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null);
 
@@ -126,20 +127,23 @@ class Request implements RequestInterface
         return $this;
     }
 
-    public function setSubmitted($value)
+    /**
+     * @param bool $value
+     * @return $this
+     */
+    public function setPosted($value)
     {
-    	$this->_submitted = $value;
+    	$this->_posted = $value;
     	return $this;
     }
 
     /**
-     *    Check if a POST has been received
-     *
-     *    @return boolean
+     * Check if a POST has been received
+     * @return boolean
      */
-    public function isSubmitted()
+    public function posted()
     {
-    	return $this->_submitted;
+    	return $this->_posted;
     }
 
     /**
@@ -152,11 +156,11 @@ class Request implements RequestInterface
     protected function _makeSafe($value)
     {
     	if (is_array($value)) {
-    		$retorno = array();
+    		$return = array();
     		foreach ($value as $key => $val) {
-    			$retorno[$key] = $this->_makeSafe($val);
+    			$return[$key] = $this->_makeSafe($val);
     		}
-    		return $retorno;
+    		return $return;
     	}
 
         $value = str_replace(

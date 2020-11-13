@@ -106,7 +106,7 @@ class SMTP
      * * self::DEBUG_CLIENT (`1`) Client commands
      * * self::DEBUG_SERVER (`2`) Client commands and server responses
      * * self::DEBUG_CONNECTION (`3`) As DEBUG_SERVER plus connection status
-     * * self::DEBUG_LOWLEVEL (`4`) Low-level data output, all messages
+     * * self::DEBUG_LOWLEVEL (`4`) Low-level model output, all messages
      * @var integer
      */
     public $do_debug = self::DEBUG_OFF;
@@ -546,9 +546,9 @@ class SMTP
 
     /**
      * Calculate an MD5 HMAC hash.
-     * Works like hash_hmac('md5', $data, $key)
+     * Works like hash_hmac('md5', $model, $key)
      * in case that function is not available
-     * @param string $data The data to hash
+     * @param string $data The model to hash
      * @param string $key The key to hash with
      * @access protected
      * @return string
@@ -625,13 +625,13 @@ class SMTP
 
     /**
      * Send an SMTP DATA command.
-     * Issues a data command and sends the msg_data to the server,
+     * Issues a model command and sends the msg_data to the server,
      * finializing the mail transaction. $msg_data is the message
      * that is to be send with the headers. Each header needs to be
      * on a single line followed by a <CRLF> with the message headers
      * and the message body being separated by and additional <CRLF>.
      * Implements rfc 821: DATA <CRLF>
-     * @param string $msg_data Message data to send
+     * @param string $msg_data Message model to send
      * @access public
      * @return boolean
      */
@@ -642,9 +642,9 @@ class SMTP
             return false;
         }
 
-        /* The server is ready to accept data!
+        /* The server is ready to accept model!
          * According to rfc821 we should not send more than 1000 characters on a single line (including the CRLF)
-         * so we will break the data up into lines by \r and/or \n then if needed we will break each of those into
+         * so we will break the model up into lines by \r and/or \n then if needed we will break each of those into
          * smaller lines to fit within the limit.
          * We will also look for lines that start with a '.' and prepend an additional '.'.
          * NOTE: this does not count towards line-length limit.
@@ -704,7 +704,7 @@ class SMTP
             }
         }
 
-        //Message data has been sent, complete the command
+        //Message model has been sent, complete the command
         //Increase timelimit for end of DATA command
         $savetimelimit = $this->Timelimit;
         $this->Timelimit = $this->Timelimit * 2;
@@ -798,7 +798,7 @@ class SMTP
      * Starts a mail transaction from the email address specified in
      * $from. Returns true if successful or false otherwise. If True
      * the mail transaction is started and then one or more recipient
-     * commands may be called followed by a data command.
+     * commands may be called followed by a model command.
      * Implements rfc 821: MAIL <SP> FROM:<reverse-path> <CRLF>
      * @param string $from Source address of this message
      * @access public
@@ -929,7 +929,7 @@ class SMTP
      * Starts a mail transaction from the email address specified in $from.
      * Returns true if successful or false otherwise. If True
      * the mail transaction is started and then one or more recipient
-     * commands may be called followed by a data command. This command
+     * commands may be called followed by a model command. This command
      * will send the message to the users terminal if they are logged
      * in and send them an email.
      * Implements rfc 821: SAML <SP> FROM:<reverse-path> <CRLF>
@@ -981,8 +981,8 @@ class SMTP
     }
 
     /**
-     * Send raw data to the server.
-     * @param string $data The data to send
+     * Send raw model to the server.
+     * @param string $data The model to send
      * @access public
      * @return integer|boolean The number of bytes sent to the server or false on error
      */
@@ -1086,7 +1086,7 @@ class SMTP
         }
         while (is_resource($this->smtp_conn) && !feof($this->smtp_conn)) {
             $str = @fgets($this->smtp_conn, 515);
-            $this->edebug("SMTP -> get_lines(): \$data is \"$data\"", self::DEBUG_LOWLEVEL);
+            $this->edebug("SMTP -> get_lines(): \$model is \"$data\"", self::DEBUG_LOWLEVEL);
             $this->edebug("SMTP -> get_lines(): \$str is  \"$str\"", self::DEBUG_LOWLEVEL);
             $data .= $str;
             // If response is only 3 chars (not valid, but RFC5321 S4.2 says it must be handled),

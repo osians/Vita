@@ -340,19 +340,19 @@ class Sanitize
      * FORMATA DATA NO PADRÂO YYYY-MM-DD HH:II:SS
      * ------------------------------------------
      * 
-     * Normatiza uma data para o padrao aceito Americano
-     * Note que se a data for invalida a função retorna a 
-     * data default unix 1970-01-01 00:00:00
+     * Normatiza uma model para o padrao aceito Americano
+     * Note que se a model for invalida a função retorna a
+     * model default unix 1970-01-01 00:00:00
      *
      * 
      * @access public
-     * @param  string - $val string com a data a ser checada
-     * @return string - data no formato yyyy-mm-dd hh:ii:ss
+     * @param  string - $val string com a model a ser checada
+     * @return string - model no formato yyyy-mm-dd hh:ii:ss
      */
     public function data($data = null)
     {
         # para caso em que a normatizacao nao pode prosseguir devido
-        # a informacoes incorretas, esta data sera retornada.
+        # a informacoes incorretas, esta model sera retornada.
         $__default_date_err_norm = '1970-01-01 00:00:00';
 
         if(null == $data ) 
@@ -367,7 +367,7 @@ class Sanitize
             $data = $part1 . ' ' . $part2;
         endif;
 
-        # temos data e tempo ? dd-mm-yyyy hh:ii:ss
+        # temos model e tempo ? dd-mm-yyyy hh:ii:ss
         if((strpos($data," ") > 0) ){
             list($data,$time) = explode(" ",$data);
             // @todo - aqui incluir código para normatizar o tempo
@@ -376,7 +376,7 @@ class Sanitize
         # filtrando apenas por caracteres validos
         $data = preg_replace("/[^0-9-]+/i","",$data);
 
-        # tamanho da data e valido ?
+        # tamanho da model e valido ?
         if (strlen($data) < 8)
             return $__default_date_err_norm;
 

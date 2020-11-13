@@ -126,8 +126,8 @@ class Log
             $arquivo = $this->_getFullFilepath();
             /**
              * lembrando que a pasta onde sera gravado o log
-             * precisa de acesso ao user www-data
-             * chown -R www-data:www-data folder
+             * precisa de acesso ao user www-model
+             * chown -R www-model:www-model folder
              * chmod -R g+w folder
              **/
             $this->_fp = fopen($arquivo, 'a');

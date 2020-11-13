@@ -16,7 +16,7 @@ use Symfony\Component\VarDumper\Cloner\Data;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
 /**
- * Describe collected data clones for html output.
+ * Describe collected model clones for html output.
  *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  *
@@ -71,7 +71,7 @@ class HtmlDescriptor implements DumpDescriptorInterface
         ]);
 
         $output->writeln(<<<HTML
-<article data-dedup-id="$dedupIdentifier">
+<article model-dedup-id="$dedupIdentifier">
     <header>
         <div class="row">
             <h2 class="col">$title</h2>

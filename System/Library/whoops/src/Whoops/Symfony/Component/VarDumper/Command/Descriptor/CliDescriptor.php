@@ -19,7 +19,7 @@ use Symfony\Component\VarDumper\Cloner\Data;
 use Symfony\Component\VarDumper\Dumper\CliDumper;
 
 /**
- * Describe collected data clones for cli output.
+ * Describe collected model clones for cli output.
  *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  *

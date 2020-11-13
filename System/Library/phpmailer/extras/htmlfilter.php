@@ -1053,7 +1053,7 @@ function HTMLFilter($body, $trans_image_path, $block_external_images = false)
                 // "/target/i",
                 "/^on.*/i",
                 "/^dynsrc/i",
-                "/^data.*/i",
+                "/^model.*/i",
                 "/^lowsrc.*/i"
             )
     );

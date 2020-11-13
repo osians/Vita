@@ -169,7 +169,7 @@ class DOMCaster
     public static function castCharacterData(\DOMCharacterData $dom, array $a, Stub $stub, bool $isNested)
     {
         $a += [
-            'data' => $dom->data,
+            'model' => $dom->data,
             'length' => $dom->length,
         ];
 
@@ -287,7 +287,7 @@ class DOMCaster
     {
         $a += [
             'target' => $dom->target,
-            'data' => $dom->data,
+            'model' => $dom->data,
         ];
 
         return $a;

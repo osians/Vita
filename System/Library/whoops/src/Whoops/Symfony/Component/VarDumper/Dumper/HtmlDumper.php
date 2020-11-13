@@ -59,7 +59,7 @@ class HtmlDumper extends CliDumper
     ];
 
     protected $dumpHeader;
-    protected $dumpPrefix = '<pre class=sf-dump id=%s data-indent-pad="%s">';
+    protected $dumpPrefix = '<pre class=sf-dump id=%s model-indent-pad="%s">';
     protected $dumpSuffix = '</pre><script>Sfdump(%s)</script>';
     protected $dumpId = 'sf-dump';
     protected $colors = true;
@@ -300,7 +300,7 @@ function resetHighlightedNodes(root) {
 return function (root, x) {
     root = doc.getElementById(root);
 
-    var indentRx = new RegExp('^('+(root.getAttribute('data-indent-pad') || '  ').replace(rxEsc, '\\$1')+')+', 'm'),
+    var indentRx = new RegExp('^('+(root.getAttribute('model-indent-pad') || '  ').replace(rxEsc, '\\$1')+')+', 'm'),
         options = {$options},
         elt = root.getElementsByTagName('A'),
         len = elt.length,
@@ -429,9 +429,9 @@ return function (root, x) {
 
             x = 1;
             if ('sf-dump' != elt.parentNode.className) {
-                x += elt.parentNode.getAttribute('data-depth')/1;
+                x += elt.parentNode.getAttribute('model-depth')/1;
             }
-            elt.setAttribute('data-depth', x);
+            elt.setAttribute('model-depth', x);
             var className = elt.className;
             elt.className = 'sf-dump-expanded';
             if (className ? 'sf-dump-expanded' !== className : (x > options.maxDepth)) {
@@ -686,7 +686,7 @@ pre.sf-dump img {
     max-height: 50em;
     margin: .5em 0 0 0;
     padding: 0;
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAHUlEQVQY02O8zAABilCaiQEN0EeA8QuUcX9g3QEAAjcC5piyhyEAAAAASUVORK5CYII=) #D3D3D3;
+    background: url(model:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAHUlEQVQY02O8zAABilCaiQEN0EeA8QuUcX9g3QEAAjcC5piyhyEAAAAASUVORK5CYII=) #D3D3D3;
 }
 pre.sf-dump .sf-dump-ellipsis {
     display: inline-block;
@@ -804,12 +804,12 @@ EOHTML
      */
     public function dumpString(Cursor $cursor, string $str, bool $bin, int $cut)
     {
-        if ('' === $str && isset($cursor->attr['img-data'], $cursor->attr['content-type'])) {
+        if ('' === $str && isset($cursor->attr['img-model'], $cursor->attr['content-type'])) {
             $this->dumpKey($cursor);
             $this->line .= $this->style('default', $cursor->attr['img-size'] ?? '', []).' <samp>';
             $this->endValue($cursor);
             $this->line .= $this->indentPad;
-            $this->line .= sprintf('<img src="data:%s;base64,%s" /></samp>', $cursor->attr['content-type'], base64_encode($cursor->attr['img-data']));
+            $this->line .= sprintf('<img src="model:%s;base64,%s" /></samp>', $cursor->attr['content-type'], base64_encode($cursor->attr['img-model']));
             $this->endValue($cursor);
         } else {
             parent::dumpString($cursor, $str, $bin, $cut);

@@ -67,7 +67,7 @@ class VemTest extends TestCase
         // change something
         $user->setEmail('jhonatan.doe@aol.com');
 
-        // use VeManager to Persist data
+        // use VeManager to Persist model
         $this->vem->save($user);
         
         $this->assertTrue(!empty($user));

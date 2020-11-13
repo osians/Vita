@@ -87,7 +87,7 @@ class PrettyPageHandler extends Handler
      * A string identifier for a known IDE/text editor, or a closure
      * that resolves a string that can be used to open a given file
      * in an editor. If the string contains the special substrings
-     * %file or %line, they will be replaced with the correct data.
+     * %file or %line, they will be replaced with the correct model.
      *
      * @example
      *  "txmt://open?url=%file&line=%line"
@@ -252,7 +252,7 @@ class PrettyPageHandler extends Handler
             $vars["stylesheet"] .= file_get_contents($customCssFile);
         }
 
-        // Add extra entries list of data tables:
+        // Add extra entries list of model tables:
         // @todo: Consolidate addDataTable and addDataTableCallback
         $extraTables = array_map(function ($table) use ($inspector) {
             return $table instanceof \Closure ? $table($inspector) : $table;
@@ -321,7 +321,7 @@ class PrettyPageHandler extends Handler
 
     /**
      * Adds an entry to the list of tables displayed in the template.
-     * The expected data is a simple associative array. Any nested arrays
+     * The expected model is a simple associative array. Any nested arrays
      * will be flattened with print_r
      * @param string $label
      * @param array  $data
@@ -361,8 +361,8 @@ class PrettyPageHandler extends Handler
     }
 
     /**
-     * Returns all the extra data tables registered with this handler.
-     * Optionally accepts a 'label' parameter, to only return the data
+     * Returns all the extra model tables registered with this handler.
+     * Optionally accepts a 'label' parameter, to only return the model
      * table under that label.
      * @param  string|null      $label
      * @return array[]|callable
@@ -712,7 +712,7 @@ class PrettyPageHandler extends Handler
      *
      * @param $superGlobal array One of the superglobal arrays
      * @param $superGlobalName string the name of the superglobal array, e.g. '_GET'
-     * @return array $values without sensitive data
+     * @return array $values without sensitive model
      */
     private function masked(array $superGlobal, $superGlobalName)
     {

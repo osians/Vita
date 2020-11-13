@@ -6,7 +6,7 @@ Zepto(function($) {
   var $container      = $('.details-container');
   var $activeLine     = $frameContainer.find('.frame.active');
   var $activeFrame    = $container.find('.frame-code.active');
-  var $ajaxEditors    = $('.editor-link[data-ajax]');
+  var $ajaxEditors    = $('.editor-link[model-ajax]');
   var $header         = $('header');
 
   $header.on('mouseenter', function () {

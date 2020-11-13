@@ -154,7 +154,7 @@ class EntityManager
     }
 
     /**
-     *    fetch data and creates a Virtual Entity
+     *    fetch model and creates a Virtual Entity
      *
      *    @param  \QueryBuilderInterface $query
      *    @return \VirtualEntityInterface
@@ -178,7 +178,7 @@ class EntityManager
     }
 
     /**
-     *    fetch data of one Registry and creates a Virtual Entity
+     *    fetch model of one Registry and creates a Virtual Entity
      *
      *    @param  \QueryBuilderInterface $query
      *    @return \VirtualEntityInterface | null

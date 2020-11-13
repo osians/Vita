@@ -149,7 +149,7 @@ Creating a new entity and saving it to the database.
 // create a Virtual Entity
 $user = $vem->create('user');
 
-// set data
+// set model
 $user->setName('John Doe');
 $user->setEmail('john.doe@aol.com');
 $user->setAge(31);
@@ -213,7 +213,7 @@ If you know the ID of an Entity, you can instance the model in 3 ways.
 
 ```php
 // first way
-// Note that this way will not load data from Database
+// Note that this way will not load model from Database
 // this will only create a empty Entity and set an existing ID
 $user = $vem->create('user');
 $user->setId(10);

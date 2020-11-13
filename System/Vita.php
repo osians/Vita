@@ -11,11 +11,24 @@ namespace Vita;
                  (Hipócrates)
  --------------------------- */
 
+use Vita\Core\Config\Config;
+use Vita\Core\Router\Router;
 use \Vita\Core\Session\SessionInterface;
 
 class Vita extends VitaService
 {
     const VERSION = '20201105-010203';
+
+    /**
+     * @var Router
+     */
+    private $_router = null;
+
+    /**
+     * Keeps Global vars
+     * @var array
+     */
+    private $_globals = array();
 
     /**
      * Unique Instance
@@ -50,12 +63,33 @@ class Vita extends VitaService
     private function __clone()
     {
     }
-    
+
     /**
-     * No Wakeup allowed
+     * @inheritDoc
      */
-    private function __wakeup()
+    public function init(Config $config)
     {
+        parent::init($config);
+        $this->_initSystemGlobalVars();
+        return $this;
+    }
+
+    /**
+     * @param Router $router
+     * @return $this
+     */
+    public function setRouter(Core\Router\Router $router)
+    {
+        $this->_router = $router;
+        return $this;
+    }
+
+    /**
+     * @return Router|null
+     */
+    public function getRouter()
+    {
+        return $this->_router;
     }
 
     /**
@@ -70,17 +104,35 @@ class Vita extends VitaService
         $this->_session = $session;
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
+    protected function _initSystemGlobalVars()
+    {
+        $this->set('base_url', $this->getConfig()->get('url'));
+        return $this;
+    }
+
     /**
      * Returns Global Array Variables for de View
-     *
      * @return array
      */
     public function getGlobalVars()
-    {   
-        return array(
-            'base_url' => $this->getConfig()->get('url')
-        );
+    {
+        return $this->_globals;
+    }
+
+    /**
+     * Keeps Global Vars
+     * @param $key
+     * @param $value
+     * @return $this
+     */
+    public function set($key, $value)
+    {
+        $this->_globals[$key] = $value;
+        return $this;
     }
 
     /**
@@ -98,5 +150,14 @@ class Vita extends VitaService
             return $this->$property;
         }
         return null;
+    }
+
+    /**
+     * Get System current Version
+     * @return string
+     */
+    public static function getVersion()
+    {
+        return Vita::VERSION;
     }
 }

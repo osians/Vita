@@ -104,7 +104,7 @@ class ConfigRepository implements ConfigRepositoryInterface
     }
     
     /**
-     * Rewrite data into file
+     * Rewrite model into file
      *
      * @param String $fileName
      * @param Stirng $content

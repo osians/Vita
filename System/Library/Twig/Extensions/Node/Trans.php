@@ -41,7 +41,7 @@ class Twig_Extensions_Node_Trans extends Twig_Node
         $function = null === $this->getNode('plural') ? 'gettext' : 'ngettext';
 
         if (null !== $notes = $this->getNode('notes')) {
-            $message = trim($notes->getAttribute('data'));
+            $message = trim($notes->getAttribute('model'));
 
             // line breaks are not allowed cause we want a single line comment
             $message = str_replace(array("\n", "\r"), ' ', $message);
@@ -133,11 +133,11 @@ class Twig_Extensions_Node_Trans extends Twig_Node
                     $msg .= sprintf('%%%s%%', $n->getAttribute('name'));
                     $vars[] = new Twig_Node_Expression_Name($n->getAttribute('name'), $n->getLine());
                 } else {
-                    $msg .= $node->getAttribute('data');
+                    $msg .= $node->getAttribute('model');
                 }
             }
         } else {
-            $msg = $body->getAttribute('data');
+            $msg = $body->getAttribute('model');
         }
 
         return array(new Twig_Node(array(new Twig_Node_Expression_Constant(trim($msg), $body->getLine()))), $vars);

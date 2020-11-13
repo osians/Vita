@@ -237,7 +237,7 @@ class Data implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * Seeks to a specific key in nested data structures.
+     * Seeks to a specific key in nested model structures.
      *
      * @param string|int $key The key to seek to
      *
@@ -285,7 +285,7 @@ class Data implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
-     * Dumps data with a DumperInterface dumper.
+     * Dumps model with a DumperInterface dumper.
      */
     public function dump(DumperInterface $dumper)
     {

@@ -1,4 +1,4 @@
-<?php /* List data-table values, i.e: $_SERVER, $_GET, .... */ ?>
+<?php /* List model-table values, i.e: $_SERVER, $_GET, .... */ ?>
 <div class="details">
   <h2 class="details-heading">Environment &amp; details:</h2>
 

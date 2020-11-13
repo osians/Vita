@@ -33,7 +33,7 @@ interface SessionInterface
     public function get($name);
 
     /**
-     *   Destroy All data from Session
+     *   Destroy All model from Session
      *
      *   @return void
      **/

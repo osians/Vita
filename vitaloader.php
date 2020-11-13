@@ -75,13 +75,7 @@ switch (ENVIRONMENT)
  * Set the path if it is not in the same directory as this file.
  */
 $systemFolder = 'System';
-
-$tmp = realpath($systemFolder);
-if ($tmp === false) {
-    $systemPath = $tmp . DIRECTORY_SEPARATOR;
-} else {
-    $systemPath = dirname(__FILE__) . DIRECTORY_SEPARATOR . $systemFolder . DIRECTORY_SEPARATOR;
-}
+$systemPath = dirname(__FILE__) . DIRECTORY_SEPARATOR . $systemFolder . DIRECTORY_SEPARATOR;
 
 # encontramos o caminho para o sistema?
 if (!is_dir($systemPath)) {
@@ -201,15 +195,23 @@ require_once $systemPath . 'Core/Router/RouterStatus.php';
 
 use \Vita\Core\Router\Router;
 
+if (in_array('mod_rewrite', apache_get_modules()) === false) {
+    throw new Exception("Erro:  mod_rewrite ausente no servidor");
+    exit(1);
+}
+
 $controlFolder = $vita->getConfig()->get('app_folder') . $vita->getConfig()->get('controller_folder') . DIRECTORY_SEPARATOR;
 $request = isset($_GET['request']) ? $_GET['request'] : null;
 
 try {
     $r = new Router($controlFolder, $request);
+
+    $vita->setRouter($r);
+
     $r->setInput($vita->getRequest())
-        ->setResponse($vita->getResponse())
-        ->setRenderer($vita->getRenderer());
-    $r->rotear();
+      ->setResponse($vita->getResponse())
+      ->setRenderer($vita->getRenderer());
+    $r->init();
 } catch (RouterClassException $e) {
     echo $e->getMessage();
     exit(1);

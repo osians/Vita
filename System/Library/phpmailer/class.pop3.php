@@ -322,7 +322,7 @@ class POP3
     }
 
     /**
-     * Send raw data to the POP3 server.
+     * Send raw model to the POP3 server.
      * @param string $string
      * @return integer
      * @access protected

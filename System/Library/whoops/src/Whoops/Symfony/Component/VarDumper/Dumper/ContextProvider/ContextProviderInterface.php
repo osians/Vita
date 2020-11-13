@@ -12,14 +12,14 @@
 namespace Symfony\Component\VarDumper\Dumper\ContextProvider;
 
 /**
- * Interface to provide contextual data about dump data clones sent to a server.
+ * Interface to provide contextual model about dump model clones sent to a server.
  *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 interface ContextProviderInterface
 {
     /**
-     * @return array|null Context data or null if unable to provide any context
+     * @return array|null Context model or null if unable to provide any context
      */
     public function getContext(): ?array;
 }

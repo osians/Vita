@@ -61,7 +61,7 @@ class XmlResponseHandler extends Handler
     }
 
     /**
-     * @param  SimpleXMLElement  $node Node to append data to, will be modified in place
+     * @param  SimpleXMLElement  $node Node to append model to, will be modified in place
      * @param  array|\Traversable $data
      * @return SimpleXMLElement  The modified node, for chaining
      */

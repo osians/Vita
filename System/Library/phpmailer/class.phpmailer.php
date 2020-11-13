@@ -322,7 +322,7 @@ class PHPMailer
      * * `1` Commands
      * * `2` Data and commands
      * * `3` As 2 plus connection status
-     * * `4` Low-level data output
+     * * `4` Low-level model output
      * @var integer
      * @see SMTP::$do_debug
      */
@@ -1752,7 +1752,7 @@ class PHPMailer
         $PHPMAILER_LANG = array(
             'authenticate' => 'SMTP Error: Could not authenticate.',
             'connect_host' => 'SMTP Error: Could not connect to SMTP host.',
-            'data_not_accepted' => 'SMTP Error: data not accepted.',
+            'data_not_accepted' => 'SMTP Error: model not accepted.',
             'empty_message' => 'Message body empty',
             'encoding' => 'Unknown encoding: ',
             'execute' => 'Could not execute: ',
@@ -2978,9 +2978,9 @@ class PHPMailer
 
     /**
      * Add a string or binary attachment (non-filesystem).
-     * This method can be used to attach ascii or binary data,
+     * This method can be used to attach ascii or binary model,
      * such as a BLOB record from a database.
-     * @param string $string String attachment data.
+     * @param string $string String attachment model.
      * @param string $filename Name of the attachment.
      * @param string $encoding File encoding (see $Encoding).
      * @param string $type File extension (MIME) type.
@@ -3064,7 +3064,7 @@ class PHPMailer
      * This can include images, sounds, and just about any other document type.
      * Be sure to set the $type to an image type for images:
      * JPEG images use 'image/jpeg', GIF uses 'image/gif', PNG uses 'image/png'.
-     * @param string $string The attachment binary data.
+     * @param string $string The attachment binary model.
      * @param string $cid Content ID of the attachment; Use this to reference
      *        the content when using an embedded image in HTML.
      * @param string $name
@@ -3403,8 +3403,8 @@ class PHPMailer
                 $basedir .= '/';
             }
             foreach ($images[2] as $imgindex => $url) {
-                // Convert data URIs into embedded images
-                if (preg_match('#^data:(image[^;,]*)(;base64)?,#', $url, $match)) {
+                // Convert model URIs into embedded images
+                if (preg_match('#^model:(image[^;,]*)(;base64)?,#', $url, $match)) {
                     $data = substr($url, strpos($url, ','));
                     if ($match[2]) {
                         $data = base64_decode($data);
@@ -3617,7 +3617,7 @@ class PHPMailer
 
     /**
      * Map a file name to a MIME type.
-     * Defaults to 'application/octet-stream', i.e.. arbitrary binary data.
+     * Defaults to 'application/octet-stream', i.e.. arbitrary binary model.
      * @param string $filename A file name or full path, does not need to exist as a file
      * @return string
      * @static

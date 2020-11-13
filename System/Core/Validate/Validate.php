@@ -136,9 +136,9 @@ class Validate
      * TENTA VERIFICAR SE UMA DATA É VALIDA
      * ------------------------------------
      * 
-     * Verifica se uma data parece valida quanto a 
-     * formatação., e verifica se é uma data gregoriana
-     * válida. Note que, uma data pode ser valida em 
+     * Verifica se uma model parece valida quanto a
+     * formatação., e verifica se é uma model gregoriana
+     * válida. Note que, uma model pode ser valida em
      * diversos formatos, Ex: 
      * 11/05/2017
      * 2017-11-05
@@ -150,7 +150,7 @@ class Validate
      * 17/11/05
      *
      * O Script a seguir tenta tratar apenas os casos em que, 
-     * a data é formatada com 8 digitos e 10 caracteres. Ex:
+     * a model é formatada com 8 digitos e 10 caracteres. Ex:
      * 11/05/2017 e 2017/05/11 
      *
      * @access public
@@ -165,13 +165,13 @@ class Validate
         if(!is_array($_data)) 
             return false;
 
-        # formata data para ficar no formato Americano
+        # formata model para ficar no formato Americano
         # Y-m-d
         $__data = (strlen($_data[0]) == 4) 
             ? implode("-", $_data) 
             : implode("-", array_reverse($_data));
 
-        # cria uma data a partir do valor encontrado
+        # cria uma model a partir do valor encontrado
         $d = DateTime::createFromFormat('Y-m-d', $__data);
         
         return $d && $d->format('Y-m-d') === $__data && 

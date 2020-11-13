@@ -170,7 +170,7 @@ class Frame implements Serializable
     }
 
     /**
-     * Returns the array containing the raw frame data from which
+     * Returns the array containing the raw frame model from which
      * this Frame object was built
      *
      * @return array
@@ -242,8 +242,8 @@ class Frame implements Serializable
     }
 
     /**
-     * Unserializes the frame data, while also preserving
-     * any existing comment data.
+     * Unserializes the frame model, while also preserving
+     * any existing comment model.
      *
      * @see Serializable::unserialize
      * @param string $serializedFrame

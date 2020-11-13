@@ -1,6 +1,6 @@
 <?php
 /**
- * EasyPeasyICS Simple ICS/vCal data generator.
+ * EasyPeasyICS Simple ICS/vCal model generator.
  * @author Marcus Bointon <phpmailer@synchromedia.co.uk>
  * @author Manuel Reinhard <manu@sprain.ch>
  *
@@ -13,7 +13,7 @@
 
 /**
  * Class EasyPeasyICS.
- * Simple ICS data generator
+ * Simple ICS model generator
  * @package phpmailer
  * @subpackage easypeasyics
  */
@@ -102,7 +102,7 @@ class EasyPeasyICS
 
     /**
      * Render and optionally output a vcal string.
-     * @param bool $output Whether to output the calendar data directly (the default).
+     * @param bool $output Whether to output the calendar model directly (the default).
      * @return string The complete rendered vlal
      */
     public function render($output = true)

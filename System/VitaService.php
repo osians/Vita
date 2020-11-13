@@ -38,9 +38,9 @@ class VitaService
     protected $_config = null;
 
     /**
-     * Log info data into Files
+     * Log info model into Files
      *
-     * @var object Vita\Core\Log
+     * @var Vita\Core\Log $_log
      */
     protected $_log = null;
 

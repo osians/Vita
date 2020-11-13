@@ -262,11 +262,13 @@ class QueryBuilder implements QueryBuilderInterface
      * @param String $prefix
      *
      * @return String
+     *
+     * @deprecated
      */
     private function _delimitarValue($value, $prefix = null)
     {
         if (null != $prefix && strpos($value, "{$prefix}.") !== 0) {
-            return "`{$prefix}`.`{$value}`";
+            return "{$prefix}.{$value}";
         }
 
         if ((null != $prefix && strpos($value, $prefix) === 0) ||
@@ -275,11 +277,11 @@ class QueryBuilder implements QueryBuilderInterface
 
             list($prefix, $field) = explode(".", $value);
             if (strpos($field, " ") === false) {
-                return "`{$prefix}`.`{$field}`";
+                return "{$prefix}.{$field}";
             }
 
             list($campo, $sufixo) = explode(" ", $field);
-            return "`{$prefix}`.`{$campo}` {$sufixo}";
+            return "{$prefix}.{$campo} {$sufixo}";
         }
 
         return $value;
@@ -628,10 +630,10 @@ class QueryBuilder implements QueryBuilderInterface
             $from = ($table[0] instanceof QueryBuilderInterface)
                 ? "({$table[0]->sql()})" : "`{$table[0]}`";
 
-            return "{$from} AS `{$alias[0]}`";
+            return "{$from} AS {$alias[0]}";
         }
 
-        return "`{$this->_from}`";
+        return "{$this->_from}";
     }
 
 
@@ -651,11 +653,11 @@ class QueryBuilder implements QueryBuilderInterface
         foreach ($this->_fields as $field) {
 
             $tmp = isset($field['prefix'])
-                ? "`{$field['prefix']}`.`{$field['value']}`"
-                : "`{$field['owner']}`.`{$field['value']}`";
+                ? "{$field['prefix']}.{$field['value']}"
+                : "{$field['owner']}.{$field['value']}";
 
             if (isset($field['alias'])) {
-                $tmp .= " AS `{$field['alias']}`";
+                $tmp .= " AS {$field['alias']}";
             }
 
             $campos[] = $tmp;
@@ -672,7 +674,7 @@ class QueryBuilder implements QueryBuilderInterface
 
         $statement = array();
         foreach ($this->_join as $join) {
-            $alias = (!is_null($join['alias'])) ? "AS `{$join['alias']}`" : '';
+            $alias = (!is_null($join['alias'])) ? "AS {$join['alias']}" : '';
             $statement[] = "{$join['type']} JOIN `{$join['table']}` {$alias} ON {$join['on']}";
         }
 
@@ -732,7 +734,7 @@ class QueryBuilder implements QueryBuilderInterface
             }
 
             $key = substr($data[0], 0, strpos($data[0], "=") - 1);
-            $statement[] = "`{$key}` = '{$data[1]}'";
+            $statement[] = "{$key} = '{$data[1]}'";
         }
 
         return "SET " . implode(', ', $statement);
@@ -748,7 +750,7 @@ class QueryBuilder implements QueryBuilderInterface
             throw new Exception("Insert values are missing", 1);
         }
 
-        $keys = "`" . implode("`, `", array_keys($this->_values)) . "`";
+        $keys = "" . implode(", ", array_keys($this->_values)) . "";
         $values = array();
 
         foreach ($this->_values as $key => $value) {

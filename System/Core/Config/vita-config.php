@@ -33,6 +33,8 @@ $configs['dbuser'] = 'user';
 # password de acesso
 $configs['dbpass'] = 'passe';
 
+# loads VEM - Virtual Entity Manager
+$configs['load_data_manager'] = TRUE;
 
 # -------------------------------------------------------
 # DATETIME

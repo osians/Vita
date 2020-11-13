@@ -75,7 +75,7 @@ class VeManager
     /**
      * Execute Query on Database
      *
-     * @param \Osians\VeManager\QueryBuilderInterface $query
+     * @param QueryBuilderInterface $query
      * @param bool $asArray - true return PDO StdClass Array
      *
      * @return Array of VirtualEntity
@@ -108,7 +108,7 @@ class VeManager
     /**
      * Alias for Query Method
      *
-     * @param \Osians\VeManager\QueryBuilderInterface $qb
+     * @param QueryBuilderInterface $qb
      * @param bool $asArray
      *
      * @return Array of VirtualEntity
@@ -121,7 +121,7 @@ class VeManager
     /**
      * Query database for only one record
      *
-     * @param \Osians\VeManager\QueryBuilderInterface $query
+     * @param QueryBuilderInterface $query
      *
      * @return VirtualEntity
      */
@@ -320,7 +320,7 @@ class VeManager
      * Construct a Instance of a Virtual Entity
      *
      * @param QueryBuilderInterface $query
-     * @param StdClass $data - data
+     * @param StdClass $data - model
      *
      * @return VirtualEntity
      */
@@ -338,14 +338,14 @@ class VeManager
     /**
      * Returns DESC command from a Database Table
      *
-     * @param string $tablename
+     * @param string $tableName
      *
      * @return array
      */
-    public function getTableDesc($tablename)
+    public function getTableDesc($tableName)
     {
         try {
-            $stm = $this->getConnection()->prepare("DESC `{$tablename}`");
+            $stm = $this->getConnection()->prepare("DESC {$tableName}");
             $stm->execute();
         } catch (\Exception $e) {
             return false;
@@ -367,13 +367,13 @@ class VeManager
     /**
      * Check if table exists in the Database
      *
-     * @param string $tablename
+     * @param string $tableName
      *
      * @return bool
      */
-    public function tableExists($tablename)
+    public function tableExists($tableName)
     {
-        $sh = $this->getConnection()->prepare("DESCRIBE `{$tablename}`");
-        return ($sh->execute()) ? true : false;
+        $sh = $this->getConnection()->prepare("DESCRIBE {$tableName}");
+        return $sh->execute();
     }
 }

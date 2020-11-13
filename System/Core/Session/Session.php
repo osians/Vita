@@ -2,6 +2,8 @@
 
 namespace Vita\Core\Session;
 
+use StdClass;
+
 /**
  * PHP Session Manager
  *
@@ -12,7 +14,7 @@ namespace Vita\Core\Session;
  * @link https://github.com/osians
  * @since 202006040130
  **/
-class Session implements \Vita\Core\Session\SessionInterface
+class Session implements SessionInterface
 {
     /**
      *    Unique Instance
@@ -29,11 +31,13 @@ class Session implements \Vita\Core\Session\SessionInterface
     private $_sessionExpireTime = 600;
 
     /**
-     *    Session Hijacke Data
-     *
-     *    @var Array
+     * Session Hijack Data
+     * @var array
      */
-    protected $_data;
+    protected $_data = array(
+        'time' => null,
+        'fingerprint' => null
+    );
 
     /**
      *    If true pull all cables from the 
@@ -47,10 +51,10 @@ class Session implements \Vita\Core\Session\SessionInterface
     /**
      *    Construct
      *
-     *    @param Integer $expireTime
+     * @param Integer $expireTime
      *
-     *    @return void
-     **/
+     * @param string $key
+     */
     public function __construct($expireTime = null, $key = 'fingerprint')
     {
         self::$_instance =& $this;
@@ -96,15 +100,13 @@ class Session implements \Vita\Core\Session\SessionInterface
     }
 
     /**
-     *    Check if Connection is runnig over https protocol
+     *    Check if Connection is running over https protocol
      *
      *    @return boolean
      */
     private function _isHttps()
     {
-        return ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443)
-        ? true
-        : false;
+        return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
     }
 
     /**
@@ -119,7 +121,7 @@ class Session implements \Vita\Core\Session\SessionInterface
         $this->_data = &$_SESSION[$key];
 
         if (null === $this->_data) {
-            $this->_data = new \StdClass;
+            $this->_data = new StdClass;
         }
 
         if (empty($this->_data->fingerprint)) {
@@ -130,11 +132,12 @@ class Session implements \Vita\Core\Session\SessionInterface
     }
 
     /**
-     *    Generate a fingerprint based on timestamp and user agent.
+     * Generate a fingerprint based on timestamp and user agent.
      *
-     *    @source https://github.com/CVM/Session-Security/blob/master/session_security.php
+     * @source https://github.com/CVM/Session-Security/blob/master/session_security.php
      * 
-     *    @param int $time
+     * @param int $time
+     * @return $this
      */
     protected function _generateFingerprint($time = 0)
     {
@@ -143,7 +146,7 @@ class Session implements \Vita\Core\Session\SessionInterface
             $time = time();
         }
 
-        // Create data arrays to pick values from to form the basis for the fingerprint.
+        // Create model arrays to pick values from to form the basis for the fingerprint.
         $fingers = explode(' ', $_SERVER['HTTP_USER_AGENT']);
         $fingers2 = explode(',', $_SERVER['HTTP_USER_AGENT']);
 
@@ -177,7 +180,7 @@ class Session implements \Vita\Core\Session\SessionInterface
             return $this->_generateFingerprint();
         } 
 
-        // Fingerprint mismatch. Move to a new session ID and clear the data.
+        // Fingerprint mismatch. Move to a new session ID and clear the model.
         $this->destroy();
         session_start();
         
@@ -240,10 +243,10 @@ class Session implements \Vita\Core\Session\SessionInterface
     }
 
     /**
-     *    Singleton
-     *
-     *    @return Session
-     **/
+     * Singleton
+     * @param null $expireTime
+     * @return Session
+     */
     public static function getInstance($expireTime = null)
     {
         if(!isset(self::$_instance)) {
@@ -298,12 +301,13 @@ class Session implements \Vita\Core\Session\SessionInterface
         unset($_SESSION[trim($name)]);
         return $this;
     }
-    
+
     /**
-     *   magic method
-     *
-     *   @return Session
-     **/
+     * magic method
+     * @param $name
+     * @param $value
+     * @return Session
+     */
     public function __set($name, $value)
     {
         $this->set($name, $value);
@@ -311,10 +315,10 @@ class Session implements \Vita\Core\Session\SessionInterface
     }
 
     /**
-     *   Magic method
-     *
-     *   @return Mixed
-     **/
+     * Magic method
+     * @param $name
+     * @return Mixed
+     */
     public function __get($name)
     {
         return $this->get($name);
@@ -325,7 +329,7 @@ class Session implements \Vita\Core\Session\SessionInterface
      *
      *   @see SessionInterface::destroy()
      *
-     *   @return void
+     *   @return $this
      **/
     function destroy()
     {

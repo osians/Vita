@@ -68,7 +68,11 @@ class Autoloader
         }
 
         foreach ($this->getFolders() as $dir) {
-            $filename = $dir . str_replace('\\', '/', $classname) .'.php';
+            $filename = $dir[0] . str_replace('\\', '/', $classname) .'.php';
+            if (!empty($dir[1])) {
+                $filename = str_replace($dir[1], null, $filename);
+            }
+
             if (file_exists($filename)) {
                 require_once $filename;
                 break;
@@ -78,14 +82,14 @@ class Autoloader
 
     /**
      * Add Autoloader Folder
-     * 
-     * @param String $folder
      *
+     * @param string $folder - path
+     * @param string $excludeFromPath - remove from Path on autoload
      * @return Autoloader
      */
-    public function addFolder($folder)
+    public function addFolder($folder, $excludeFromPath = '')
     {
-        $this->_folders[] = $folder;
+        $this->_folders[] = [$folder, $excludeFromPath];
         return $this;
     }
 
@@ -102,5 +106,5 @@ class Autoloader
 
 /** Adicionando as pastas iniciais  */
 Autoloader::getInstance()->addFolder(__DIR__ . '/Library/whoops/src/');
-Autoloader::getInstance()->addFolder(__DIR__ . '/Library/veManager/src/');
-Autoloader::getInstance()->addFolder(__DIR__);
+Autoloader::getInstance()->addFolder(__DIR__ . '/Library/veManager/src/', 'Osians/VeManager/');
+Autoloader::getInstance()->addFolder(__DIR__ . '/');
