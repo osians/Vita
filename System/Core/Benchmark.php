@@ -1,6 +1,6 @@
 <?php
 
-namespace Vita\Core;
+namespace System\Core;
 
 /**
  * Classe simples apenas para contar o tempo

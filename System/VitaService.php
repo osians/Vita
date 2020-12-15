@@ -8,18 +8,18 @@ use Osians\VeManager\Database\Provider\Mysql;
 use Osians\VeManager\QueryBuilder;
 use Osians\VeManager\VeManager;
 use PHPMailer;
-use Vita\Core\Config\Config;
-use Vita\Core\Config\ConfigRepository;
-use Vita\Core\Log\Log;
-use Vita\Core\Renderer;
-use Vita\Core\Request;
-use Vita\Core\Response;
-use Vita\Core\Session\Session;
-use Vita\Core\Session\SessionInterface;
-use Vita\Core\Upload;
-use Vita\Core\Utils;
-use Vita\Core\Validate\Sanitize;
-use Vita\Core\Validate\Validate;
+use System\Core\Config\Config;
+use System\Core\Config\ConfigRepository;
+use System\Core\Log\Log;
+use System\Core\Renderer;
+use System\Core\Request;
+use System\Core\Response;
+use System\Core\Session\Session;
+use System\Core\Session\SessionInterface;
+use System\Core\Upload;
+use System\Core\Utils;
+use System\Core\Validate\Sanitize;
+use System\Core\Validate\Validate;
 
 /**
  * Class VitaService
@@ -40,7 +40,7 @@ class VitaService
     /**
      * Log info model into Files
      *
-     * @var Vita\Core\Log $_log
+     * @var Log $_log
      */
     protected $_log = null;
 
@@ -168,7 +168,6 @@ class VitaService
     protected function _loadLog()
     {
         $config = $this->getConfig();
-
         $this->_log = new Log(
             $config->get('vita_path') . $config->get('log_folder')
         );
@@ -268,7 +267,6 @@ class VitaService
     protected function _loadDataManager()
     {
         if ($this->getConfig()->get('load_data_manager')) {
-
             $drive = new Mysql();
             $drive
                 ->setHostname($this->getConfig()->get('dbhost'))
@@ -344,15 +342,18 @@ class VitaService
         $loader = new \Twig_Loader_Filesystem($path);
 
         # verificando se o modo de cache esta liberado no arquivo de config
-        $cacheFolder = ($this->getConfig()->get('twig_cache_enable') === true) ? $this->getConfig()->get('system_path') . 'cache' . DIRECTORY_SEPARATOR : false;
+        $cacheFolder = ($this->getConfig()->get('twig_cache_enable') === true)
+                     ? $this->getConfig()->get('system_path') . 'cache' . DIRECTORY_SEPARATOR
+                     : false;
 
         # instanciando o ambiente twig
-        $twig = new \Twig_Environment($loader,
+        $twig = new \Twig_Environment(
+            $loader,
             array('cache' => $cacheFolder, 'debug' => $this->getConfig()->get('twig_debug_enable'))
         );
 
         # adiciona extensão para realizar debug
-        if($this->getConfig()->get('twig_debug_enable')) {
+        if ($this->getConfig()->get('twig_debug_enable')) {
             $twig->addExtension(new \Twig_Extension_Debug());
         }
 

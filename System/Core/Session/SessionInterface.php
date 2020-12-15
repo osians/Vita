@@ -1,6 +1,6 @@
 <?php
 
-namespace Vita\Core\Session;
+namespace System\Core\Session;
 
 /**
  * Session Interface

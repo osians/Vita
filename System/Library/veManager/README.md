@@ -17,7 +17,7 @@ user
 - age int
 - email varchar
 
-// model/User.php
+// model/Usuario.php
 class User extends Osians\VeManager\Entity
 {
     protected $_name = null;
@@ -25,7 +25,7 @@ class User extends Osians\VeManager\Entity
     protected $_mail = null;
 }
 
-// controller/User.php
+// controller/Usuario.php
 $user = new User();
 $user->setId(4);
 $user->setName('John Doe');

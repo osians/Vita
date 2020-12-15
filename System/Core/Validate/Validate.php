@@ -1,6 +1,6 @@
 <?php
 
-namespace Vita\Core\Validate;
+namespace System\Core\Validate;
 
 /**
 * Validação de Dados

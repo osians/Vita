@@ -1,6 +1,6 @@
 <?php
 
-namespace Vita\Core\Router;
+namespace System\Core\Router;
 
 class RouterStatus
 {

@@ -1,11 +1,15 @@
 <?php
 
-namespace Vita\Core;
+namespace System\Core;
 
 class Controller
 {
     protected $_request;
     protected $_response;
+
+    /**
+     * @var Renderer
+     */
     protected $_renderer;
 
     public function __construct() {}
@@ -38,6 +42,11 @@ class Controller
         return $this;
     }
 
+    /**
+     * Returns Renderer Object
+     *
+     * @return Renderer
+     */
     public function getRenderer()
     {
         return $this->_renderer;
@@ -80,7 +89,7 @@ class Controller
      *
      *    @param  String $libraryName
      *    @param  String $alias
-     *    @return \Vita\Core\Controller
+     *    @return \System\Core\Controller
      */
     public function loadLibrary($libraryName, $alias = null)
     {

@@ -11,9 +11,9 @@ namespace Vita;
                  (Hipócrates)
  --------------------------- */
 
-use Vita\Core\Config\Config;
-use Vita\Core\Router\Router;
-use \Vita\Core\Session\SessionInterface;
+use System\Core\Config\Config;
+use System\Core\Router\Router;
+use System\Core\Session\SessionInterface;
 
 class Vita extends VitaService
 {
@@ -78,7 +78,7 @@ class Vita extends VitaService
      * @param Router $router
      * @return $this
      */
-    public function setRouter(Core\Router\Router $router)
+    public function setRouter(Router $router)
     {
         $this->_router = $router;
         return $this;
@@ -111,16 +111,18 @@ class Vita extends VitaService
     protected function _initSystemGlobalVars()
     {
         $this->set('base_url', $this->getConfig()->get('url'));
+        $this->set('template_url', $this->getConfig()->get('url') . $this->getConfig()->get('view_folder') . "/");
+//        $this->set('request_controller', $this->getRouter()->getController());
         return $this;
     }
 
     /**
-     * Returns Global Array Variables for de View
+     * Returns Global Array Variables for the View
      * @return array
      */
     public function getGlobalVars()
     {
-        return $this->_globals;
+        return array_merge($this->getSession()->toArray(), $this->_globals);
     }
 
     /**
@@ -133,6 +135,18 @@ class Vita extends VitaService
     {
         $this->_globals[$key] = $value;
         return $this;
+    }
+
+    /**
+     * Get Global var
+     * @param $key
+     * @return mixed|null
+     */
+    public function get($key)
+    {
+        return (isset($this->_globals[$key]))
+            ? $this->_globals[$key]
+            : null;
     }
 
     /**

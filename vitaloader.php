@@ -107,8 +107,8 @@ require_once $configDirectory  . 'ConfigRepositoryInterface.php';
 require_once $configDirectory  . 'ConfigRepository.php';
 require_once $configDirectory  . 'Config.php';
 
-use Vita\Core\Config\Config;
-use Vita\Core\Config\ConfigRepository;
+use System\Core\Config\Config;
+use System\Core\Config\ConfigRepository;
 
 $repository = new ConfigRepository();
 $config = new Config($repository);
@@ -162,7 +162,7 @@ require_once $systemPath . 'Autoloader.php';
 require_once $systemPath . 'VitaService.php';
 require_once $systemPath . 'Vita.php';
 
-use Vita\Core\Router\RouterClassException;
+use System\Core\Router\RouterClassException;
 use \Vita\Vita;
 
 /**
@@ -193,7 +193,7 @@ $vita->getConfig()->set(
 require_once $systemPath . 'Core/Router/Router.php' ;
 require_once $systemPath . 'Core/Router/RouterStatus.php';
 
-use \Vita\Core\Router\Router;
+use System\Core\Router\Router;
 
 if (in_array('mod_rewrite', apache_get_modules()) === false) {
     throw new Exception("Erro:  mod_rewrite ausente no servidor");
@@ -201,6 +201,11 @@ if (in_array('mod_rewrite', apache_get_modules()) === false) {
 }
 
 $controlFolder = $vita->getConfig()->get('app_folder') . $vita->getConfig()->get('controller_folder') . DIRECTORY_SEPARATOR;
+$dataFolder = $vita->getConfig()->get('app_folder') . 'data' . DIRECTORY_SEPARATOR;
+
+Autoloader::getInstance()->addFolder($controlFolder);
+Autoloader::getInstance()->addFolder($dataFolder);
+
 $request = isset($_GET['request']) ? $_GET['request'] : null;
 
 try {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Vita\Core\Config;
+namespace System\Core\Config;
 
-use Vita\Core\Config\ConfigRepositoryInterface;
+use System\Core\Config\ConfigRepositoryInterface;
 
 class ConfigRepository implements ConfigRepositoryInterface
 {

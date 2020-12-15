@@ -1,6 +1,6 @@
 <?php 
 
-namespace Vita\Core;
+namespace System\Core;
 
 interface ResponseInterface
 {

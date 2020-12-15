@@ -63,12 +63,13 @@ class Autoloader
      */
     public function loader($classname)
     {
-        if (strpos($classname, 'Vita') === 0) {
-            $classname = str_replace('Vita', '', $classname);
+        if (strpos($classname, 'System') === 0) {
+            $classname = str_replace('System', '', $classname);
         }
 
         foreach ($this->getFolders() as $dir) {
             $filename = $dir[0] . str_replace('\\', '/', $classname) .'.php';
+
             if (!empty($dir[1])) {
                 $filename = str_replace($dir[1], null, $filename);
             }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Vita\Core\Log;
+namespace System\Core\Log;
 
 class FileException extends VitaException
 {

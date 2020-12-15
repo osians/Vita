@@ -1,11 +1,11 @@
 <?php
 
-namespace Vita\Core;
+namespace System\Core;
 
 /**
  *
  * Classe simples, responsavel por tratar dados advindos de formularios
- * 
+ *
  * @todo - implementar novos mecanismos de filtro e segurancao de dados
  * @todo - implementar mecanismo para permitir posts com tags html
  *
@@ -13,77 +13,82 @@ namespace Vita\Core;
  **/
 class Request implements RequestInterface
 {
-	/**
-	 * Guarda dados de post
-	 * @var array
-	 */
-	private $_post;
+    /**
+     * Guarda dados de post
+     * @var array
+     */
+    private $post;
 
-	/**
-	 * Is Post Submitted
-	 * @var boolean
-	 */
-	protected $_posted = false;
+    /**
+     * Is Post Submitted
+     * @var boolean
+     */
+    protected $posted = false;
 
-	/**
-	 *    Construct
-	 */
-	public function __construct()
-	{
-	}
-
-	/**
-	 *    Recebe o $_POST do sistema, e trata-o 
-	 *    antes que possa ser utilizado no sistema
-	 *
-	 *    @return void
-	 **/
-    public function init()
-	{
-		$this->_loadPost();
-		$this->_loadFiles();
-		$this->_setAditionalData();
-    }
-
-    protected function _loadPost()
+    /**
+     *    Construct
+     */
+    public function __construct()
     {
-		if(!$_POST) {
-			return;
-		}
-
-		foreach ($_POST as $k => $v) {
-			$this->set($k, $v);
-		}
-
-		return $this;
     }
 
-	/**
-	 *    Set a new Form Value
-	 *
-	 *	  @param String $key
-	 *	  @param Mixed $value
-	 *	  @param Boolean $makeSafe - When true apply xss filter and mysql_real_scape_string
-	 *
-	 *    @return Request
-	 *
-	 *    @throws none
-	 *
-	 *    @todo - criar melhor mecanismo de validacao e filtro de dados
-	 **/
-	public function set($key, $value)
-	{
-		if (empty($key)) {
-			return;
-		}
+    /**
+     *    Recebe o $_POST do sistema, e trata-o
+     *    antes que possa ser utilizado no sistema
+     *
+     *    @return $this
+     **/
+    public function init()
+    {
+        $this->loadPost();
+        $this->loadFiles();
+        $this->setAditionalData();
 
-		$key = $this->_makeSafe($key);
-		$value = $this->_makeSafe($value);
+        return $this;
+    }
 
-		$this->_post[$key] = $value;
+    /**
+     * Load Posts from $_POST
+     * @return $this
+     */
+    protected function loadPost()
+    {
+        if (!$_POST) {
+            return $this;
+        }
 
-		return $this;
-	}
+        foreach ($_POST as $k => $v) {
+            $this->set($k, $v);
+        }
+
+        $this->setPosted(true);
+        return $this;
+    }
+
+    /**
+     * Set a new Form Value
+     *
+     * @param String $key
+     * @param Mixed $value
+     * @param Boolean $makeSafe - When true apply xss filter and mysql_real_scape_string
+     *
+     * @return Request
+     *
+     * @todo - criar melhor mecanismo de validacao e filtro de dados
+     **/
+    public function set($key, $value)
+    {
+        if (empty($key)) {
+            return $this;
+        }
+
+        $key = $this->makeSafe($key);
+        $value = $this->makeSafe($value);
+
+        $this->post[$key] = $value;
+
+        return $this;
+    }
 
     /**
      * Obtem um valor postado num formulario, dado o seu Name|Key
@@ -93,35 +98,34 @@ class Request implements RequestInterface
      * @param null $default
      * @return mixed | null(caso nao encontrado)
      */
-	public function get($key, $default = null)
-	{
-		return (isset($this->_post[$key])) ? $this->_post[$key] : $default;
-	}
-
-    protected function _loadFiles()
+    public function get($key, $default = null)
     {
-		if (isset($_FILES)) {
-			foreach ($_FILES as $key => $value) {
-				if (empty($value["name"])) {
-					continue;
-				}
-				$this->_post[$key] = $value;
-			}
-		}
-
-		return $this;
+        return (isset($this->post[$key])) ? $this->post[$key] : $default;
     }
 
-    protected function _setAditionalData()
+    protected function loadFiles()
+    {
+        if (isset($_FILES)) {
+            foreach ($_FILES as $key => $value) {
+                if (empty($value["name"])) {
+                    continue;
+                }
+                $this->post[$key] = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    protected function setAditionalData()
     {
         # setando outras infos importantes ao form
-        $this->setPosted(true);
         $this->set('action', ''); //&$_GET['request']
         $this->set('method', isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null);
 
         # HTTP_REFERE nao e' garantido ser enviado pelo cliente
         if (isset($_SERVER['HTTP_REFERER'])) {
-        	$this->set('caller', $_SERVER['HTTP_REFERER']);
+            $this->set('caller', $_SERVER['HTTP_REFERER']);
         }
 
         return $this;
@@ -133,8 +137,8 @@ class Request implements RequestInterface
      */
     public function setPosted($value)
     {
-    	$this->_posted = $value;
-    	return $this;
+        $this->posted = $value;
+        return $this;
     }
 
     /**
@@ -143,7 +147,7 @@ class Request implements RequestInterface
      */
     public function posted()
     {
-    	return $this->_posted;
+        return $this->posted;
     }
 
     /**
@@ -153,42 +157,42 @@ class Request implements RequestInterface
      *
      *    @return Mixed
      */
-    protected function _makeSafe($value)
+    protected function makeSafe($value)
     {
-    	if (is_array($value)) {
-    		$return = array();
-    		foreach ($value as $key => $val) {
-    			$return[$key] = $this->_makeSafe($val);
-    		}
-    		return $return;
-    	}
+        if (is_array($value)) {
+            $return = array();
+            foreach ($value as $key => $val) {
+                $return[$key] = $this->makeSafe($val);
+            }
+            return $return;
+        }
 
         $value = str_replace(
             array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a"),
             array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z"),
-            trim($value));
+            trim($value)
+        );
 
-        return $this->_xssClean($value);
-
+        return $this->xssClean($value);
     }
 
-	/*
-	* XSS filter 
-	*
-	* This was built from numerous sources
-	* (thanks all, sorry I didn't track to credit you)
-	* 
-	* It was tested against *most* exploits here: http://ha.ckers.org/xss.html
-	* WARNING: Some weren't tested!!!
-	* Those include the Actionscript and SSI samples, or any newer than Jan 2011
-	*
-	*
-	* TO-DO: compare to SymphonyCMS filter:
-	* https://github.com/symphonycms/xssfilter/blob/master/extension.driver.php
-	* (Symphony's is probably faster than my hack)
-	*/
-	protected function _xssClean($data)
-	{
+    /*
+    * XSS filter
+    *
+    * This was built from numerous sources
+    * (thanks all, sorry I didn't track to credit you)
+    *
+    * It was tested against *most* exploits here: http://ha.ckers.org/xss.html
+    * WARNING: Some weren't tested!!!
+    * Those include the Actionscript and SSI samples, or any newer than Jan 2011
+    *
+    *
+    * TO-DO: compare to SymphonyCMS filter:
+    * https://github.com/symphonycms/xssfilter/blob/master/extension.driver.php
+    * (Symphony's is probably faster than my hack)
+    */
+    protected function xssClean($data)
+    {
         // Fix &entity\n;
         $data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
         $data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
@@ -215,19 +219,18 @@ class Request implements RequestInterface
             // Remove really unwanted tags
             $old_data = $data;
             $data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
-        }
-        while ($old_data !== $data);
+        } while ($old_data !== $data);
 
         return $data;
-	}
+    }
 
-	public function remove($key)
-	{
-		if (isset($this->_post[$key])) {
-			unset($this->_post[$key]);
-		}
-		return $this;
-	}
+    public function remove($key)
+    {
+        if (isset($this->post[$key])) {
+            unset($this->post[$key]);
+        }
+        return $this;
+    }
 
     public function __get($key)
     {
@@ -239,8 +242,8 @@ class Request implements RequestInterface
         return $this->set($key, $value);
     }
 
-	public function dump()
-	{
-		return $this->_post;
-	}
+    public function dump()
+    {
+        return $this->post;
+    }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Vita\Core\Router;
+namespace System\Core\Router;
 
 use Exception;
-use Vita\Core\Renderer;
-use Vita\Core\Request;
-use Vita\Core\Response;
+use System\Core\Renderer;
+use System\Core\Request;
+use System\Core\Response;
 
 class RouterClassException extends Exception {}
 class RouterClassMethodDoesNotExistsException extends Exception {}

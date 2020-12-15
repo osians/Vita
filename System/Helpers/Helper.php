@@ -119,7 +119,9 @@ function __enum($s){return eint($s);}
 function vita_twig_translate_filter( $val = null)
 {
     # esta ativado configuracao de traducao ?
-    if(!vita()->config->twig_localization_enabled) return $val;
+    if (!Vita\Vita::getInstance()->getConfig()->get('twig_localization_enabled')) {
+        return $val;
+    }
 
     # nosso parametro e' valido?
     if(is_null($val)||(!is_string($val))||empty($val)) return $val;

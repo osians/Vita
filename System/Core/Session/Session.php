@@ -1,6 +1,6 @@
 <?php
 
-namespace Vita\Core\Session;
+namespace System\Core\Session;
 
 use StdClass;
 
@@ -21,7 +21,7 @@ class Session implements SessionInterface
      *
      *    @var Session
      */
-    private static $_instance;
+    private static $instance;
     
     /**
      *    Expires session after 10 minutes(in Seconds)
@@ -57,7 +57,7 @@ class Session implements SessionInterface
      */
     public function __construct($expireTime = null, $key = 'fingerprint')
     {
-        self::$_instance =& $this;
+        self::$instance =& $this;
 
         $this->setSessionExpireTime($expireTime);
         $this->_makeSessionSafe();
@@ -249,10 +249,10 @@ class Session implements SessionInterface
      */
     public static function getInstance($expireTime = null)
     {
-        if(!isset(self::$_instance)) {
-            self::$_instance = new self($expireTime);
+        if(!isset(self::$instance)) {
+            self::$instance = new self($expireTime);
         }
-        return self::$_instance;
+        return self::$instance;
     }
 
     /**
@@ -265,7 +265,7 @@ class Session implements SessionInterface
      **/
     public function set($name, $value)
     {
-        $_SESSION[trim($name)] = $value;    
+        $_SESSION[trim($name)] = $value;
         return $this;
     }
 
@@ -278,11 +278,11 @@ class Session implements SessionInterface
      */
     public function get($name = null)
     {
-        if($name == null) {
+        if ($name == null) {
             return null;
         }
         
-        if(isset($_SESSION[trim($name)])) {
+        if (isset($_SESSION[trim($name)])) {
             return $_SESSION[trim($name)];
         }
 
@@ -323,7 +323,19 @@ class Session implements SessionInterface
     {
         return $this->get($name);
     }
-    
+
+    /**
+     * Return Session data as array
+     * @return array
+     */
+    public function toArray()
+    {
+        $session = $_SESSION;
+        unset($session['fingerprint']);
+        unset($session['SS_LAST_ACTIVITY']);
+        return $session;
+    }
+
     /**
      *   Destroy Session
      *

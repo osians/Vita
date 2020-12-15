@@ -1,6 +1,6 @@
 <?php
 
-namespace Vita\Core\Config;
+namespace System\Core\Config;
 
 interface ConfigRepositoryInterface
 {
