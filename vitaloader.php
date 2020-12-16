@@ -1,11 +1,13 @@
 <?php
 
+define('VITA_START_LOAD', microtime(true));
+
 /*
  *---------------------------------------------------------------
  * PADRONIZANDO TUDO EM UTF8
  *---------------------------------------------------------------
  * adotando o tipo de codificação UTF-8 para
- * todos os processos do sistema, afim de 
+ * todos os processos do sistema, afim de
  * evitar erros de caracteres.
  */
 if (function_exists('mb_internal_encoding')) {
@@ -43,25 +45,24 @@ define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'developm
  * Different environments will require different levels of error reporting.
  * By default development will show errors but testing and live will hide them.
  */
-switch (ENVIRONMENT)
-{
+switch (ENVIRONMENT) {
     case 'development':
         error_reporting(-1);
         ini_set('display_errors', 1);
-    break;
+        break;
 
     case 'testing':
     case 'production':
         ini_set('display_errors', 0);
         if (version_compare(PHP_VERSION, '5.3', '>=')) {
-                error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
+            error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
         } else {
             error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
         }
-    break;
+        break;
 
     default:
-        header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+        header('HTTP/1.1 503 Service Unavailable.', true, 503);
         echo 'The application environment is not set correctly.';
         exit(1); // EXIT_ERROR
 }
@@ -79,8 +80,10 @@ $systemPath = dirname(__FILE__) . DIRECTORY_SEPARATOR . $systemFolder . DIRECTOR
 
 # encontramos o caminho para o sistema?
 if (!is_dir($systemPath)) {
-    header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-    echo 'A Pasta do Sistema não parece ter sido setada corretamente. Por favor, abra o seguinte arquivo para corrigir isso: ' . pathinfo(__FILE__, PATHINFO_BASENAME);
+    header('HTTP/1.1 503 Service Unavailable.', true, 503);
+    echo 'A Pasta do Sistema não parece ter sido setada corretamente. 
+          Por favor, abra o seguinte arquivo para corrigir isso: ' .
+          pathinfo(__FILE__, PATHINFO_BASENAME);
     exit(3); // EXIT_CONFIG
 }
 
@@ -89,12 +92,12 @@ if (!is_dir($systemPath)) {
  *---------------------------------------------------------------
  * CONFIG
  *---------------------------------------------------------------
- * 
+ *
  * O Vita pode ser compartilhado por vários sites ou sistemas
- * ao mesmo tempo. Portanto, diferentes sistemas podem usa-lo 
+ * ao mesmo tempo. Portanto, diferentes sistemas podem usa-lo
  * com diferentes configurações.
  * Nota: Caso uma variável chamada $config com configurações
- * validas para o Vita seja setada antes de chamar este arquivo, 
+ * validas para o Vita seja setada antes de chamar este arquivo,
  * ela tera prioridade e sera usada.
  */
 if (isset($config)) {
@@ -103,9 +106,9 @@ if (isset($config)) {
 }
 
 $configDirectory = $systemPath . 'Core' . DIRECTORY_SEPARATOR . 'Config' . DIRECTORY_SEPARATOR;
-require_once $configDirectory  . 'ConfigRepositoryInterface.php';
-require_once $configDirectory  . 'ConfigRepository.php';
-require_once $configDirectory  . 'Config.php';
+require_once $configDirectory . 'ConfigRepositoryInterface.php';
+require_once $configDirectory . 'ConfigRepository.php';
+require_once $configDirectory . 'Config.php';
 
 use System\Core\Config\Config;
 use System\Core\Config\ConfigRepository;
@@ -117,20 +120,20 @@ $config = new Config($repository);
 # inserindo configurações externas, caso existam,
 # e sobrescrevendo as padrões
 if (isset($clientConfig) && is_array($clientConfig)) {
-	foreach ($clientConfig as $key => $value) {
-		$config->set($key, $value);
-	}
+    foreach ($clientConfig as $key => $value) {
+        $config->set($key, $value);
+    }
 }
 
 /**
  * ---------------------------------------------------------------
- * Setando alguns caminhos importantes do sistema
+ * Guardando alguns caminhos importantes do sistema
  * ---------------------------------------------------------------
  */
 $config->set('vita_path', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 $config->set('system_path', $systemPath);
 $config->set('config_path', $configDirectory);
-$config->set('core_path', $systemPath . 'Core'    . DIRECTORY_SEPARATOR);
+$config->set('core_path', $systemPath . 'Core' . DIRECTORY_SEPARATOR);
 $config->set('helper_path', $systemPath . 'Helpers' . DIRECTORY_SEPARATOR);
 $t = debug_backtrace();
 $appFolder = isset($t[0]) ? dirname($t[0]['file']) . DIRECTORY_SEPARATOR : $config->get('vita_path');
@@ -144,7 +147,7 @@ $config->set('app_folder', $appFolder);
  * Caso haja uma função util modular, colocar no arquivo Helper
  *
  */
-require_once ($systemPath . 'Helpers' . DIRECTORY_SEPARATOR . 'Helper.php');
+require_once($systemPath . 'Helpers' . DIRECTORY_SEPARATOR . 'Helper.php');
 
 /**
  * ---------------------------------------------------------------
@@ -190,17 +193,19 @@ $vita->getConfig()->set(
  *  INICIANDO O ROTEAMENTO
  * ---------------------------------------------------------------
  */
-require_once $systemPath . 'Core/Router/Router.php' ;
+require_once $systemPath . 'Core/Router/Router.php';
 require_once $systemPath . 'Core/Router/RouterStatus.php';
 
 use System\Core\Router\Router;
 
 if (in_array('mod_rewrite', apache_get_modules()) === false) {
-    throw new Exception("Erro:  mod_rewrite ausente no servidor");
-    exit(1);
+    header('HTTP/1.1 503 Service Unavailable.', true, 503);
+    echo 'Erro:  mod_rewrite ausente no servidor.';
+    exit(3); // EXIT_CONFIG
 }
 
-$controlFolder = $vita->getConfig()->get('app_folder') . $vita->getConfig()->get('controller_folder') . DIRECTORY_SEPARATOR;
+$controlFolder = $vita->getConfig()->get('app_folder') .
+                 $vita->getConfig()->get('controller_folder') . DIRECTORY_SEPARATOR;
 $dataFolder = $vita->getConfig()->get('app_folder') . 'data' . DIRECTORY_SEPARATOR;
 
 Autoloader::getInstance()->addFolder($controlFolder);
@@ -214,8 +219,11 @@ try {
     $vita->setRouter($r);
 
     $r->setInput($vita->getRequest())
-      ->setResponse($vita->getResponse())
-      ->setRenderer($vita->getRenderer());
+        ->setResponse($vita->getResponse())
+        ->setRenderer($vita->getRenderer());
+
+    define('VITA_STOP_LOAD', microtime(true));
+
     $r->init();
 } catch (RouterClassException $e) {
     echo $e->getMessage();

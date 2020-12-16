@@ -98,7 +98,7 @@ class Twig_Node_Macro extends Twig_Node
         $compiler
             ->outdent()
             ->write("));\n\n")
-            ->write("\$blocks = array();\n\n")
+            ->write("\$form = array();\n\n")
             ->write("ob_start();\n")
             ->write("try {\n")
             ->indent()

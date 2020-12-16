@@ -33,9 +33,9 @@ class VitaService
     /**
      * Config System Manager
      *
-     * @var Config $_config
+     * @var Config $config
      */
-    protected $_config = null;
+    protected $config = null;
 
     /**
      * Log info model into Files
@@ -150,12 +150,12 @@ class VitaService
     protected function _loadConfig(Config $config = null)
     {
         if (!is_null($config)) {
-            $this->_config = $config;
+            $this->config = $config;
             return $this;
         }
 
         $repository = new ConfigRepository();
-        $this->_config = new Config($repository);
+        $this->config = new Config($repository);
 
         return $this;
     }
@@ -371,7 +371,7 @@ class VitaService
      */
     public function getConfig()
     {
-        return $this->_config;
+        return $this->config;
     }
 
     /**

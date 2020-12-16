@@ -33,13 +33,13 @@ class Twig_Node_Expression_BlockReference extends Twig_Node_Expression
                 ->addDebugInfo($this)
                 ->write('$this->displayBlock(')
                 ->subcompile($this->getNode('name'))
-                ->raw(", \$context, \$blocks);\n")
+                ->raw(", \$context, \$form);\n")
             ;
         } else {
             $compiler
                 ->raw('$this->renderBlock(')
                 ->subcompile($this->getNode('name'))
-                ->raw(', $context, $blocks)')
+                ->raw(', $context, $form)')
             ;
         }
     }

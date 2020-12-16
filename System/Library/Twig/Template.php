@@ -112,7 +112,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @param string $name    The block name to display from the parent
      * @param array  $context The context
-     * @param array  $blocks  The current set of blocks
+     * @param array  $blocks  The current set of form
      *
      * @internal
      */
@@ -137,8 +137,8 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @param string $name      The block name to display
      * @param array  $context   The context
-     * @param array  $blocks    The current set of blocks
-     * @param bool   $useBlocks Whether to use the current set of blocks
+     * @param array  $blocks    The current set of form
+     * @param bool   $useBlocks Whether to use the current set of form
      *
      * @internal
      */
@@ -194,7 +194,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @param string $name    The block name to render from the parent
      * @param array  $context The context
-     * @param array  $blocks  The current set of blocks
+     * @param array  $blocks  The current set of form
      *
      * @return string The rendered block
      *
@@ -216,8 +216,8 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @param string $name      The block name to render
      * @param array  $context   The context
-     * @param array  $blocks    The current set of blocks
-     * @param bool   $useBlocks Whether to use the current set of blocks
+     * @param array  $blocks    The current set of form
+     * @param bool   $useBlocks Whether to use the current set of form
      *
      * @return string The rendered block
      *
@@ -237,10 +237,10 @@ abstract class Twig_Template implements Twig_TemplateInterface
      * This method is for internal use only and should never be called
      * directly.
      *
-     * This method does only return blocks defined in the current template
+     * This method does only return form defined in the current template
      * or defined in "used" traits.
      *
-     * It does not return blocks from parent templates as the parent
+     * It does not return form from parent templates as the parent
      * template name can be dynamic, which is only known based on the
      * current context.
      *
@@ -304,12 +304,12 @@ abstract class Twig_Template implements Twig_TemplateInterface
     }
 
     /**
-     * Returns all blocks.
+     * Returns all form.
      *
      * This method is for internal use only and should never be called
      * directly.
      *
-     * @return array An array of blocks
+     * @return array An array of form
      *
      * @see hasBlock
      *
@@ -407,7 +407,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      * Auto-generated method to display the template with the given context.
      *
      * @param array $context An array of parameters to pass to the template
-     * @param array $blocks  An array of blocks to pass to the template
+     * @param array $blocks  An array of form to pass to the template
      */
     abstract protected function doDisplay(array $context, array $blocks = array());
 

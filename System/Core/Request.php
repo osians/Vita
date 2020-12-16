@@ -26,21 +26,22 @@ class Request implements RequestInterface
     protected $posted = false;
 
     /**
-     *    Construct
+     * Request constructor
      */
     public function __construct()
     {
     }
 
     /**
-     *    Recebe o $_POST do sistema, e trata-o
-     *    antes que possa ser utilizado no sistema
+     * Recebe o $_POST do sistema, e trata-o
+     * antes que possa ser utilizado no sistema
      *
-     *    @return $this
+     * @return $this
      **/
     public function init()
     {
         $this->loadPost();
+        $this->loadPhpInput();
         $this->loadFiles();
         $this->setAditionalData();
 
@@ -58,6 +59,27 @@ class Request implements RequestInterface
         }
 
         foreach ($_POST as $k => $v) {
+            $this->set($k, $v);
+        }
+
+        $this->setPosted(true);
+        return $this;
+    }
+
+    /**
+     * Load data from php://input
+     * @return $this
+     */
+    protected function loadPhpInput()
+    {
+        $restJson = file_get_contents("php://input");
+        $input = json_decode($restJson, true);
+
+        if (empty($input)) {
+            return $this;
+        }
+
+        foreach ($input as $k => $v) {
             $this->set($k, $v);
         }
 
@@ -119,7 +141,6 @@ class Request implements RequestInterface
 
     protected function setAditionalData()
     {
-        # setando outras infos importantes ao form
         $this->set('action', ''); //&$_GET['request']
         $this->set('method', isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null);
 

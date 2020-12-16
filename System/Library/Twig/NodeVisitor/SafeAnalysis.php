@@ -74,7 +74,7 @@ class Twig_NodeVisitor_SafeAnalysis extends Twig_BaseNodeVisitor
             // constants are marked safe for all
             $this->setSafe($node, array('all'));
         } elseif ($node instanceof Twig_Node_Expression_BlockReference) {
-            // blocks are safe by definition
+            // form are safe by definition
             $this->setSafe($node, array('all'));
         } elseif ($node instanceof Twig_Node_Expression_Parent) {
             // parent block is safe by definition

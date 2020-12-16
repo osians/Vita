@@ -10,12 +10,12 @@
  */
 
 /**
- * Imports blocks defined in another template into the current template.
+ * Imports form defined in another template into the current template.
  *
  * <pre>
  * {% extends "base.html" %}
  *
- * {% use "blocks.html" %}
+ * {% use "form.html" %}
  *
  * {% block title %}{% endblock %}
  * {% block content %}{% endblock %}

@@ -154,7 +154,7 @@ class SplCaster
         }
 
         if (isset($a[$prefix.'fstat'])) {
-            $a[$prefix.'fstat'] = new CutArrayStub($a[$prefix.'fstat'], ['dev', 'ino', 'nlink', 'rdev', 'blksize', 'blocks']);
+            $a[$prefix.'fstat'] = new CutArrayStub($a[$prefix.'fstat'], ['dev', 'ino', 'nlink', 'rdev', 'blksize', 'form']);
         }
 
         return $a;

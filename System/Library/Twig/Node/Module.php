@@ -27,7 +27,7 @@ class Twig_Node_Module extends Twig_Node
         parent::__construct(array(
             'parent' => $parent,
             'body' => $body,
-            'blocks' => $blocks,
+            'form' => $blocks,
             'macros' => $macros,
             'traits' => $traits,
             'display_start' => new Twig_Node(),
@@ -65,7 +65,7 @@ class Twig_Node_Module extends Twig_Node
         $this->compileClassHeader($compiler);
 
         if (
-            count($this->getNode('blocks'))
+            count($this->getNode('form'))
             || count($this->getNode('traits'))
             || null === $this->getNode('parent')
             || $this->getNode('parent') instanceof Twig_Node_Expression_Constant
@@ -79,7 +79,7 @@ class Twig_Node_Module extends Twig_Node
 
         $this->compileDisplay($compiler);
 
-        $compiler->subcompile($this->getNode('blocks'));
+        $compiler->subcompile($this->getNode('form'));
 
         $this->compileMacros($compiler);
 
@@ -230,23 +230,23 @@ class Twig_Node_Module extends Twig_Node
             }
 
             $compiler
-                ->write("\$this->blocks = array_merge(\n")
+                ->write("\$this->form = array_merge(\n")
                 ->indent()
                 ->write("\$this->traits,\n")
                 ->write("array(\n")
             ;
         } else {
             $compiler
-                ->write("\$this->blocks = array(\n")
+                ->write("\$this->form = array(\n")
             ;
         }
 
-        // blocks
+        // form
         $compiler
             ->indent()
         ;
 
-        foreach ($this->getNode('blocks') as $name => $node) {
+        foreach ($this->getNode('form') as $name => $node) {
             $compiler
                 ->write(sprintf("'%s' => array(\$this, 'block_%s'),\n", $name, $name))
             ;
@@ -271,7 +271,7 @@ class Twig_Node_Module extends Twig_Node
     protected function compileDisplay(Twig_Compiler $compiler)
     {
         $compiler
-            ->write("protected function doDisplay(array \$context, array \$blocks = array())\n", "{\n")
+            ->write("protected function doDisplay(array \$context, array \$form = array())\n", "{\n")
             ->indent()
             ->subcompile($this->getNode('display_start'))
             ->subcompile($this->getNode('body'))
@@ -284,7 +284,7 @@ class Twig_Node_Module extends Twig_Node
             } else {
                 $compiler->write('$this->getParent($context)');
             }
-            $compiler->raw("->display(\$context, array_merge(\$this->blocks, \$blocks));\n");
+            $compiler->raw("->display(\$context, array_merge(\$this->form, \$form));\n");
         }
 
         $compiler
@@ -329,7 +329,7 @@ class Twig_Node_Module extends Twig_Node
         //   * it has no body
         //
         // Put another way, a template can be used as a trait if it
-        // only contains blocks and use statements.
+        // only contains form and use statements.
         $traitable = null === $this->getNode('parent') && 0 === count($this->getNode('macros'));
         if ($traitable) {
             if ($this->getNode('body') instanceof Twig_Node_Body) {

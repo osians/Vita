@@ -35,7 +35,7 @@ interface Twig_TemplateInterface
      * Displays the template with the given context.
      *
      * @param array $context An array of parameters to pass to the template
-     * @param array $blocks  An array of blocks to pass to the template
+     * @param array $blocks  An array of form to pass to the template
      */
     public function display(array $context, array $blocks = array());
 
